@@ -1,11 +1,11 @@
 data: download extract clean
 
 download:
-	echo 'Downloading current year results'
+	# downloading current year results
 	@ wget -nc -r -l 2 -A zip -erobots=off -P data/ pwca.org/results/results/
 
-	echo 'Downloading past years results'
-	@ for year in $(shell seq 1990 2018); do											\
+	# downloading past years results
+	@ for year in $(shell seq 1990 $(shell expr $(shell date +"%Y") - 1)); do			\
 	    wget -nc -r -l 2 -A zip -erobots=off -P data/ pwca.org/results/results_$$year/; \
 	done 																				\
 
