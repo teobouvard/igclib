@@ -1,0 +1,6 @@
+# HTML parsing
+lxml
+BeautifulSoup
+
+# progress bar
+tqdm
