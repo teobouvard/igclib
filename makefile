@@ -6,11 +6,11 @@ download:
 
 	echo 'Downloading past years results'
 	@ for year in $(shell seq 1990 2018); do											\
-	    wget -nc -r -l 2 -A zip -erobots=off -P data/ pwca.org/results/results_$$year/; 	\
+	    wget -nc -r -l 2 -A zip -erobots=off -P data/ pwca.org/results/results_$$year/; \
 	done 																				\
 
 extract:
-	@for zip in $(shell find data/ -name \*.zip); 										\
+	@ for zip in $(shell find data/ -name \*.zip); 										\
 	do																					\
 	filename=$$(basename $$zip);														\
 	year=$$(basename $$(dirname $$zip)); 												\
@@ -20,6 +20,8 @@ extract:
 	done 																				\
 
 clean:
+	$(shell find data -type d -exec dirname {} \; | sort | uniq -u | \
+	while read dir; do mv $$dir/*/*.igc $$dir; rm -rf $$dir/trk; done)
 	rm -rf data/pwca.org
 
 purge:
