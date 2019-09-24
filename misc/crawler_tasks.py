@@ -13,7 +13,7 @@ TASK_DIR = 'data/tasks'
 pattern = re.compile('xctask.map.taskjsn = (.*?);')
 
 def generate_tour_urls():
-    return [PWCA_URL + str(x) for x in range(2019, 2020)]
+    return [PWCA_URL + str(x) for x in range(2010, 2020)]
 
 def fetch_events(urls):
     event_links = []
@@ -41,6 +41,7 @@ def fetch_tasks(events):
     return tasks
 
 def save_tasks(tasks):
+    os.makedirs(TASK_DIR, exist_ok=True)
     for task in tasks:
         with open(os.path.join(TASK_DIR, task['details']['date'] + '.json'), 'w') as f:
             json.dump(task, f)

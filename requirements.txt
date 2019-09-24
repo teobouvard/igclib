@@ -4,3 +4,6 @@ BeautifulSoup
 
 # progress bar
 tqdm
+
+# IGC parsing
+aerofiles

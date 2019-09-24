@@ -5,17 +5,19 @@ import zipfile
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+from datetime import datetime
 
 DATA_FOLDER = '../data/tracks/'
 PWCA_URL = 'http://pwca.org/results/results'
 
 def generate_urls():
-    urls = [''.join([PWCA_URL, '_', str(x), '/results.htm']) for x in range(2010, 2020)]
+    urls = [''.join([PWCA_URL, '_', str(x), '/results.htm']) for x in range(2017, 2020)]
     urls.append(PWCA_URL + '/results.htm')
     return urls
 
 def generate_igc_links(url_list):
-    files = []
+    links = []
+    filenames = []
 
     for url in url_list:
         index = requests.get(url)
@@ -27,13 +29,18 @@ def generate_igc_links(url_list):
                 if anchor.text == 'IGC':
                     basename = url.rsplit('/', 1)[0]
                     link = anchor['href']
-                    files.append('/'.join([basename, link]))
+                    links.append('/'.join([basename, link]))
 
-    return files
+                    for tag in anchor.previous_siblings:
+                        if tag.name == 'b':
+                            date = datetime.strptime(tag.text.split('.')[-1], ' %a %d %b %y')
+                            filenames.append(datetime.strftime(date, '%Y-%m-%d'))
+                            break
 
-def download_igc(links):
-    for link in tqdm(links):
-        filename = link.split('/')[-1]
+    return filenames, links
+
+def download_igc(links, filenames):
+    for link, filename in tqdm(zip(links, filenames), total=len(links)):
         subdir = link.split('/')[-2]
         filename = os.path.join(DATA_FOLDER, subdir, filename)
 
@@ -70,7 +77,7 @@ def clean_data(folder):
 if __name__ == '__main__':
 
     urls = generate_urls()
-    links = generate_igc_links(urls)
-    download_igc(links)
+    filenames, links = generate_igc_links(urls)
+    download_igc(links, filenames)
     unzip_files(DATA_FOLDER)
     clean_data(DATA_FOLDER)
