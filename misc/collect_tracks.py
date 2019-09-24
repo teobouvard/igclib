@@ -6,11 +6,11 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-DATA_FOLDER = './test_data/'
+DATA_FOLDER = '../data/tracks/'
 PWCA_URL = 'http://pwca.org/results/results'
 
 def generate_urls():
-    urls = [''.join([PWCA_URL, '_', str(x), '/results.htm']) for x in range(2010, 2013)]
+    urls = [''.join([PWCA_URL, '_', str(x), '/results.htm']) for x in range(2010, 2020)]
     urls.append(PWCA_URL + '/results.htm')
     return urls
 
