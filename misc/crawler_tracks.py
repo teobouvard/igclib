@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 from datetime import datetime
 
-DATA_FOLDER = '../data/tracks/'
+DATA_FOLDER = './data/tracks/'
 PWCA_URL = 'http://pwca.org/results/results'
 
 def generate_urls():
@@ -42,7 +42,7 @@ def generate_igc_links(url_list):
 def download_igc(links, filenames):
     for link, filename in tqdm(zip(links, filenames), total=len(links)):
         subdir = link.split('/')[-2]
-        filename = os.path.join(DATA_FOLDER, subdir, filename)
+        filename = os.path.join(DATA_FOLDER, subdir, filename + '.zip')
 
         if os.path.exists(filename):
             continue
