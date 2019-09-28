@@ -4,7 +4,7 @@ class Task():
 
     def __init__(self, task_file):
         ### HARDCODED FAKE DATA ###
-        self.start = time(14,0,0)
+        self.start = time(12,0,0)
         self.stop = time(16,0,0)
 
     def timerange(self, start=None, stop=None):

@@ -7,3 +7,9 @@ tqdm
 
 # IGC parsing
 aerofiles
+
+# visualization and computing
+pandas
+numpy
+matplotlib
+sns

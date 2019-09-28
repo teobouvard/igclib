@@ -1,19 +1,37 @@
 from aerofiles import igc
 
+LOG_LEVEL = 0
+
+IGC_RECORDS = 'fix_records'
+IGC_HEADER = 'header'
+IGC_TIME = 'time'
+
 class Flight():
 
     def __init__(self, track_file):
         try:
             with open(track_file, 'r') as f:
                 records = igc.Reader().read(f)
-                zero_indexedpoints = [point for subrecord in records['fix_records'] for point in subrecord]
-                time_indexedpoints = {point['time']:point for point in zero_indexedpoints}
+                zero_indexed_points = [point for subrecord in records[IGC_RECORDS] for point in subrecord]
+                time_indexed_points = {point[IGC_TIME]:point for point in zero_indexed_points}
 
-                self.headers = records['header']
-                self.points = time_indexedpoints
+                self.filename = track_file
+                self.headers = records[IGC_HEADER]
+                self.points = time_indexed_points
 
         except UnicodeDecodeError:
-            print('{} is not utf-8 valid'.format(track_file))
+            if LOG_LEVEL > 0:
+                print('{} is not utf-8 valid'.format(track_file))
+            
+            # we have to try a different file encoding for people having accents in their names
+            with open(track_file, 'r', encoding='iso-8859-1') as f:
+                records = igc.Reader().read(f)
+                zero_indexed_points = [point for subrecord in records[IGC_RECORDS] for point in subrecord]
+                time_indexed_points = {point[IGC_TIME]:point for point in zero_indexed_points}
+
+                self.filename = track_file
+                self.headers = records[IGC_HEADER]
+                self.points = time_indexed_points
         
     def __getitem__(self, time_point):
         return self.points.get(time_point, None)
