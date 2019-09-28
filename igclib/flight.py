@@ -9,13 +9,14 @@ class Flight():
                 zero_indexed_points = [point for subrecord in records['fix_records'] for point in subrecord]
                 time_indexed_points = {point['time']:point for point in zero_indexed_points}
 
-                self.headers = records['header']
-                self.points = time_indexed_points
+                self._headers = records['header']
+                self._points = time_indexed_points
 
         except UnicodeDecodeError:
             print('{} is not utf-8 valid'.format(track_file))
         
+    def __getitem__(self, time_point):
+        return self._points.get(time_point, None)
     
     def extract_altitudes(self):
-        altitudes = [x['gps_alt'] for x in self.points]
-        return altitudes
+        return [x['gps_alt'] for x in self._points]
