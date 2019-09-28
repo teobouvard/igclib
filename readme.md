@@ -18,6 +18,7 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 
 ### Library
 
+* add other features to ```pilot_features()```
 
 ### Data collection
 

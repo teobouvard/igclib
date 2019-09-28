@@ -39,7 +39,7 @@ class Race():
             'group_relation' : [],
         }
         
-        for timestamp, snapshot in tqdm(self.snapshot_generator(), desc='extracting features', total=len(self.flights.keys())):
+        for timestamp, snapshot in tqdm(self.snapshot_generator(), desc='extracting features', total=len(self.task)):
             if pilot_id not in snapshot:
                 if LOG_LEVEL > 0:
                     print('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
@@ -64,6 +64,6 @@ class Race():
         Generates a snapshot of the race at each second between start and stop
         """
         for timestamp in self.task.timerange(start, stop):
-            if self[timestamp] == {}:
-                continue
+            #if self[timestamp] == {}:
+                #continue
             yield timestamp, self[timestamp]
