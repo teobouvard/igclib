@@ -1,11 +1,25 @@
 # igclib
 
+## Get started
+
+```{shell}
+git clone https://github.com/teobouvard/igclib.git
+cd igclib
+pip3 install -r requirements.txt
+python3 igclib/main.py
+```
+
 ## Data collection
 
-To fetch the IGC tracks, run `python3 crawlers/crawler_tracks.py`.
+To fetch the IGC tracks, run `python3 crawlers/crawler_tracks.py`  
 To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 
 ## Todo
+
+### Library
+
+
+### Data collection
 
 * parallellize requests when fetching data
 * merge tasks and tracks
