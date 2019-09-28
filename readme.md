@@ -2,8 +2,8 @@
 
 ## Data collection
 
-To fetch the IGC tracks, run `python3 misc/crawler_tracks.py`.
-To fetch the tasks, run `python3 misc/crawler_tasks.py`
+To fetch the IGC tracks, run `python3 crawlers/crawler_tracks.py`.
+To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 
 ## Todo
 
