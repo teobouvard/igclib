@@ -17,6 +17,3 @@ class Flight():
         
     def __getitem__(self, time_point):
         return self.points.get(time_point, None)
-    
-    def extract_altitudes(self):
-        return [x['gps_alt'] for x in self.points]

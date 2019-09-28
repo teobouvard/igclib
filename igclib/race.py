@@ -20,10 +20,10 @@ class Race():
 
     def pilot_features(self, pilot_id):
         """
-        pilot_id (str)
+        Extract pilot features for the whole task
         """
         if pilot_id not in self.flights:
-            raise KeyError('Pilot ID is not in the race')
+            raise KeyError('Pilot {} is not in the race'.format(pilot_id))
         
         for timestamp, snapshot in self.snapshot_generator():
             if snapshot[pilot_id] is not None:
@@ -31,6 +31,9 @@ class Race():
             else:
                 print('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
 
-    def snapshot_generator(self):
-        for timestamp in self.task.timerange():
+    def snapshot_generator(self, start=None, stop=None):
+        """
+        Generates a snapshot of the race at each second between start and stop
+        """
+        for timestamp in self.task.timerange(start, stop):
             yield timestamp, self[timestamp]
