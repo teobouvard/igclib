@@ -1,5 +1,6 @@
 import os
 from glob import glob
+from datetime import time
 
 from flight import Flight
 from task import Task
@@ -13,6 +14,5 @@ class Race():
         self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tracks}
         self.task = Task(task_file)
 
-    def pilot_features(self, pilot_id):
+    def get_pilot_features(self, pilot_id, time):
         pilot_flight = self.flights[pilot_id]
-        
