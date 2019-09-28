@@ -1,4 +1,4 @@
-# HTML parsing
+# HTML parsing for crawlers
 lxml
 BeautifulSoup
 
@@ -8,8 +8,13 @@ tqdm
 # IGC parsing
 aerofiles
 
-# visualization and computing
-pandas
-numpy
+# visualization 
 matplotlib
 sns
+
+# scientific computing
+pandas
+numpy
+
+# distance computation
+geopy

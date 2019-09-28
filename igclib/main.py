@@ -3,8 +3,9 @@ from matplotlib import pyplot as plt
 
 from race import Race
 
-#TRACKS_DIR = 'data/test'
-TRACKS_DIR = 'data/tracks/results/2019-05-26'
+TRACKS_DIR = 'test_tracks'
+PILOT_ID = '0035'
+#TRACKS_DIR = 'data/tracks/results/2019-05-26'
 
 def animate_delta_altitude(features):
     plt.figure()
@@ -20,5 +21,7 @@ def animate_delta_altitude(features):
 if __name__ == '__main__':
     
     r =  Race(TRACKS_DIR)
-    features = r.pilot_features('0010')
-    animate_delta_altitude(features)
+    features = r.pilot_features(PILOT_ID)
+    #animate_delta_altitude(features)
+    #print(features['timestamp'])
+    print(features['group_relation'][-1])
