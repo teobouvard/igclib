@@ -1,4 +1,5 @@
 import seaborn as sns
+import numpy as np
 from matplotlib import pyplot as plt
 
 from race import Race
@@ -12,12 +13,17 @@ def animate_delta_altitude(features):
     plt.ioff()
 
     for i, relation in enumerate(features['group_relation']):
-        altitudes = relation['delta_altitude']
-        sns.distplot(altitudes, hist=False, kde_kws = {'shade': True, 'linewidth': 3}, vertical=True)
+        altitudes = np.array(relation['delta_altitude'])
+
+        timestamp = str(features['timestamp'][i])
+        n_pilots = altitudes.size
+        pilots_below = altitudes[altitudes < 0].size
+
+        print('{} - {} pilots({} below) '.format(timestamp, n_pilots, pilots_below))
+        
         plt.axhline(0, 0, 1)
-        print(features['timestamp'][i])
-        #plt.axis([-2000, 2000, 0, 0.005])
-        plt.pause(0.001)
+        sns.distplot(altitudes, vertical=True)
+        plt.pause(0.01)
         plt.clf()
 
 if __name__ == '__main__':
