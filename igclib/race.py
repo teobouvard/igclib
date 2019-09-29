@@ -66,23 +66,28 @@ class Race():
     
 
     def group_relation(self, pilot_id, snapshot):
-        group_relation = {}
+        group_relation = {
+            'delta_altitude' : [],
+            'distance' : [],
+            'glide_ratio' : [],
+            'angle' : [],
+        }
         pilot_id_postition = (snapshot[pilot_id][IGC_LAT], snapshot[pilot_id][IGC_LON])
 
-        for other_pilot, flight in snapshot.items():
-            group_relation[other_pilot] = {}
+        for other_pilot_id, flight in snapshot.items():
             other_pilot_postition = (flight[IGC_LAT], flight[IGC_LON])
 
-            group_relation[other_pilot]['delta_altitude'] = snapshot[pilot_id][IGC_ALTITUDE] - flight[IGC_ALTITUDE]
-            #group_relation[other_pilot]['distance'] = distance.geodesic(pilot_id_postition, other_pilot_postition, ellipsoid='WGS-84').meters
-            group_relation[other_pilot]['distance'] = distance.vincenty(pilot_id_postition, other_pilot_postition).meters
+            delta_altitude = snapshot[pilot_id][IGC_ALTITUDE] - flight[IGC_ALTITUDE]
+            dist = distance.vincenty(pilot_id_postition, other_pilot_postition).meters
+            #distance = distance.geodesic(pilot_id_postition, other_pilot_postition, ellipsoid='WGS-84').meters
+            glide_ratio = dist/delta_altitude if delta_altitude else sys.maxsize
+            angle = math.atan(dist/delta_altitude) if delta_altitude else math.pi/2
 
-            if group_relation[other_pilot]['delta_altitude'] != 0:
-                group_relation[other_pilot]['glide_ratio'] = group_relation[other_pilot]['distance']/group_relation[other_pilot]['delta_altitude'] 
-                group_relation[other_pilot]['angle'] = math.atan(group_relation[other_pilot]['distance']/group_relation[other_pilot]['delta_altitude'])
-            else:
-                group_relation[other_pilot]['glide_ratio'] = sys.maxsize
-                group_relation[other_pilot]['angle'] = math.pi/2
+            # we have to chose sign conventions
+            group_relation['delta_altitude'].append(-delta_altitude)
+            group_relation['distance'].append(dist)
+            group_relation['glide_ratio'].append(glide_ratio)
+            group_relation['angle'].append(angle)
 
         return group_relation
 
