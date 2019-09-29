@@ -37,7 +37,7 @@ class Race():
         return len([_ for _ in self.snapshot_generator()])
 
 
-    def pilot_features(self, pilot_id):
+    def pilot_features(self, pilot_id, start=None, stop=None):
         """
         Extract pilot features for the whole task
         """
@@ -53,7 +53,7 @@ class Race():
             'group_relation' : [],
         }
         
-        for timestamp, snapshot in tqdm(self.snapshot_generator(), desc='extracting features', total=len(self)):
+        for timestamp, snapshot in tqdm(self.snapshot_generator(start, stop), desc='extracting features', total=len(self)):
             if pilot_id not in snapshot:
                 if LOG_LEVEL > 0:
                     print('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
