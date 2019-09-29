@@ -74,7 +74,8 @@ class Race():
             other_pilot_postition = (flight[IGC_LAT], flight[IGC_LON])
 
             group_relation[other_pilot]['delta_altitude'] = snapshot[pilot_id][IGC_ALTITUDE] - flight[IGC_ALTITUDE]
-            group_relation[other_pilot]['distance'] = distance.geodesic(pilot_id_postition, other_pilot_postition, ellipsoid='WGS-84').meters
+            #group_relation[other_pilot]['distance'] = distance.geodesic(pilot_id_postition, other_pilot_postition, ellipsoid='WGS-84').meters
+            group_relation[other_pilot]['distance'] = distance.vincenty(pilot_id_postition, other_pilot_postition).meters
 
             if group_relation[other_pilot]['delta_altitude'] != 0:
                 group_relation[other_pilot]['glide_ratio'] = group_relation[other_pilot]['distance']/group_relation[other_pilot]['delta_altitude'] 
