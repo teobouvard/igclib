@@ -14,22 +14,25 @@ def animate_delta_altitude(features):
 
     for i, relation in enumerate(features['group_relation']):
         altitudes = np.array(relation['delta_altitude'])
+        grs = np.array(relation['glide_ratio'])
 
         timestamp = str(features['timestamp'][i])
         n_pilots = altitudes.size
-        pilots_below = altitudes[altitudes < 0].size
+        pilots_below = altitudes[altitudes > 0].size
+        in_control = grs[grs < 10].size
 
-        print('{} - {} pilots({} below) '.format(timestamp, n_pilots, pilots_below))
+        print('{} - {} pilots ({} below, {} in control) '.format(timestamp, n_pilots, pilots_below, in_control))
         
         plt.axhline(0, 0, 1)
-        sns.distplot(altitudes, vertical=True)
+        ax = sns.distplot(altitudes, vertical=True)
+        ax.invert_yaxis()
         plt.pause(0.01)
         plt.clf()
 
 if __name__ == '__main__':
     
     r =  Race(TRACKS_DIR)
-    features = r.pilot_features(PILOT_ID)
+    features = r.get_pilot_features(PILOT_ID)
     animate_delta_altitude(features)
     #print(features['timestamp'])
     print(features['group_relation'][50])

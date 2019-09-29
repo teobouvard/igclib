@@ -23,7 +23,7 @@ class Race():
         tracks = glob(os.path.join(tracks_dir, '*.igc'))
         self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
         self.task = Task(task_file)
-
+        self.pilot_features = {}
 
     def __getitem__(self, time_point):
         """
@@ -37,13 +37,18 @@ class Race():
         return len([_ for _ in self.snapshot_generator()])
 
 
-    def pilot_features(self, pilot_id, start=None, stop=None):
+    def get_pilot_features(self, pilot_id, start=None, stop=None):
         """
         Extract pilot features for the whole task
         """
 
+        # check if pilot is in flight at this moment
         if pilot_id not in self.flights:
-            raise KeyError('Pilot {} is not in the race'.format(pilot_id))
+            raise KeyError('Pilot {} is not in flight'.format(pilot_id))
+        
+        # check if pilot is in feature cache
+        if pilot_id in self.pilot_features:
+            return self.pilot_features[pilot_id]
 
         features = {
             'timestamp' : [],
@@ -62,11 +67,15 @@ class Race():
                 features['altitude'].append(snapshot[pilot_id][IGC_ALTITUDE])
                 features['group_relation'].append(self.group_relation(pilot_id, snapshot))
         
+        # cache pilot features for future access
+        self.pilot_features[pilot_id] = features
+
         return features
     
 
     def group_relation(self, pilot_id, snapshot):
         group_relation = {
+            'other_pilot_id' : [],
             'delta_altitude' : [],
             'distance' : [],
             'glide_ratio' : [],
@@ -80,11 +89,12 @@ class Race():
             delta_altitude = snapshot[pilot_id][IGC_ALTITUDE] - flight[IGC_ALTITUDE]
             dist = distance.vincenty(pilot_id_postition, other_pilot_postition).meters
             #distance = distance.geodesic(pilot_id_postition, other_pilot_postition, ellipsoid='WGS-84').meters
-            glide_ratio = dist/delta_altitude if delta_altitude else sys.maxsize
-            angle = math.atan(dist/delta_altitude) if delta_altitude else math.pi/2
+            glide_ratio = dist/delta_altitude if delta_altitude > 0 else sys.maxsize
+            angle = math.atan(dist/delta_altitude) if delta_altitude != 0 else math.pi/2
 
             # we have to chose sign conventions
-            group_relation['delta_altitude'].append(-delta_altitude)
+            group_relation['other_pilot_id'].append(other_pilot_id)
+            group_relation['delta_altitude'].append(delta_altitude)
             group_relation['distance'].append(dist)
             group_relation['glide_ratio'].append(glide_ratio)
             group_relation['angle'].append(angle)
