@@ -1,3 +1,4 @@
+import logging
 import math
 import os
 import sys
@@ -9,8 +10,6 @@ from tqdm import tqdm
 
 from flight import Flight
 from task import Task
-
-LOG_LEVEL = 0
 
 IGC_ALTITUDE = 'gps_alt'
 IGC_LAT = 'lat'
@@ -60,8 +59,8 @@ class Race():
         
         for timestamp, snapshot in tqdm(self.snapshot_generator(start, stop), desc='extracting features', total=len(self)):
             if pilot_id not in snapshot:
-                if LOG_LEVEL > 0:
-                    print('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
+                logging.info('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
+
             else:
                 features['timestamp'].append(timestamp)
                 features['altitude'].append(snapshot[pilot_id][IGC_ALTITUDE])

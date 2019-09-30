@@ -1,8 +1,12 @@
-import seaborn as sns
+import logging
+
 import numpy as np
+import seaborn as sns
 from matplotlib import pyplot as plt
 
 from race import Race
+
+logging.basicConfig(level=logging.INFO)
 
 TRACKS_DIR = 'test_tracks'
 #TRACKS_DIR = 'data/tracks/results/2019-09-14'
@@ -21,7 +25,7 @@ def animate_delta_altitude(features):
         pilots_below = altitudes[altitudes > 0].size
         in_control = grs[grs < 10].size
 
-        print('{} - {} pilots ({} below, {} in control) '.format(timestamp, n_pilots, pilots_below, in_control))
+        logging.info('race time : {} - {} pilots ({} below, {} in control) '.format(timestamp, n_pilots, pilots_below, in_control))
         
         plt.axhline(0, 0, 1)
         ax = sns.distplot(altitudes, vertical=True)

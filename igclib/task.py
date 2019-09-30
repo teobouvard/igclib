@@ -1,4 +1,6 @@
-from datetime import time, datetime, timedelta
+import logging
+from datetime import datetime, time, timedelta
+
 
 class Task():
 
@@ -11,7 +13,7 @@ class Task():
         start = start if start is not None else self.start
         stop = stop if stop is not None else self.stop
 
-        # all this mess is necessary because you can't add datetime.time objects, which are used by aerofiles parser !
+        # all this mess is necessary because you can't add datetime.time objects, which are used by aerofiles parser
         current = datetime(1, 1, 1, start.hour, start.minute, start.second)
         stop = datetime(1, 1, 1, stop.hour, stop.minute, stop.second)
 

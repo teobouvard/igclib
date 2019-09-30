@@ -1,6 +1,6 @@
-from aerofiles import igc
+import logging
 
-LOG_LEVEL = 0
+from aerofiles import igc
 
 IGC_RECORDS = 'fix_records'
 IGC_HEADER = 'header'
@@ -20,8 +20,7 @@ class Flight():
                 self.points = time_indexed_points
 
         except UnicodeDecodeError:
-            if LOG_LEVEL > 0:
-                print('{} is not utf-8 valid'.format(track_file))
+            logging.info('{} is not utf-8 valid'.format(track_file))
             
             # we have to try a different file encoding for people having accents in their names
             with open(track_file, 'r', encoding='iso-8859-1') as f:
