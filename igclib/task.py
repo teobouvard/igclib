@@ -1,11 +1,13 @@
 import logging
 from datetime import datetime, time, timedelta
 
+from igclib.parser import xctrack
 
 class Task():
 
     def __init__(self, task_file):
-        ### HARDCODED FAKE DATA ###
+        task = xctrack.XCTask(task_file).read()
+
         self.start = time(12,0,0)
         self.stop = time(19,0,0)
 
@@ -20,3 +22,6 @@ class Task():
         while current < stop:
             yield current.time()
             current += timedelta(seconds=1)
+
+    def __len__(self):
+        return 0 #NotImplemented

@@ -1,4 +1,5 @@
 import logging
+from pympler import asizeof
 
 import numpy as np
 import seaborn as sns
@@ -6,7 +7,7 @@ from matplotlib import pyplot as plt
 
 from race import Race
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 TRACKS_DIR = 'test_tracks'
 #TRACKS_DIR = 'data/tracks/results/2019-09-14'
@@ -36,6 +37,7 @@ def animate_delta_altitude(features):
 if __name__ == '__main__':
     
     r =  Race(TRACKS_DIR)
+    print(r)
     features = r.get_pilot_features(PILOT_ID)
-    animate_delta_altitude(features)
-    print(features)
+    #animate_delta_altitude(features)
+    #print(asizeof.asizeof(r) / 10e6)

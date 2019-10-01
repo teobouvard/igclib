@@ -19,6 +19,7 @@ class Race():
 
         tracks = glob(os.path.join(tracks_dir, '*.igc'))
         self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
+        self.n_pilots = len(tracks)
         self.task = Task(task_file)
         self.pilot_features = {}
 
@@ -33,6 +34,16 @@ class Race():
         return len([_ for _ in self.snapshots()])
 
 
+    def __str__(self):
+        s = 'Race with {} pilots '.format(self.n_pilots)
+        s += 'on a {}km task'.format(len(self.task))
+        return s
+    
+
+    def __repr__(self):
+        return str(self)
+
+
     def get_pilot_features(self, pilot_id, start=None, stop=None):
         """
         Extract pilot features for the whole task
@@ -40,7 +51,7 @@ class Race():
 
         # check if pilot is in flight during the race
         if pilot_id not in self.flights:
-            raise KeyError('Pilot {} is not in flight'.format(pilot_id))
+            raise KeyError('Pilot {} is not in the race'.format(pilot_id))
         
         # check if pilot is in feature cache TODO and range is equal or smaller !
         if pilot_id in self.pilot_features:

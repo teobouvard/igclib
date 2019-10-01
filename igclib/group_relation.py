@@ -1,9 +1,8 @@
 import math
 import sys
 
-from constants import distance_computation as distance
-
-from constants import IGC_ALTITUDE, IGC_LAT, IGC_LON
+from igclib.constants import IGC_ALTITUDE, IGC_LAT, IGC_LON
+from igclib.constants import distance_computation as distance
 
 
 class GroupRelation():

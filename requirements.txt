@@ -12,6 +12,9 @@ aerofiles
 matplotlib
 sns
 
+# memory profiling
+pympler
+
 # scientific computing
 pandas
 numpy
