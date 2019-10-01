@@ -15,7 +15,7 @@ from task import Task
 
 class Race():
 
-    def __init__(self, tracks_dir, task_file=None):
+    def __init__(self, tracks_dir, task_file):
 
         tracks = glob(os.path.join(tracks_dir, '*.igc'))
         self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}

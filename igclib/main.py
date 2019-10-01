@@ -9,8 +9,8 @@ from race import Race
 
 logging.basicConfig(level=logging.ERROR)
 
-TRACKS_DIR = 'test_tracks'
-#TRACKS_DIR = 'data/tracks/results/2019-09-14'
+TRACKS_DIR = 'test/small_tracks'
+#TRACKS_DIR = 'test/large_tracks'
 PILOT_ID = '0035'
 
 def animate_delta_altitude(features):

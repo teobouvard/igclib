@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, time, timedelta
 
-from igclib.parser import xctrack
+from parser import xctrack
 
 class Task():
 

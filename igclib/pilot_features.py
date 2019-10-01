@@ -1,5 +1,5 @@
-from igclib.constants import IGC_ALTITUDE
-from igclib.group_relation import GroupRelation
+from constants import IGC_ALTITUDE
+from group_relation import GroupRelation
 
 
 class PilotFeatures():

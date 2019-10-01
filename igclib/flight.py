@@ -2,7 +2,7 @@ import logging
 
 from aerofiles import igc
 
-from igclib.constants import IGC_HEADER, IGC_RECORDS, IGC_TIME
+from constants import IGC_HEADER, IGC_RECORDS, IGC_TIME
 
 
 class Flight():
