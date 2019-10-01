@@ -2,6 +2,8 @@ import json
 import time as timeparse
 from datetime import time
 
+from utils.optimizer import Optimizer
+
 from constants import XC_TIME_FORMAT
 from constants import XC_SSS, XC_SSS_TIMEGATES
 from constants import XC_GOAL, XC_GOAL_DEADLINE

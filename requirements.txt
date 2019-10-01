@@ -1,6 +1,8 @@
+wheel
+
 # HTML parsing for crawlers
 lxml
-BeautifulSoup
+beautifulsoup4
 
 # progress bar
 tqdm
@@ -10,7 +12,7 @@ aerofiles
 
 # visualization 
 matplotlib
-sns
+seaborn
 
 # memory profiling
 pympler
@@ -21,3 +23,4 @@ numpy
 
 # distance computation
 geopy
+geographiclib
