@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.ERROR)
 
 TRACKS_DIR = 'test/small_tracks'
 #TRACKS_DIR = 'test/large_tracks'
+TASK_FILE = 'test/tasks/task0.xctsk'
 PILOT_ID = '0035'
 
 def animate_delta_altitude(features):
@@ -36,7 +37,7 @@ def animate_delta_altitude(features):
 
 if __name__ == '__main__':
     
-    r =  Race(TRACKS_DIR)
+    r =  Race(TRACKS_DIR, TASK_FILE)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
     #animate_delta_altitude(features)
