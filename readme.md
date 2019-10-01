@@ -5,7 +5,7 @@
 ```{shell}
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
-pip3 install virutalenv
+pip3 install virtualenv
 python3 -m venv venv
 source venv/bin/activate
 pip3 install wheel
