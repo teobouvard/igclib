@@ -12,8 +12,10 @@ class Task():
         else:
             raise NotImplementedError('{} tasks are not yet supported'.format(task_type))
 
-        self.start = task.start
-        self.stop = task.stop
+        #self.start = task.start
+        #self.stop = task.stop
+        self.start = time(12,0,0)
+        self.stop = time(20,0,0)
 
     def timerange(self, start=None, stop=None):
         start = start if start is not None else self.start

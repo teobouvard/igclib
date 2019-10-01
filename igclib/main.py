@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 
 from race import Race
 
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.INFO)
 
 TRACKS_DIR = 'test/small_tracks'
 #TRACKS_DIR = 'test/large_tracks'
@@ -40,5 +40,5 @@ if __name__ == '__main__':
     r =  Race(TRACKS_DIR, TASK_FILE)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
-    #animate_delta_altitude(features)
+    animate_delta_altitude(features)
     #print(asizeof.asizeof(r) / 10e6)
