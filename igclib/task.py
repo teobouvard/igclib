@@ -2,7 +2,6 @@ import logging
 from datetime import datetime, time, timedelta
 from parser import xctrack
 
-from constants import XC_SSS_TIMEGATES
 from utils.optimizer import Optimizer
 
 

@@ -19,8 +19,11 @@ class Race():
         tracks = glob(os.path.join(tracks_dir, '*.igc'))
         self.n_pilots = len(tracks)
         self.task = Task(task_file)
-        self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
+        self.flights = {os.path.basename(x).split('.')[0]:Flight(x, self.task) for x in tqdm(tracks, desc='reading tracks')}
         self.validated_waypoints = {wp['name']:[] for wp in self.task.waypoints}
+
+        # all pilots validate the takeoff
+        self.validated_waypoints[self.task.waypoints[0]['name']] = set(self.flights.keys())
         self.pilot_features = {}
 
     def __getitem__(self, time_point):
@@ -50,7 +53,6 @@ class Race():
         """
         Extract pilot features for the whole task
         """
-
         # check if pilot is in flight during the race
         if pilot_id not in self.flights:
             raise KeyError('Pilot {} is not in the race'.format(pilot_id))
@@ -78,7 +80,6 @@ class Race():
         """
         Generator of snapshots of the race at each second between start and stop
         """
-
         for timestamp in self.task.timerange(start, stop):
             if self[timestamp] != {}:
                 yield timestamp, self[timestamp]

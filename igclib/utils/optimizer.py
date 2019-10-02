@@ -1,4 +1,5 @@
 from geographiclib.geodesic import Geodesic 
+from constants import distance_computation as distance
 
 # Adapted from Julien Garcia's optimizer
 # https://github.com/julien66/meteor-task-creator/blob/master/client/imports/betterOptimiser.js
@@ -9,7 +10,17 @@ class Optimizer():
         self.position = position
         self.waypoints = waypoints
 
-    def optimize(self):
+    def distance_centers(self):
+        distances = []
+        first = self.waypoints[0]
+        distances.append(distance(self.position, (first['lat'], first['lon'])).meters)
+
+        for current_wp, next_wp in zip(self.waypoints, self.waypoints[1:]):
+            distances.append(distance((current_wp['lat'], current_wp['lon']), (next_wp['lat'], next_wp['lon'])).meters)
+            
+        return sum(distances)
+
+    def optimize_not_yet(self):
         # Pushing current position as a fast waypoint 
         fast_waypoints = [self.position]
         distances = [0]
