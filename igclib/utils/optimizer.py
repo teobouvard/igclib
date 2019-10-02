@@ -1,14 +1,25 @@
 from geographiclib.geodesic import Geodesic 
 
+# Adapted from Julien Garcia's optimizer
+# https://github.com/julien66/meteor-task-creator/blob/master/client/imports/betterOptimiser.js
+
 class Optimizer():
     
-    def __init__(self, waypoints):
+    def __init__(self, position, waypoints):
+        self.position = position
         self.waypoints = waypoints
 
     def optimize(self):
-        fast_waypoints = []
-        distances = []
+        # Pushing current position as a fast waypoint 
+        fast_waypoints = [self.position]
+        distances = [0]
 
+        # Looping turnpoints
+        for two, three in zip(self.waypoints[:], self.waypoints[1:]):
+            one = fast_waypoints[-1]
+            heading = None
+
+            print(one, two, three)
 
 #	// Pushing center of first turnpoint as a fastWaypoint. 
 #	if(turnpoints.length > 0) {

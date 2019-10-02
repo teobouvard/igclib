@@ -1,5 +1,3 @@
-wheel
-
 # HTML parsing for crawlers
 lxml
 beautifulsoup4

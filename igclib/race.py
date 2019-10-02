@@ -5,7 +5,6 @@ import sys
 from datetime import time
 from glob import glob
 
-from geopy import distance
 from tqdm import tqdm
 
 from flight import Flight
@@ -18,9 +17,10 @@ class Race():
     def __init__(self, tracks_dir, task_file):
 
         tracks = glob(os.path.join(tracks_dir, '*.igc'))
-        self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
         self.n_pilots = len(tracks)
         self.task = Task(task_file)
+        self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
+        self.validated_waypoints = {wp['name']:[] for wp in self.task.waypoints}
         self.pilot_features = {}
 
     def __getitem__(self, time_point):

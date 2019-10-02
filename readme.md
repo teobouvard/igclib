@@ -3,12 +3,11 @@
 ## Get started
 
 ```{shell}
+pip3 install wheel virtualenv
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
-pip3 install virtualenv
 python3 -m venv venv
 source venv/bin/activate
-pip3 install wheel
 pip3 install -r requirements.txt
 python3 igclib/main.py
 ```
@@ -22,6 +21,7 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 
 ### Library
 
+* task validator with waypoints validation times
 * add other features to ```pilot_features()```
 * write native code for distance calculation
 

@@ -40,5 +40,5 @@ if __name__ == '__main__':
     r =  Race(TRACKS_DIR, TASK_FILE)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
-    animate_delta_altitude(features)
+    #animate_delta_altitude(features)
     #print(asizeof.asizeof(r) / 10e6)

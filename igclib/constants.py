@@ -1,7 +1,8 @@
 ### DISTANCE COMPUTATION ###
 from geopy import distance
-distance_computation = distance.vincenty
-#distance_computation = distance.distance -> slower
+distance_computation = distance.great_circle
+#distance_computation = distance.vincenty -> slower
+#distance_computation = distance.distance -> slowest
 
 ### IGC FILE CONSTANTS ###
 IGC_RECORDS = 'fix_records'
