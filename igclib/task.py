@@ -34,5 +34,9 @@ class Task():
             yield current.time()
             current += timedelta(seconds=1)
 
+    def validate(self, flight):
+        # returns the waypoints validation times ?
+        raise NotImplementedError
+
     def __len__(self):
         return 0 #NotImplemented
