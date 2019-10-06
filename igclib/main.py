@@ -42,3 +42,5 @@ if __name__ == '__main__':
     features = r.get_pilot_features(PILOT_ID)
     #animate_delta_altitude(features)
     #print(asizeof.asizeof(r) / 10e6)
+    plt.plot(list(r.flights[PILOT_ID].goal_distances.values()))
+    plt.show()

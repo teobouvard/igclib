@@ -8,10 +8,11 @@ from constants import IGC_HEADER, IGC_RECORDS, IGC_TIME
 
 class Flight():
 
-    def __init__(self, track_file, task=None):
+    def __init__(self, track_file):
 
         self.pilot_id = os.path.basename(track_file).split('.')[0]
-
+        self.goal_distances = {}
+        
         try:
             with open(track_file, 'r') as f:
                 records = igc.Reader().read(f)
@@ -20,7 +21,7 @@ class Flight():
                 
                 self.headers = records[IGC_HEADER]
                 self.points = time_indexed_points
-                self.goal_distances = {}
+                
 
         except UnicodeDecodeError:
             logging.debug('{} is not utf-8 valid, trying iso encoding'.format(track_file))

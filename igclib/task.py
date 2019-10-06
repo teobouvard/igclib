@@ -5,6 +5,8 @@ from constants import distance_computation as distance
 
 from utils.optimizer import optimize
 
+TOLERANCE = 20
+
 
 class Task():
 
@@ -19,8 +21,6 @@ class Task():
         else:
             raise NotImplementedError('{} tasks are not yet supported'.format(task_type))
 
-        #self.start = time(14,45,0)
-        #self.stop = time(20,0,0)
         self.start = task.start
         self.stop = task.stop
         self.takeoff = task.takeoff
@@ -50,23 +50,32 @@ class Task():
 
             position = (point['lat'], point['lon'])
 
-            # we do not care about points before the start ?
             if timestamp < self.start:
-                flight.goal_distances[timestamp] = self.optimized_distance
+                flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
                 continue
 
             if start_passed == False:
-                if self.sss['direction'] == 'EXIT' and self.is_in(point, self.sss):
+                if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss):
                     start_passed = True
                     del remaining_waypoints[0]
                     next_waypoint = remaining_waypoints[0]
-                elif self.sss['direction'] == 'ENTER' and not self.is_in(point, self.sss):
+                elif self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
                     start_passed = True
                     del remaining_waypoints[0]
                     next_waypoint = remaining_waypoints[0]
+                flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+                continue
                 
-            
-            flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+
+            if remaining_waypoints:
+                # assuming no concentric turnpoints
+                flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+                if self.is_in(position, next_waypoint):
+                    #print('passed turnpoint {}, {} meters to go'.format(remaining_waypoints[0], flight.goal_distances[-1]))
+                    del remaining_waypoints[0]
+                    next_waypoint = remaining_waypoints[0] if remaining_waypoints else None
+            else:
+                flight.goal_distances[timestamp] = 0
 
 
     def __len__(self):
@@ -74,4 +83,5 @@ class Task():
 
     @staticmethod
     def is_in(pos, wpt):
-        return True if distance(pos['lat'], pos['lon'], wpt['lat'], wpt['lon']) <= wpt['radius'] else False
+        d = distance(pos, (wpt['lat'], wpt['lon'])).meters
+        return True if distance(pos, (wpt['lat'], wpt['lon'])).meters <= wpt['radius'] + TOLERANCE else False

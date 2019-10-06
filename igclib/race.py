@@ -19,7 +19,7 @@ class Race():
         tracks = glob(os.path.join(tracks_dir, '*.igc'))
         self.n_pilots = len(tracks)
         self.task = Task(task_file)
-        self.flights = {os.path.basename(x).split('.')[0]:Flight(x, self.task) for x in tqdm(tracks, desc='reading tracks')}
+        self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
         
         for pilot, flight in tqdm(self.flights.items(), desc='validating flights'):
             self.task.validate(flight)
