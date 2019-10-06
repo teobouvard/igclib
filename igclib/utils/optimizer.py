@@ -4,33 +4,27 @@ from constants import distance_computation as distance
 # Adapted from Julien Garcia's optimizer
 # https://github.com/julien66/meteor-task-creator/blob/master/client/imports/betterOptimiser.js
 
-class Optimizer():
-    
-    def __init__(self, position, waypoints):
-        self.position = position
-        self.waypoints = waypoints
+def distance_centers(position, waypoints):
+    distances = []
+    first = waypoints[0]
+    distances.append(distance(position, (first['lat'], first['lon'])).meters)
+    for current_wp, next_wp in zip(waypoints, waypoints[1:]):
+        distances.append(distance((current_wp['lat'], current_wp['lon']), (next_wp['lat'], next_wp['lon'])).meters)
+        
+    return sum(distances)
 
-    def distance_centers(self):
-        distances = []
-        first = self.waypoints[0]
-        distances.append(distance(self.position, (first['lat'], first['lon'])).meters)
+def optimize(position, waypoints):
+    return distance_centers(position, waypoints)
 
-        for current_wp, next_wp in zip(self.waypoints, self.waypoints[1:]):
-            distances.append(distance((current_wp['lat'], current_wp['lon']), (next_wp['lat'], next_wp['lon'])).meters)
-            
-        return sum(distances)
-
-    def optimize_not_yet(self):
-        # Pushing current position as a fast waypoint 
-        fast_waypoints = [self.position]
-        distances = [0]
-
-        # Looping turnpoints
-        for two, three in zip(self.waypoints[:], self.waypoints[1:]):
-            one = fast_waypoints[-1]
-            heading = None
-
-            print(one, two, three)
+def optimize_not_yet(position, waypoints):
+    # Pushing current position as a fast waypoint 
+    fast_waypoints = [position]
+    distances = [0]
+    # Looping turnpoints
+    for two, three in zip(waypoints[:], waypoints[1:]):
+        one = fast_waypoints[-1]
+        heading = None
+        print(one, two, three)
 
 #	// Pushing center of first turnpoint as a fastWaypoint. 
 #	if(turnpoints.length > 0) {

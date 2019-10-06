@@ -11,7 +11,6 @@ class Flight():
     def __init__(self, track_file, task=None):
 
         self.pilot_id = os.path.basename(track_file).split('.')[0]
-        self.remaining_waypoints = task.waypoints if task is not None else None
 
         try:
             with open(track_file, 'r') as f:
@@ -21,6 +20,7 @@ class Flight():
                 
                 self.headers = records[IGC_HEADER]
                 self.points = time_indexed_points
+                self.goal_distances = {}
 
         except UnicodeDecodeError:
             logging.debug('{} is not utf-8 valid, trying iso encoding'.format(track_file))
@@ -35,8 +35,4 @@ class Flight():
                 self.points = time_indexed_points
         
     def __getitem__(self, time_point):
-        point = self.points.get(time_point, None)
-        if point is not None:
-            # TODO check which turnpoints remain to be done
-            point['remaining_waypoints'] = self.remaining_waypoints
-        return point
+        return self.points.get(time_point, None)

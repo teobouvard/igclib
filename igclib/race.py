@@ -20,10 +20,12 @@ class Race():
         self.n_pilots = len(tracks)
         self.task = Task(task_file)
         self.flights = {os.path.basename(x).split('.')[0]:Flight(x, self.task) for x in tqdm(tracks, desc='reading tracks')}
-        self.validated_waypoints = {wp['name']:[] for wp in self.task.waypoints}
+        
+        for pilot, flight in tqdm(self.flights.items(), desc='validating flights'):
+            self.task.validate(flight)
 
-        # all pilots validate the takeoff
-        self.validated_waypoints[self.task.waypoints[0]['name']] = set(self.flights.keys())
+        # cache pilot features to compute them only once for each pilot
+        # maybe this is not a good idea ?
         self.pilot_features = {}
 
     def __getitem__(self, time_point):
