@@ -1,10 +1,11 @@
 import logging
 from datetime import datetime, time, timedelta
 from parser import xctrack
-from constants import distance_computation as distance
 
+from constants import distance_computation as distance
 from utils.optimizer import optimize
 
+# fast distance computations do not validate waypoints without tolerances
 TOLERANCE = 20
 
 
@@ -43,36 +44,44 @@ class Task():
 
     def validate(self, flight):
         remaining_waypoints = self.waypoints.copy()
-        next_waypoint = remaining_waypoints[0]
         start_passed = False
         
         for timestamp, point in flight.points.items():
 
             position = (point['lat'], point['lon'])
 
+            # race has not started yet
             if timestamp < self.start:
                 flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
                 continue
 
+            # race has started, checking for start validation
             if start_passed == False:
-                if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss):
-                    start_passed = True
-                    del remaining_waypoints[0]
-                    next_waypoint = remaining_waypoints[0]
-                elif self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
-                    start_passed = True
-                    del remaining_waypoints[0]
-                    next_waypoint = remaining_waypoints[0]
                 flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+
+                if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss) or self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
+                    start_passed = True
+                    del remaining_waypoints[0]
+
                 continue
                 
-
-            if remaining_waypoints:
+            # at least two turnpoints remaining, check for concentric ones
+            if len(remaining_waypoints) > 1:
                 flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
-                # assuming no concentric turnpoints
-                if self.is_in(position, next_waypoint):
+
+                if self.is_in(position, remaining_waypoints[0]) and not self.are_concentric(remaining_waypoints[0], remaining_waypoints[1]):
                     del remaining_waypoints[0]
-                    next_waypoint = remaining_waypoints[0] if remaining_waypoints else None
+                elif self.are_concentric(remaining_waypoints[0], remaining_waypoints[1]) and not self.is_in(position, remaining_waypoints[0]):
+                    del remaining_waypoints[0]
+
+            # only one turnpoint remaining, check for goal
+            elif len(remaining_waypoints) == 1:
+                flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+
+                if self.is_in(position, remaining_waypoints[0]):
+                    del remaining_waypoints[0]
+
+            # in goal, fill zeros until landing
             else:
                 flight.goal_distances[timestamp] = 0
 
@@ -82,5 +91,8 @@ class Task():
 
     @staticmethod
     def is_in(pos, wpt):
-        d = distance(pos, (wpt['lat'], wpt['lon'])).meters
         return True if distance(pos, (wpt['lat'], wpt['lon'])).meters <= wpt['radius'] + TOLERANCE else False
+
+    @staticmethod
+    def are_concentric(wptA, wptB):
+        return True if wptA['lat'] == wptB['lat'] and wptA['lon'] == wptB['lon'] else False
