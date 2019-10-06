@@ -68,10 +68,9 @@ class Task():
                 
 
             if remaining_waypoints:
-                # assuming no concentric turnpoints
                 flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+                # assuming no concentric turnpoints
                 if self.is_in(position, next_waypoint):
-                    #print('passed turnpoint {}, {} meters to go'.format(remaining_waypoints[0], flight.goal_distances[-1]))
                     del remaining_waypoints[0]
                     next_waypoint = remaining_waypoints[0] if remaining_waypoints else None
             else:
