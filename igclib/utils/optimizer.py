@@ -1,31 +1,42 @@
 from geographiclib.geodesic import Geodesic 
 from constants import distance_computation as distance
+import math
 
 # Adapted from Julien Garcia's optimizer
 # https://github.com/julien66/meteor-task-creator/blob/master/client/imports/betterOptimiser.js
 
-def distance_centers(position, waypoints):
+def distance_through_waypoints(position, waypoints):
     distances = []
     first = waypoints[0]
-    distances.append(distance(position, (first['lat'], first['lon'])).meters)
+    distances.append(distance((position['lat'], position['lon']), (first['lat'], first['lon'])).meters)
     for current_wp, next_wp in zip(waypoints, waypoints[1:]):
         distances.append(distance((current_wp['lat'], current_wp['lon']), (next_wp['lat'], next_wp['lon'])).meters)
         
     return sum(distances)
 
 def optimize(position, waypoints):
-    return distance_centers(position, waypoints)
+    #shortest_route, distance = get_fast_waypoints(position, waypoints)
+    return distance_through_waypoints(position, waypoints)
 
-def optimize_not_yet(position, waypoints):
-    # Pushing current position as a fast waypoint 
+def get_heading(wptA, wptB):
+    return Geodesic.WGS84.Inverse(wptA['lat'], wptA['lon'], wptB['lat'], wptB['lon'])['azi1']
+
+def get_fast_waypoints(position, waypoints):
+    # Pushing current position as a fast waypoint
     fast_waypoints = [position]
-    distances = [0]
+    optimized_distance = 0
+
     # Looping turnpoints
     for two, three in zip(waypoints[:], waypoints[1:]):
         one = fast_waypoints[-1]
-        heading = None
-        print(one, two, three)
 
+        a_heading = get_heading(two, one)
+        b_heading = get_heading(two, three)
+
+        angle = b_heading - a_heading
+        leg_heading = a_heading + 0.5 * angle
+
+    return fast_waypoints, optimized_distance
 #	// Pushing center of first turnpoint as a fastWaypoint. 
 #	if(turnpoints.length > 0) {
 #		var first = turnpoints[0];

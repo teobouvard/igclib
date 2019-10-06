@@ -28,7 +28,7 @@ class Task():
         self.sss = task.sss
         self.waypoints = task.waypoints
         self.ess = task.ess
-        self.optimized_distance = optimize((self.takeoff['lat'], self.takeoff['lon']), self.waypoints) # to implement
+        self.optimized_distance = optimize(self.takeoff, self.waypoints) # to implement
 
     def timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
@@ -52,12 +52,12 @@ class Task():
 
             # race has not started yet
             if timestamp < self.start:
-                flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)
                 continue
 
             # race has started, checking for start validation
             if start_passed == False:
-                flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)
 
                 if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss) or self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
                     start_passed = True
@@ -67,7 +67,7 @@ class Task():
                 
             # at least two turnpoints remaining, check for concentric ones
             if len(remaining_waypoints) > 1:
-                flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)
 
                 if self.is_in(position, remaining_waypoints[0]) and not self.are_concentric(remaining_waypoints[0], remaining_waypoints[1]):
                     del remaining_waypoints[0]
@@ -76,7 +76,7 @@ class Task():
 
             # only one turnpoint remaining, check for goal
             elif len(remaining_waypoints) == 1:
-                flight.goal_distances[timestamp] = optimize(position, remaining_waypoints)
+                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)
 
                 if self.is_in(position, remaining_waypoints[0]):
                     del remaining_waypoints[0]
