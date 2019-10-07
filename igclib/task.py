@@ -5,6 +5,12 @@ from parser import xctrack
 from constants import distance_computation as distance
 from utils.optimizer import optimize
 
+## DEBUG
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import cartopy
+import math
+
 # fast distance computations do not validate waypoints without tolerances
 TOLERANCE = 20
 
@@ -41,6 +47,27 @@ class Task():
         while current < stop:
             yield current.time()
             current += timedelta(seconds=1)
+    
+
+    @staticmethod
+    def debug_plot(pos, waypoints, remaining_waypoints):
+        _, fast_waypoints = optimize(pos, remaining_waypoints)
+
+        lats = [wp['lat'] for wp in waypoints]
+        lons = [wp['lon'] for wp in waypoints]
+        rads = [wp['radius'] for wp in waypoints]
+        
+        fast_lats = [wp['lat'] for wp in fast_waypoints]
+        fast_lons = [wp['lon'] for wp in fast_waypoints]
+        
+
+        # 1. Draw the map background
+        ax = plt.axes(projection=ccrs.PlateCarree())
+        ax.coastlines()
+        ax.scatter(lons, lats, s=rads, alpha=0.5, transform=ccrs.PlateCarree())
+        ax.scatter(fast_lons, fast_lats, s=1, alpha=0.5, transform=ccrs.PlateCarree())
+        plt.show()
+
 
     def validate(self, flight):
         remaining_waypoints = self.waypoints.copy()
@@ -50,6 +77,7 @@ class Task():
         for timestamp, point in flight.points.items():
 
             position = (point['lat'], point['lon'])
+            self.debug_plot(point, self.waypoints, remaining_waypoints)
 
             # race has not started yet
             if timestamp < self.start:

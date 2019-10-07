@@ -3,6 +3,9 @@
 ## Get started
 
 ```{shell}
+# Shitty cartopy requirements, will disappear once optimizer is built
+apt-get install python3-dev libproj-dev proj-data proj-bin libgeos-dev
+
 pip3 install wheel virtualenv
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
