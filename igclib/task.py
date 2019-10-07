@@ -35,6 +35,8 @@ class Task():
         self.waypoints = task.waypoints
         self.ess = task.ess
         self.optimized_distance = optimize(self.takeoff, self.waypoints)[0]
+        self.debug_plot(self.takeoff, self.waypoints, self.waypoints)
+
 
     def timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
@@ -64,6 +66,7 @@ class Task():
         ax = plt.axes(projection=ccrs.PlateCarree())
         ax.coastlines()
         ax.plot(fast_lons, fast_lats, alpha=0.5, transform=ccrs.PlateCarree())
+        # no working display with radius
         #ax.scatter(lons, lats, s=rads, alpha=0.5, transform=ccrs.PlateCarree())
         ax.scatter(pos['lon'], pos['lat'], s= 10, transform=ccrs.PlateCarree())
         plt.pause(0.00001)
