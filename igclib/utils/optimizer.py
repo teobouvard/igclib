@@ -35,6 +35,12 @@ def get_fast_waypoints(position, waypoints):
 
         angle = b_heading - a_heading
         leg_heading = a_heading + 0.5 * angle
+        a_distance = distance(one['lat'], one['lon'], two['lat'], two['lon'])
+        b_distance = distance(two['lat'], two['lon'], three['lat'], three['lon'])
+        leg_distance = (2 * a_distance * b_distance * math.cos(math.radians(angle * 0.5)) / (a_distance + b_distance)
+        
+        # middle_point =  google.maps.geometry.spherical.computeOffset(two.LatLng, leg, legHeading);
+
 
     return fast_waypoints, optimized_distance
 #	// Pushing center of first turnpoint as a fastWaypoint. 
