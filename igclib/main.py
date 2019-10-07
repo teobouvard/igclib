@@ -13,6 +13,7 @@ TRACKS_DIR = 'test/one_track'
 #TRACKS_DIR = 'test/small_tracks'
 #TRACKS_DIR = 'test/large_tracks'
 TASK_FILE = 'test/tasks/task0.xctsk'
+#TASK_FILE = 'data/tasks/task_2019-05-12.xctsk'
 PILOT_ID = '0035'
 
 def animate_delta_altitude(features):

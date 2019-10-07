@@ -10,6 +10,6 @@ class PilotFeatures():
         self.timestamp = timestamp
         self.altitude = snapshot[pilot_id][IGC_ALTITUDE]
         self.position = (snapshot[pilot_id]['lat'], snapshot[pilot_id]['lon'])
-        self.goal_distance = optimize(self.position, snapshot[pilot_id]['remaining_waypoints']).distance_centers()
+        self.goal_distance = snapshot[pilot_id]['goal_dist']
         self.goal_glide = None
         self.group_relation = GroupRelation(pilot_id, snapshot)
