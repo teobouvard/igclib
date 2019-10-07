@@ -13,7 +13,7 @@ TRACKS_DIR = 'test/one_track'
 #TRACKS_DIR = 'test/small_tracks'
 #TRACKS_DIR = 'test/large_tracks'
 TASK_FILE = 'test/tasks/task0.xctsk'
-PILOT_ID = '0035'
+PILOT_ID = '0090'
 
 def animate_delta_altitude(features):
     plt.figure()
@@ -43,5 +43,5 @@ if __name__ == '__main__':
     features = r.get_pilot_features(PILOT_ID)
     #animate_delta_altitude(features)
     #print(asizeof.asizeof(r) / 10e6)
-    plt.plot(list(r.flights[PILOT_ID].goal_distances.values()))
+    plt.plot(list(r.flights[PILOT_ID].goal_distances.keys()), list(r.flights[PILOT_ID].goal_distances.values()))
     plt.show()

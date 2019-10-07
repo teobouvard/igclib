@@ -29,6 +29,7 @@ class XCTask():
             if waypoint.get(XC_TYPE, None) == 'SSS':
                 self.sss = self.wpt_to_dict(waypoint)
                 self.sss['direction'] = task[XC_SSS][XC_SSS_DIRECTION]
+
             elif waypoint.get(XC_TYPE, None) == 'ESS':
                 self.ess = self.wpt_to_dict(waypoint)
 

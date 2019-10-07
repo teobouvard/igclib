@@ -34,7 +34,7 @@ class Task():
         self.sss = task.sss
         self.waypoints = task.waypoints
         self.ess = task.ess
-        self.optimized_distance = optimize(self.takeoff, self.waypoints) # to implement
+        self.optimized_distance = optimize(self.takeoff, self.waypoints)[0]
 
     def timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
@@ -64,20 +64,21 @@ class Task():
         # 1. Draw the map background
         ax = plt.axes(projection=ccrs.PlateCarree())
         ax.coastlines()
+        ax.plot(fast_lons, fast_lats, alpha=0.5, transform=ccrs.PlateCarree())
         ax.scatter(lons, lats, s=rads, alpha=0.5, transform=ccrs.PlateCarree())
-        ax.scatter(fast_lons, fast_lats, s=1, alpha=0.5, transform=ccrs.PlateCarree())
+        ax.scatter(pos['lon'], pos['lat'], s= 10, transform=ccrs.PlateCarree())
         plt.show()
 
 
     def validate(self, flight):
         remaining_waypoints = self.waypoints.copy()
         start_passed = False
-        remaining_distances = []
         
         for timestamp, point in flight.points.items():
 
             position = (point['lat'], point['lon'])
-            self.debug_plot(point, self.waypoints, remaining_waypoints)
+            #if timestamp > time(16, 3, 10):
+                #self.debug_plot(point, self.waypoints, remaining_waypoints)
 
             # race has not started yet
             if timestamp < self.start:
@@ -86,32 +87,36 @@ class Task():
 
             # race has started, checking for start validation
             if start_passed == False:
-                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)
+                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
 
+                # will not work for start without a turnpoint inside !
                 if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss) or self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
                     start_passed = True
                     del remaining_waypoints[0]
+                    print('START {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
+
 
                 continue
                 
             # at least two turnpoints remaining, check for concentric ones
             if len(remaining_waypoints) > 1:
-                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)
-                remaining_distances.append(flight.goal_distances[timestamp])
-                if len(remaining_distances) > 1 and remaining_distances[-1]-remaining_distances[-2] > 100:
-                    here = True
+                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
 
-                if self.is_in(position, remaining_waypoints[0]) and not self.are_concentric(remaining_waypoints[0], remaining_waypoints[1]):
+                if self.is_in(position, remaining_waypoints[0]) and not self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]):
                     del remaining_waypoints[0]
-                elif self.are_concentric(remaining_waypoints[0], remaining_waypoints[1]) and not self.is_in(position, remaining_waypoints[0]):
+                    print('IN {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
+                elif self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]) and not self.is_in(position, remaining_waypoints[0]):
                     del remaining_waypoints[0]
+                    print('OUT {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
 
             # only one turnpoint remaining, check for goal
             elif len(remaining_waypoints) == 1:
-                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)
+                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
 
                 if self.is_in(position, remaining_waypoints[0]):
                     del remaining_waypoints[0]
+                    print('IN {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
+
 
             # in goal, fill zeros until landing
             else:
@@ -126,5 +131,5 @@ class Task():
         return True if distance(pos, (wpt['lat'], wpt['lon'])).meters <= wpt['radius'] + TOLERANCE else False
 
     @staticmethod
-    def are_concentric(wptA, wptB):
-        return True if wptA['lat'] == wptB['lat'] and wptA['lon'] == wptB['lon'] else False
+    def concentric_case(wptA, wptB):
+        return True if wptA['lat'] == wptB['lat'] and wptA['lon'] == wptB['lon'] and wptB['radius'] < wptA['radius'] else False
