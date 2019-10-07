@@ -4,6 +4,8 @@ distance_computation = distance.great_circle
 #distance_computation = distance.vincenty -> slower
 #distance_computation = distance.distance -> slowest
 
+MIN_TURNPOINTS_DISTANCE = 1 # meters
+
 ### IGC FILE CONSTANTS ###
 IGC_RECORDS = 'fix_records'
 IGC_HEADER = 'header'

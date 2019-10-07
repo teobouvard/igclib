@@ -27,6 +27,7 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 * task validator with waypoints validation times
 * add other features to ```pilot_features()```
 * write native code for distance calculation
+* remember entry start check will not work without a turnpoint inside
 
 ### Data collection
 

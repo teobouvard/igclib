@@ -89,12 +89,11 @@ class Task():
             if start_passed == False:
                 flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
 
-                # will not work for start without a turnpoint inside !
+                # this will not work for start without a turnpoint inside !
                 if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss) or self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
                     start_passed = True
                     del remaining_waypoints[0]
                     print('START {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
-
 
                 continue
                 
@@ -115,8 +114,7 @@ class Task():
 
                 if self.is_in(position, remaining_waypoints[0]):
                     del remaining_waypoints[0]
-                    print('IN {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
-
+                    print('GOAL {}'.format(timestamp))
 
             # in goal, fill zeros until landing
             else:
@@ -124,7 +122,7 @@ class Task():
 
 
     def __len__(self):
-        return int(self.optimized_distance)
+        return int(self.optimized_distance/1000)
 
     @staticmethod
     def is_in(pos, wpt):
