@@ -45,6 +45,7 @@ class Task():
     def validate(self, flight):
         remaining_waypoints = self.waypoints.copy()
         start_passed = False
+        remaining_distances = []
         
         for timestamp, point in flight.points.items():
 
@@ -52,7 +53,7 @@ class Task():
 
             # race has not started yet
             if timestamp < self.start:
-                flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)
+                flight.goal_distances[timestamp] = self.optimized_distance
                 continue
 
             # race has started, checking for start validation
@@ -68,6 +69,9 @@ class Task():
             # at least two turnpoints remaining, check for concentric ones
             if len(remaining_waypoints) > 1:
                 flight.goal_distances[timestamp] = optimize(point, remaining_waypoints)
+                remaining_distances.append(flight.goal_distances[timestamp])
+                if len(remaining_distances) > 1 and remaining_distances[-1]-remaining_distances[-2] > 100:
+                    here = True
 
                 if self.is_in(position, remaining_waypoints[0]) and not self.are_concentric(remaining_waypoints[0], remaining_waypoints[1]):
                     del remaining_waypoints[0]
@@ -87,7 +91,7 @@ class Task():
 
 
     def __len__(self):
-        return 0 #NotImplemented
+        return int(self.optimized_distance)
 
     @staticmethod
     def is_in(pos, wpt):
