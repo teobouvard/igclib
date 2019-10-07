@@ -6,7 +6,7 @@
 # Shitty cartopy requirements, will disappear once optimizer is built
 apt-get install python3-dev libproj-dev proj-data proj-bin libgeos-dev
 
-pip3 install wheel virtualenv
+pip3 install wheel virtualenv cython 
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
 python3 -m venv venv
@@ -33,6 +33,10 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 
 * parallellize requests when fetching data
 * merge tasks and tracks
+
+### Misc
+
+* remove cython from fast install when cartopy is not needed anymore
 
 ## Requirements
 

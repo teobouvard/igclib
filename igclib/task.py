@@ -62,12 +62,15 @@ class Task():
         
 
         # 1. Draw the map background
+        plt.ioff()
         ax = plt.axes(projection=ccrs.PlateCarree())
         ax.coastlines()
         ax.plot(fast_lons, fast_lats, alpha=0.5, transform=ccrs.PlateCarree())
-        ax.scatter(lons, lats, s=rads, alpha=0.5, transform=ccrs.PlateCarree())
+        #ax.scatter(lons, lats, s=rads, alpha=0.5, transform=ccrs.PlateCarree())
         ax.scatter(pos['lon'], pos['lat'], s= 10, transform=ccrs.PlateCarree())
-        plt.show()
+        plt.pause(0.00001)
+        plt.clf()
+        #plt.show()
 
 
     def validate(self, flight):
@@ -75,15 +78,14 @@ class Task():
         start_passed = False
         
         for timestamp, point in flight.points.items():
-
             position = (point['lat'], point['lon'])
-            #if timestamp > time(16, 3, 10):
-                #self.debug_plot(point, self.waypoints, remaining_waypoints)
 
             # race has not started yet
             if timestamp < self.start:
                 flight.goal_distances[timestamp] = self.optimized_distance
                 continue
+
+            self.debug_plot(point, self.waypoints, remaining_waypoints)
 
             # race has started, checking for start validation
             if start_passed == False:
