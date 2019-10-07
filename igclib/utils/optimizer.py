@@ -18,29 +18,31 @@ def get_offset(wpt, heading, dist):
     return dict(lat = offset['lat2'], lon = offset['lon2'], radius=wpt['radius'])
 
 def get_fast_waypoints(position, waypoints):
-    # Pushing current position as a fast waypoint
+    # Pushing current position as a fast waypoint, initializing current distance at zero
     fast_waypoints = [position]
     optimized_distance = 0
 
+    # if only one waypoint left, go in a straight line
     if len(waypoints) < 2:
         fast_waypoints.append(waypoints[-1])
         optimized_distance += distance((position['lat'], position['lon']), (waypoints[-1]['lat'], waypoints[-1]['lon'])).meters
         return optimized_distance, fast_waypoints
 
     else:
-        # Looping turnpoints
+        # consider your position (one) the next two turnpoints (two, three)
         for two, three in zip(waypoints[:], waypoints[1:]):
             one = fast_waypoints[-1]
 
+            in_heading = get_heading(two, one)
             in_distance = distance((one['lat'], one['lon']), (two['lat'], two['lon'])).meters
             out_distance = distance((two['lat'], two['lon']), (three['lat'], three['lon'])).meters
 
-            in_heading = get_heading(two, one)
-
+            # two next turnpoints are identical (can't test for equality because 0.1+0.2!=0.3)
             if out_distance < MIN_TURNPOINTS_DISTANCE:
                 next_target = find_next_not_concentric(two, waypoints)
                 out_heading = get_heading(two, next_target)
                 angle = out_heading - in_heading
+                # we want to go at half the median angle to go out, half the median angle to go back in
                 leg_heading = in_heading + 0.25 * angle
                 leg_distance = two['radius']
             else:
@@ -50,9 +52,7 @@ def get_fast_waypoints(position, waypoints):
                 leg_distance = (2 * in_distance * out_distance * math.cos(math.radians(angle * 0.5))) / (in_distance + out_distance)
                 
             min_leg_distance = min(leg_distance, two['radius'])
-
             fast_wp = get_offset(two, leg_heading, min_leg_distance)
-            
             fast_waypoints.append(fast_wp)
             optimized_distance += distance((one['lat'], one['lon']), (fast_wp['lat'], fast_wp['lon'])).meters
 
@@ -60,6 +60,6 @@ def get_fast_waypoints(position, waypoints):
 
 def find_next_not_concentric(wpt, waypoints):
     index = waypoints.index(wpt)
-    while wpt['lat'] == waypoints[index]['lat'] and wpt['lon'] == waypoints[index]['lon'] and index < len(waypoints) -1:
+    while wpt['lat'] == waypoints[index]['lat'] and wpt['lon'] == waypoints[index]['lon'] and index < len(waypoints)-1:
         index += 1
     return waypoints[index]
