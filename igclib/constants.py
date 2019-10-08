@@ -4,6 +4,7 @@ distance_computation = distance.great_circle
 #distance_computation = distance.vincenty -> slower
 #distance_computation = distance.distance -> slowest
 
+### NUMERICAL APPROXIMATION 
 MIN_TURNPOINTS_DISTANCE = 1 # meters
 
 ### IGC FILE CONSTANTS ###

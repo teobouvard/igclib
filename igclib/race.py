@@ -41,9 +41,9 @@ class Race():
 
     def __str__(self):
         s = '{} pilots - '.format(self.n_pilots)
-        s += '{}km task - '.format(len(self.task))
+        s += '{}m task - '.format(len(self.task))
         s += 'start at {} - '.format(self.task.start)
-        s += 'deadline at {} - '.format(self.task.stop)
+        s += 'deadline at {}'.format(self.task.stop)
         return s
     
 

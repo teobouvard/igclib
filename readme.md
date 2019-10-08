@@ -29,10 +29,15 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 * write native code for distance calculation
 * remember entry start check will not work without a turnpoint inside
 
+### Optimizer
+
+* when going out of a concentric turnpoint, optimized point depends on the distance of the pilot from the center, and not only of the angles
+
 ### Data collection
 
 * parallellize requests when fetching data
 * merge tasks and tracks
+
 
 ### Misc
 

@@ -35,7 +35,7 @@ class Task():
         self.waypoints = task.waypoints
         self.ess = task.ess
         self.optimized_distance = optimize(self.takeoff, self.waypoints)[0]
-        self.debug_plot(self.takeoff, self.waypoints, self.waypoints)
+        #self.debug_plot(self.takeoff, self.waypoints, self.waypoints)
 
 
     def timerange(self, start=None, stop=None):
@@ -83,10 +83,11 @@ class Task():
 
             # race has not started yet
             if timestamp < self.start:
-                flight.points[timestamp]['goal_dist'] = self.optimized_distance
+                flight.points[timestamp]['goal_dist'] = optimize(point, remaining_waypoints)[0]
                 continue
-
-            #self.debug_plot(point, self.waypoints, remaining_waypoints)
+            
+            if len(remaining_waypoints) < 6:
+                self.debug_plot(point, self.waypoints, remaining_waypoints)
 
             # race has started, checking for start validation
             if start_passed == False:
@@ -96,7 +97,7 @@ class Task():
                 if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss) or self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
                     start_passed = True
                     del remaining_waypoints[0]
-                    print('START {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
+                    logging.info('START {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
 
                 continue
                 
@@ -106,10 +107,10 @@ class Task():
 
                 if self.is_in(position, remaining_waypoints[0]) and not self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]):
                     del remaining_waypoints[0]
-                    print('IN {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
+                    logging.info('IN {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
                 elif self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]) and not self.is_in(position, remaining_waypoints[0]):
                     del remaining_waypoints[0]
-                    print('OUT {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
+                    logging.info('OUT {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
 
             # only one turnpoint remaining, check for goal
             elif len(remaining_waypoints) == 1:
@@ -117,7 +118,7 @@ class Task():
 
                 if self.is_in(position, remaining_waypoints[0]):
                     del remaining_waypoints[0]
-                    print('GOAL {}'.format(timestamp))
+                    logging.info('GOAL {}'.format(timestamp))
 
             # in goal, fill zeros until landing
             else:
@@ -125,7 +126,7 @@ class Task():
 
 
     def __len__(self):
-        return int(self.optimized_distance/1000)
+        return int(self.optimized_distance)
 
     @staticmethod
     def is_in(pos, wpt):
