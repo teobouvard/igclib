@@ -18,7 +18,7 @@ def get_offset(wpt, heading, dist):
     return dict(lat = offset['lat2'], lon = offset['lon2'], radius=wpt['radius'])
 
 def get_fast_waypoints(position, waypoints):
-    # Pushing current position as a fast waypoint, initializing current distance at zero
+    # pushing current position as a fast waypoint, initializing cumulative distance at zero
     fast_waypoints = [position]
     optimized_distance = 0
 
@@ -29,7 +29,7 @@ def get_fast_waypoints(position, waypoints):
         return optimized_distance, fast_waypoints
 
     else:
-        # consider the pilot position (one) and the next two turnpoints (two, three)
+        # consider the last optimized point (one) and the next two turnpoints (two, three)
         for two, three in zip(waypoints[:], waypoints[1:]):
             one = fast_waypoints[-1]
 
@@ -42,12 +42,16 @@ def get_fast_waypoints(position, waypoints):
                 next_target, nb_concentric = find_next_not_concentric(two, waypoints)
                 out_heading = get_heading(two, next_target)
                 angle = out_heading - in_heading
-                # split the angle in the number of concentric in/out
-                if nb_concentric % 2 == 0:
+                leg_distance = two['radius']
+                # as the leg heading depends on the pilot position when exiting a concentric turnpoint
+                # we introduce a coefficient 'dist_ratio' to balance angle splitting in favor of the pilot
+                # when he is close to the cylinder
+                if nb_concentric % 2 == 1:
                     leg_heading = in_heading + (0.5/nb_concentric) * angle
                 else:
-                    leg_heading = in_heading + (0.5/(nb_concentric-1)) * angle
-                leg_distance = two['radius']
+                    in_distance = distance((one['lat'], one['lon']), (two['lat'], two['lon'])).meters
+                    dist_ratio = 1 - (in_distance / two['radius'])
+                    leg_heading = in_heading + pow(dist_ratio, 2) * (0.5/nb_concentric) * angle
             else:
                 out_heading = get_heading(two, three)
                 angle = out_heading - in_heading
@@ -66,4 +70,4 @@ def find_next_not_concentric(wpt, waypoints):
     counter = 0
     while wpt['lat'] == waypoints[index+counter]['lat'] and wpt['lon'] == waypoints[index+counter]['lon'] and index+counter < len(waypoints)-1:
         counter += 1
-    return waypoints[index+counter], counter+1
+    return waypoints[index+counter], counter

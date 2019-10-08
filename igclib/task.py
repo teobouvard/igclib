@@ -86,8 +86,8 @@ class Task():
                 flight.points[timestamp]['goal_dist'] = optimize(point, remaining_waypoints)[0]
                 continue
             
-            if len(remaining_waypoints) < 6:
-                self.debug_plot(point, self.waypoints, remaining_waypoints)
+            #if len(remaining_waypoints) < 6:
+                #self.debug_plot(point, self.waypoints, remaining_waypoints)
 
             # race has started, checking for start validation
             if start_passed == False:
