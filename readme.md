@@ -15,6 +15,22 @@ pip3 install -r requirements.txt
 
 make animate
 ```
+## Usage
+
+```{shell}
+usage: main.py [-h] --task TASK --flights FLIGHTS --pilot PILOT
+               [--n_jobs N_JOBS]
+
+igclib - dev
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --task TASK        Task file path
+  --flights FLIGHTS  IGC tracks directory path
+  --pilot PILOT      Pilot ID of selected pilot
+  --n_jobs N_JOBS    Number of cores used
+```
+
 
 ## Data collection
 
