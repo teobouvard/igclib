@@ -18,5 +18,5 @@ setup(name='igclib',
     license='MIT',
     packages=find_packages(include=['igclib']),
     install_requires=requirements(),
-    scripts=['igclib/bin/race_exporter.py'],
+    scripts=['igclib/bin/race_export'],
     zip_safe=True)

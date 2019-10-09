@@ -22,7 +22,7 @@ pip3 install -e .
 From an executable script
 
 ```console
-python3 igclib/bin/race_exporter.py --task test/tasks/task0.xctsk --flights test/large_tracks  --n_jobs -1 --export_path data/race0.pkl
+race_export --task test/tasks/task0.xctsk --flights test/large_tracks  --n_jobs -1 --export_path data/race0.pkl
 ```
 
 or from a Python shell
@@ -50,6 +50,7 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 * add other features to ```pilot_features()```
 * write native code for distance calculation
 * remember entry start check will not work without a turnpoint inside
+* add tests
 
 ### Optimizer
 

@@ -11,3 +11,6 @@ log.txt
 
 # Python egg metadata, regenerated from source files by setuptools.
 /*.egg-info
+
+# Tests
+.pytest*

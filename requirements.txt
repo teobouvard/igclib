@@ -2,6 +2,9 @@
 lxml
 beautifulsoup4
 
+# tests
+pytest
+
 # progress bar
 tqdm
 
