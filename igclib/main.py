@@ -8,7 +8,7 @@ from pympler import asizeof
 
 from race import Race
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(format= '%(levelname)s: %(message)s', level=logging.INFO)
 
 def animate_features(features):
     fig, (ax1, ax2) = plt.subplots(1, 2, tight_layout=True)
@@ -60,9 +60,9 @@ if __name__ == '__main__':
     r =  Race(TRACKS_DIR, TASK_FILE)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
-    animate_features(features)
+    #animate_features(features)
 
-    #print(asizeof.asizeof(r) / 10e6)
+    print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
     #times = list(r.flights[PILOT_ID].points.keys())
     #dist = list(point['goal_dist'] for point in r.flights[PILOT_ID].points.values())
     #plt.plot(times, dist)

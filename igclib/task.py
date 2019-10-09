@@ -109,10 +109,10 @@ class Task():
 
                 if self.is_in(position, remaining_waypoints[0]) and not self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]):
                     del remaining_waypoints[0]
-                    logging.info('IN {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
+                    logging.info('IN {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
                 elif self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]) and not self.is_in(position, remaining_waypoints[0]):
                     del remaining_waypoints[0]
-                    logging.info('OUT {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
+                    logging.info('OUT OR ESS {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
 
             # only one turnpoint remaining, check for goal
             elif len(remaining_waypoints) == 1:

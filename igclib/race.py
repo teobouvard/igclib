@@ -1,4 +1,5 @@
 import logging
+import multiprocessing
 import os
 from datetime import time
 from glob import glob
@@ -22,8 +23,9 @@ class Race():
         self.task = Task(task_file)
         self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
         
-        for flight in tqdm(self.flights.values(), desc='validating flights'):
-            self.task.validate(flight)
+        with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
+            p.map(self.task.validate, self.flights.values())
+
 
         # cache pilot features to compute them only once for each pilot
         # maybe this is not a good idea ?
@@ -68,7 +70,7 @@ class Race():
         
         for timestamp, snapshot in tqdm(self.snapshots(start, stop), desc='extracting features', total=len(self)):
             if pilot_id not in snapshot:
-                logging.info('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
+                logging.debug('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
 
             else:
                 features[timestamp] = PilotFeatures(pilot_id, timestamp, snapshot)
