@@ -7,9 +7,9 @@ from glob import glob
 
 from tqdm import tqdm
 
-from flight import Flight
-from pilot_features import PilotFeatures
-from task import Task
+from igclib.model.flight import Flight
+from igclib.model.pilot_features import PilotFeatures
+from igclib.model.task import Task
 
 
 class Race():

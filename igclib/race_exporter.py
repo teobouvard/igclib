@@ -1,6 +1,6 @@
 import argparse
 
-from race import Race
+from igclib.model.race import Race
 
 
 def argument_parser():

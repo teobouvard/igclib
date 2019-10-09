@@ -8,7 +8,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from pympler import asizeof
 
-from race import Race
+from igclib.model.race import Race
 
 logging.basicConfig(filename='log.txt', format= '%(levelname)s: %(message)s', level=logging.INFO)
 

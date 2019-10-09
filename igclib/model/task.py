@@ -1,9 +1,9 @@
 import logging
 from datetime import datetime, time, timedelta
-from parser import xctrack
+from igclib.parser import xctrack
 
-from constants import distance_computation as distance
-from utils.optimizer import optimize
+from igclib.constants import distance_computation as distance
+from igclib.utils.optimizer import optimize
 
 ## DEBUG
 import matplotlib.pyplot as plt
@@ -14,10 +14,7 @@ import math
 # fast distance computations do not validate waypoints without tolerances
 TOLERANCE = 20
 
-
 class Task():
-
-    optimize 
 
     def __init__(self, task_file, task_type='xctrack'):
         if task_type == 'xctrack':

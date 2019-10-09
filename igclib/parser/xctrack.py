@@ -2,7 +2,7 @@ import json
 import time as timeparse
 from datetime import time
 
-from constants import (XC_GOAL, XC_GOAL_DEADLINE, XC_SSS, XC_SSS_DIRECTION,
+from igclib.constants import (XC_GOAL, XC_GOAL_DEADLINE, XC_SSS, XC_SSS_DIRECTION,
                        XC_SSS_TIMEGATES, XC_TIME_FORMAT, XC_TURNPOINTS,
                        XC_TURNPOINTS_RADIUS, XC_TYPE, XC_WAYPOINT,
                        XC_WAYPOINT_ALT, XC_WAYPOINT_DESC, XC_WAYPOINT_LAT,

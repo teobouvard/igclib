@@ -1,4 +1,4 @@
-animate:
+dev:
 	python3 igclib/main.py --race data/race.pkl --pilot 0035
 
 export:

@@ -1,6 +1,6 @@
 from geographiclib.geodesic import Geodesic 
-from constants import distance_computation as distance
-from constants import MIN_TURNPOINTS_DISTANCE
+from igclib.constants import distance_computation as distance
+from igclib.constants import MIN_TURNPOINTS_DISTANCE
 import math
 
 # Adapted from Julien Garcia's optimizer
