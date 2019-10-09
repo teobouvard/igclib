@@ -21,6 +21,7 @@ jobs:
       run: |
         sudo apt-get install python3-dev libproj-dev proj-data proj-bin libgeos-dev
         python -m pip install --upgrade pip
+        pip3 install wheel
         pip install .
     - name: Lint with flake8
       run: |
