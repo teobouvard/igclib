@@ -43,15 +43,7 @@ def get_fast_waypoints(position, waypoints):
                 out_heading = get_heading(two, next_target)
                 angle = out_heading - in_heading
                 leg_distance = two['radius']
-                # as the leg heading depends on the pilot position when exiting a concentric turnpoint
-                # we introduce a coefficient 'dist_ratio' to balance angle splitting in favor of the pilot
-                # when he is close to the cylinder
-                if nb_concentric % 2 == 1:
-                    leg_heading = in_heading + (0.5/nb_concentric) * angle
-                else:
-                    in_distance = distance((one['lat'], one['lon']), (two['lat'], two['lon'])).meters
-                    dist_ratio = 1 - (in_distance / two['radius'])
-                    leg_heading = in_heading + pow(dist_ratio, 2) * (0.5/nb_concentric) * angle
+                leg_heading = in_heading# + (0.5/nb_concentric) * angle
             else:
                 out_heading = get_heading(two, three)
                 angle = out_heading - in_heading
