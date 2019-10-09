@@ -11,25 +11,11 @@ git clone https://github.com/teobouvard/igclib.git
 cd igclib
 python3 -m venv venv
 source venv/bin/activate
-pip3 install -r requirements.txt
+pip3 install .
 
-make animate
+make dev
 ```
 ## Usage
-
-```{shell}
-usage: main.py [-h] --task TASK --flights FLIGHTS --pilot PILOT
-               [--n_jobs N_JOBS]
-
-igclib - dev
-
-optional arguments:
-  -h, --help         show this help message and exit
-  --task TASK        Task file path
-  --flights FLIGHTS  IGC tracks directory path
-  --pilot PILOT      Pilot ID of selected pilot
-  --n_jobs N_JOBS    Number of cores used
-```
 
 
 ## Data collection
