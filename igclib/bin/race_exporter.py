@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 
 from igclib.model.race import Race

@@ -14,7 +14,7 @@ from igclib.model.task import Task
 
 class Race():
 
-    def __init__(self, tracks_dir=None, task_file=None, n_jobs=1, path=None):
+    def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None):
 
         if path is not None:
             self.load(path)
