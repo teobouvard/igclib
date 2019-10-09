@@ -1,5 +1,7 @@
 import argparse
 import logging
+import multiprocessing
+multiprocessing.set_start_method('spawn', True)
 
 import numpy as np
 import seaborn as sns
@@ -41,9 +43,9 @@ def animate_features(features):
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='igclib')
-    parser.add_argument('--task', type=str, help='Task file path')    
-    parser.add_argument('--flights', type=str, help='IGC tracks directory path')
-    parser.add_argument('--pilot', type=str, help='Pilot ID of selected pilot')
+    parser.add_argument('--task', required=True, type=str, help='Task file path')    
+    parser.add_argument('--flights', required=True, type=str, help='IGC tracks directory path')
+    parser.add_argument('--pilot', required=True, type=str, help='Pilot ID of selected pilot')
 
     return parser
 
@@ -60,7 +62,7 @@ if __name__ == '__main__':
     r =  Race(TRACKS_DIR, TASK_FILE)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
-    #animate_features(features)
+    animate_features(features)
 
     print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
     #times = list(r.flights[PILOT_ID].points.keys())

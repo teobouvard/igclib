@@ -6,6 +6,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/igclib/main.py",
+            "args": ["--task", "test/tasks/task0.xctsk", "--flights", "test/one_track", "--pilot", "0035"],
             "console": "integratedTerminal"
         }
     ]

@@ -99,7 +99,7 @@ class Task():
                 if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss) or self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
                     start_passed = True
                     del remaining_waypoints[0]
-                    logging.info('START {}, {} remaining'.format(timestamp, len(remaining_waypoints)))
+                    logging.info('START {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
 
                 continue
                 
