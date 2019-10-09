@@ -12,17 +12,35 @@ cd igclib
 python3 -m venv venv
 source venv/bin/activate
 pip3 install -e .
-
-make export
-make dev
 ```
-## Usage
+---
 
+## Basic usage
+
+### Save a Race to disk
+
+From an executable script
+
+```console
+python3 igclib/bin/race_exporter.py --task test/tasks/task0.xctsk --flights test/large_tracks  --n_jobs -1 --export_path data/race0.pkl
+```
+
+or from a Python shell
+
+```{python}
+>>> from igclib.model.race import Race
+>>> r =  Race(tracks_dir='test/larg_tracks', task_file='test/tasks/task0.xctsk', n_jobs=-1)
+>>> r.save('data/race0.pkl')
+```
+
+---
 
 ## Data collection
 
 To fetch the IGC tracks, run `python3 crawlers/crawler_tracks.py`  
 To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
+
+---
 
 ## Todo
 
@@ -43,10 +61,11 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 * parallellize requests when fetching data
 * merge tasks and tracks
 
-
 ### Misc
 
 * remove cython from fast install when cartopy is not needed anymore
+
+---
 
 ## Requirements
 

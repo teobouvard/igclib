@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import os
 
 from igclib.model.race import Race
 
@@ -24,6 +25,7 @@ if __name__ == '__main__':
     TRACKS_DIR = args.flights
     N_JOBS = args.n_jobs
     RACE_PATH = args.export_path
+    os.makedirs(RACE_PATH, exist_ok=True)
     
     r =  Race(TRACKS_DIR, TASK_FILE, N_JOBS)
     r.save(RACE_PATH)
