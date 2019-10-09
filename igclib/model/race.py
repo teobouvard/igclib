@@ -87,6 +87,7 @@ class Race():
             if self[timestamp] != {}:
                 yield timestamp, self[timestamp]
 
+
     def save(self, path):
         """
         Save the race instance to a pickle file
@@ -94,6 +95,7 @@ class Race():
         with open(path, 'wb') as f:
             pickle.dump(self.__dict__, f)
     
+
     def load(self, path):
         """
         Load the race instance from a pickle file

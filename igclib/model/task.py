@@ -26,7 +26,8 @@ class Task():
             raise NotImplementedError('{} tasks are not yet supported'.format(task_type))
 
         self.start = task.start
-        self.stop = task.stop
+        self.stop = task.stop if task.stop > self.start else time(23, 59, 59)
+
         self.takeoff = task.takeoff
         self.sss = task.sss
         self.waypoints = task.waypoints
@@ -38,8 +39,6 @@ class Task():
     def timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
         stop = stop if stop is not None else self.stop
-        if stop < start:
-            start, stop = stop, start
 
         # all this mess is necessary because you can't add datetime.time objects, which are used by aerofiles parser
         current = datetime(1, 1, 1, start.hour, start.minute, start.second)

@@ -7,17 +7,21 @@ import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
 from pympler import asizeof
+from datetime import time
 
 from igclib.model.race import Race
 
 logging.basicConfig(filename='log.txt', format= '%(levelname)s: %(message)s', level=logging.INFO)
 
-def animate_features(features):
+def animate_features(race, features):
     fig, (ax1, ax2) = plt.subplots(1, 2, tight_layout=True)
     plt.ioff()
 
     for timestamp, feature in features.items():
-        timestamp = str(timestamp)
+        if timestamp < race.task.start:
+            continue
+
+        t = str(timestamp)
         altitudes = np.array(feature.group_relation.delta_altitude)
         goal_distances = np.array(feature.group_relation.delta_distance)
         grs = np.array(feature.group_relation.glide_ratio)  
@@ -27,14 +31,14 @@ def animate_features(features):
         in_front = goal_distances[goal_distances > 0].size
         in_control = grs[grs < 10].size
 
-        logging.info('race time : {} - {} pilots ({} below, {} in control, {} in front) '.format(timestamp, n_pilots, pilots_below, in_control, in_front))
+        logging.info('race time : {} - {} pilots ({} below, {} in control, {} in front) '.format(t, n_pilots, pilots_below, in_control, in_front))
         
         ax1.axhline(0, 0, 1)
-        sns.distplot(altitudes, ax=ax1, vertical=True)
+        sns.distplot(altitudes, ax=ax1, vertical=True, bins=10)
         ax1.invert_yaxis()
 
         ax2.axvline(0, 0, 1)
-        sns.distplot(goal_distances, ax=ax2, vertical=False)
+        sns.distplot(goal_distances, ax=ax2, vertical=False, bins=10)
         #ax2.invert_yaxis()
 
         plt.pause(0.01)
@@ -60,7 +64,7 @@ if __name__ == '__main__':
     r =  Race(path=RACE_FILE)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
-    animate_features(features)
+    animate_features(r, features)
 
     #print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
     #times = list(r.flights[PILOT_ID].points.keys())
