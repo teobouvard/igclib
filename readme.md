@@ -11,8 +11,9 @@ git clone https://github.com/teobouvard/igclib.git
 cd igclib
 python3 -m venv venv
 source venv/bin/activate
-pip3 install .
+pip3 install -e .
 
+make export
 make dev
 ```
 ## Usage
