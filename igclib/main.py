@@ -28,15 +28,16 @@ def animate_features(features):
         logging.info('race time : {} - {} pilots ({} below, {} in control, {} in front) '.format(timestamp, n_pilots, pilots_below, in_control, in_front))
         
         ax1.axhline(0, 0, 1)
-        ax1 = sns.distplot(altitudes, vertical=True)
+        sns.distplot(altitudes, ax=ax1, vertical=True)
         ax1.invert_yaxis()
 
-        ax2.axhline(0, 0, 1)
-        ax2 = sns.distplot(goal_distances, vertical=True)
-        ax2.invert_yaxis()
+        ax2.axvline(0, 0, 1)
+        sns.distplot(goal_distances, ax=ax2, vertical=False)
+        #ax2.invert_yaxis()
 
         plt.pause(0.01)
-        #plt.clf()
+        ax1.cla()
+        ax2.cla()
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='igclib')
