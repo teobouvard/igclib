@@ -1,7 +1,7 @@
 import argparse
 import logging
 import multiprocessing
-multiprocessing.set_start_method('spawn', True)
+multiprocessing.set_start_method('fork', True)
 
 import numpy as np
 import seaborn as sns
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     r =  Race(TRACKS_DIR, TASK_FILE)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
-    animate_features(features)
+    #animate_features(features)
 
     print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
     #times = list(r.flights[PILOT_ID].points.keys())

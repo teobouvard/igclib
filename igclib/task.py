@@ -126,6 +126,59 @@ class Task():
             else:
                 flight.points[timestamp]['goal_dist'] = 0
 
+    def validate_parallel(self, flight):
+        remaining_waypoints = self.waypoints.copy()
+        start_passed = False
+        goal_distances = {}
+        
+        for timestamp, point in flight.points.items():
+            position = (point['lat'], point['lon'])
+
+            # race has not started yet
+            if timestamp < self.start:
+                goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
+                continue
+            
+            #if len(remaining_waypoints) < 6:
+                #self.debug_plot(point, self.waypoints, remaining_waypoints)
+
+            # race has started, checking for start validation
+            if start_passed == False:
+                goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
+
+                # this will not work for start without a turnpoint inside !
+                if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss) or self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
+                    start_passed = True
+                    del remaining_waypoints[0]
+                    logging.info('START {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
+
+                continue
+                
+            # at least two turnpoints remaining, check for concentric ones
+            if len(remaining_waypoints) > 1:
+                goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
+
+                if self.is_in(position, remaining_waypoints[0]) and not self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]):
+                    del remaining_waypoints[0]
+                    logging.info('IN {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
+                elif self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]) and not self.is_in(position, remaining_waypoints[0]):
+                    del remaining_waypoints[0]
+                    logging.info('OUT OR ESS {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
+
+            # only one turnpoint remaining, check for goal
+            elif len(remaining_waypoints) == 1:
+                goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
+
+                if self.is_in(position, remaining_waypoints[0]):
+                    del remaining_waypoints[0]
+                    logging.info('GOAL {}'.format(timestamp))
+
+            # in goal, fill zeros until landing
+            else:
+                goal_distances[timestamp] = 0
+        
+        return flight.pilot_id, goal_distances
+
 
     def __len__(self):
         return int(self.optimized_distance)

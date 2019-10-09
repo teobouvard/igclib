@@ -25,7 +25,12 @@ class Race():
         
         if parallel == True:
             with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
-                p.map(self.task.validate, self.flights.values())
+                results = p.map(self.task.validate_parallel, self.flights.values())#, chunksize = self.n_pilots/multiprocessing.cpu_count())
+                for result in results:
+                    pilot_id = result[0]
+                    goal_distances = result[1]
+                    for timestamp, point in self.flights[pilot_id].points.items():
+                        point['goal_dist'] = goal_distances[timestamp]
         else:
             for flight in self.flights.values():
                 self.task.validate(flight)
