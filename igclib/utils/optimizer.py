@@ -43,7 +43,7 @@ def get_fast_waypoints(position, waypoints):
                 out_heading = get_heading(two, next_target)
                 angle = out_heading - in_heading
                 leg_distance = two['radius']
-                leg_heading = in_heading# + (0.5/nb_concentric) * angle
+                leg_heading = in_heading # + (0.5/nb_concentric) * angle
             else:
                 out_heading = get_heading(two, three)
                 angle = out_heading - in_heading

@@ -12,7 +12,8 @@ cd igclib
 python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
-python3 igclib/main.py
+
+make animate
 ```
 
 ## Data collection
@@ -24,7 +25,7 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 
 ### Library
 
-* task validator with waypoints validation times
+* safety check on task and tracks 
 * add other features to ```pilot_features()```
 * write native code for distance calculation
 * remember entry start check will not work without a turnpoint inside
@@ -32,6 +33,7 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 ### Optimizer
 
 * when going out of a concentric turnpoint, optimized point depends on the distance of the pilot from the center, and not only of the angles
+* is a real optimizer necessary ? only need a continuous distance function from start to goal
 
 ### Data collection
 

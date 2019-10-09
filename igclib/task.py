@@ -41,6 +41,8 @@ class Task():
     def timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
         stop = stop if stop is not None else self.stop
+        if stop < start:
+            start, stop = stop, start
 
         # all this mess is necessary because you can't add datetime.time objects, which are used by aerofiles parser
         current = datetime(1, 1, 1, start.hour, start.minute, start.second)

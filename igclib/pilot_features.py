@@ -1,8 +1,6 @@
 from constants import IGC_ALTITUDE
 from group_relation import GroupRelation
 
-from utils.optimizer import optimize
-
 class PilotFeatures():
 
     def __init__(self, pilot_id, timestamp, snapshot):

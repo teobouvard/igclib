@@ -11,7 +11,6 @@ class Flight():
     def __init__(self, track_file):
 
         self.pilot_id = os.path.basename(track_file).split('.')[0]
-        self.goal_distances = {}
         
         try:
             with open(track_file, 'r') as f:

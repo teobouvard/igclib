@@ -1,7 +1,5 @@
 import logging
-import math
 import os
-import sys
 from datetime import time
 from glob import glob
 
@@ -18,10 +16,13 @@ class Race():
 
         tracks = glob(os.path.join(tracks_dir, '*.igc'))
         self.n_pilots = len(tracks)
+        if self.n_pilots < 2:
+            raise ValueError('Only one pilot, you call that a race ?')
+        
         self.task = Task(task_file)
         self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
         
-        for pilot, flight in tqdm(self.flights.items(), desc='validating flights'):
+        for flight in tqdm(self.flights.values(), desc='validating flights'):
             self.task.validate(flight)
 
         # cache pilot features to compute them only once for each pilot
