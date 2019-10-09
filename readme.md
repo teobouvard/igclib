@@ -1,5 +1,7 @@
 # igclib
 
+[![Actions Status](https://github.com/teobouvard/igclib/workflows/build/badge.svg)](https://github.com/teobouvard/igclib/actions)
+
 ## Get started
 
 ```{shell}
@@ -70,4 +72,4 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 
 ## Requirements
 
-* Python 3.6 or higher
+* Python 3.5 or higher
