@@ -10,7 +10,7 @@ from pympler import asizeof
 
 from race import Race
 
-logging.basicConfig(format= '%(levelname)s: %(message)s', level=logging.INFO)
+logging.basicConfig(filename='log.txt', format= '%(levelname)s: %(message)s', level=logging.INFO)
 
 def animate_features(features):
     fig, (ax1, ax2) = plt.subplots(1, 2, tight_layout=True)
@@ -46,6 +46,7 @@ def argument_parser():
     parser.add_argument('--task', required=True, type=str, help='Task file path')    
     parser.add_argument('--flights', required=True, type=str, help='IGC tracks directory path')
     parser.add_argument('--pilot', required=True, type=str, help='Pilot ID of selected pilot')
+    parser.add_argument('--n_jobs', type=int, default=1, help='Number of cores used')
 
     return parser
 
@@ -58,8 +59,9 @@ if __name__ == '__main__':
     TASK_FILE = args.task
     TRACKS_DIR = args.flights
     PILOT_ID = args.pilot
+    N_JOBS = args.n_jobs
     
-    r =  Race(TRACKS_DIR, TASK_FILE)
+    r =  Race(TRACKS_DIR, TASK_FILE, n_jobs=N_JOBS)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
     #animate_features(features)

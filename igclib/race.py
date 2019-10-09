@@ -13,7 +13,7 @@ from task import Task
 
 class Race():
 
-    def __init__(self, tracks_dir, task_file, parallel=True):
+    def __init__(self, tracks_dir, task_file, n_jobs=1):
 
         tracks = glob(os.path.join(tracks_dir, '*.igc'))
         self.n_pilots = len(tracks)
@@ -23,17 +23,14 @@ class Race():
         self.task = Task(task_file)
         self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
         
-        if parallel == True:
-            with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
-                results = p.map(self.task.validate_parallel, self.flights.values())#, chunksize = self.n_pilots/multiprocessing.cpu_count())
-                for result in results:
-                    pilot_id = result[0]
-                    goal_distances = result[1]
-                    for timestamp, point in self.flights[pilot_id].points.items():
-                        point['goal_dist'] = goal_distances[timestamp]
-        else:
-            for flight in self.flights.values():
-                self.task.validate(flight)
+        n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
+        with multiprocessing.Pool(n_jobs) as p:
+            for result in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots):
+                pilot_id = result[0]
+                goal_distances = result[1]
+                for timestamp, point in self.flights[pilot_id].points.items():
+                    point['goal_dist'] = goal_distances[timestamp]
+
 
 
         # cache pilot features to compute them only once for each pilot
