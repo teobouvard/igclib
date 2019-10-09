@@ -3,3 +3,4 @@ __pycache__
 venv
 readme.pdf
 log.txt
+*.pkl

@@ -42,11 +42,9 @@ def animate_features(features):
         ax2.cla()
 
 def argument_parser():
-    parser = argparse.ArgumentParser(description='igclib')
-    parser.add_argument('--task', required=True, type=str, help='Task file path')    
-    parser.add_argument('--flights', required=True, type=str, help='IGC tracks directory path')
+    parser = argparse.ArgumentParser(description='igclib - dev module')
+    parser.add_argument('--race', required=True, type=str, help='Path to the pickled race')
     parser.add_argument('--pilot', required=True, type=str, help='Pilot ID of selected pilot')
-    parser.add_argument('--n_jobs', type=int, default=1, help='Number of cores used')
 
     return parser
 
@@ -56,17 +54,15 @@ if __name__ == '__main__':
     parser = argument_parser()
     args = parser.parse_args()
 
-    TASK_FILE = args.task
-    TRACKS_DIR = args.flights
+    RACE_FILE = args.race
     PILOT_ID = args.pilot
-    N_JOBS = args.n_jobs
     
-    r =  Race(TRACKS_DIR, TASK_FILE, n_jobs=N_JOBS)
+    r =  Race(path=RACE_FILE)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
-    #animate_features(features)
+    animate_features(features)
 
-    print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
+    #print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
     #times = list(r.flights[PILOT_ID].points.keys())
     #dist = list(point['goal_dist'] for point in r.flights[PILOT_ID].points.values())
     #plt.plot(times, dist)
