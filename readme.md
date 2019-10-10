@@ -5,12 +5,9 @@
 ## Get started
 
 ```{shell}
-pip3 install wheel virtualenv
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
-python3 -m venv venv
-source venv/bin/activate
-pip3 install -e .
+pip install --user -e .
 ```
 ---
 
