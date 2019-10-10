@@ -17,8 +17,8 @@ pip install --user -e .
 
 From an executable script (installed in your path during pip install)
 
-```console
-race_export --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --export test_data/race.pkl
+```shell
+igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --export test_data/race.pkl
 ```
 
 or from a Python shell
@@ -33,9 +33,17 @@ or from a Python shell
 
 From a Python shell
 
-```{ipython}
+```python
 >>> from igclib.model.race import Race
 >>> r =  Race(path='test_data/race.pkl')
+```
+
+### Get task ingo
+
+From the igclib executable
+
+```shell
+igclib --mode optimize --task test_data/tasks/task.xctsk
 ```
 
 ---

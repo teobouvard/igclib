@@ -26,7 +26,7 @@ class Task():
         self.sss = task.sss
         self.waypoints = task.waypoints
         self.ess = task.ess
-        self.optimized_distance = optimize(self.takeoff, self.waypoints)[0]
+        self.optimized_distance, self.fast_waypoints = optimize(self.takeoff, self.waypoints)
 
     def timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
@@ -91,6 +91,8 @@ class Task():
         
         return flight.pilot_id, goal_distances
 
+    def to_json(self):
+        return str(self.optimized_distance)
 
     def __len__(self):
         return int(self.optimized_distance)
