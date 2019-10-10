@@ -33,7 +33,7 @@ def check(args):
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='igclib')
-    parser.add_argument('--mode', choices=['race', 'optimize', 'crawl'], help='Mode of operation')    
+    parser.add_argument('--mode', choices=['race', 'optimize', 'crawl'], required=True, help='Mode of operation')    
     parser.add_argument('--task', type=str, help='Path to the task file')
     parser.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
     parser.add_argument('--output', type=str, help='Path to which you want to save the output')

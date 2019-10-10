@@ -3,8 +3,8 @@
 dev:
 	python3 igclib/main.py --race test_data/race.pkl --pilot 0035
 
-export:
-	igclib --mode export --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --export test_data/race0.pkl
+race:
+	igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --output test_data/race.pkl
 
 install:
 	pip install --user -e .
@@ -14,3 +14,7 @@ docs: clean-docs
 
 clean-docs:
 	cd docs && make clean
+
+deploy:
+	python3 setup.py sdist bdist_wheel
+	twine upload dist/*

@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, time, timedelta
 
 from igclib.constants import distance_computation as distance
-from igclib.parser import xctrack
+from igclib.parsers import xctrack
 from igclib.utils.optimizer import optimize
 
 # fast distance computations do not validate waypoints without tolerances
