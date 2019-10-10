@@ -51,7 +51,7 @@ igclib --mode optimize --task test_data/tasks/task.xctsk
 From the `igclib` executable
 
 ```shell
-igclib --mode crawl --provider PWCA --year 2019
+igclib --mode crawl --provider PWCA --year 2015
 ```
 
 or from a Python shell
@@ -98,4 +98,4 @@ Work in progress
 
 ## Requirements
 
-* Python 3.5 or higher
+* Python 3.6 or higher (Python 3.5 will NOT work because of await list comprehensions)
