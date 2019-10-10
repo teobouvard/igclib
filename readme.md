@@ -32,6 +32,15 @@ or from a Python shell
 >>> r.save('test_data/race.pkl')
 ```
 
+### Load a Race
+
+From a Python shell
+
+```{python}
+>>> from igclib.model.race import Race
+>>> r =  Race(path='test_data/race.pkl')
+```
+
 ---
 
 ## Data collection
