@@ -15,7 +15,7 @@ pip install --user -e .
 
 ### Save a Race to disk
 
-From an executable script (installed in your path during pip install)
+From the `igclib` executable (installed in your path during pip install)
 
 ```shell
 igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --export test_data/race.pkl
@@ -23,10 +23,10 @@ igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_t
 
 or from a Python shell
 
-```{python}
->>> from igclib.model.race import Race
->>> r =  Race(tracks_dir='test_data/large_tracks', task_file='test_data/tasks/task.xctsk', n_jobs=-1)
->>> r.save('test_data/race.pkl')
+```python
+from igclib.model.race import Race
+r =  Race(tracks_dir='test_data/large_tracks', task_file='test_data/tasks/task.xctsk', n_jobs=-1)
+r.save('test_data/race.pkl')
 ```
 
 ### Load a Race
@@ -34,13 +34,13 @@ or from a Python shell
 From a Python shell
 
 ```python
->>> from igclib.model.race import Race
->>> r =  Race(path='test_data/race.pkl')
+from igclib.model.race import Race
+r =  Race(path='test_data/race.pkl')
 ```
 
 ### Get task optimization info in json
 
-From the igclib executable
+From the `igclib` executable
 
 ```shell
 igclib --mode optimize --task test_data/tasks/task.xctsk
@@ -60,7 +60,6 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 ### Library
 
 * safety check on task and tracks 
-* add other features to ```pilot_features()```
 * write native code for distance calculation
 * remember entry start check will not work without a turnpoint inside
 * add tests
@@ -73,7 +72,6 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 ### Data collection
 
 * parallellize requests when fetching data
-* merge tasks and tracks
 
 ### Misc
 
