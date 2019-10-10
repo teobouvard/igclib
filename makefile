@@ -3,3 +3,6 @@ dev:
 
 export:
 	python3 igclib/bin/race_export --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --export test_data/race0.pkl
+
+install:
+	pip install --user -e .

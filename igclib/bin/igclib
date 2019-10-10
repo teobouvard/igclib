@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 import os
 from datetime import datetime
 
 from igclib.constants import DEFAULT_PROVIDER, MIN_YEAR, TASK_PROVIDERS
+from igclib.crawlers.task_crawler import TaskCrawler
 from igclib.model.race import Race
 from igclib.model.task import Task
-from igclib.crawlers.task_crawler import TaskCrawler
 
 
 def check(args):
@@ -63,4 +64,5 @@ if __name__ == '__main__':
 
     elif args.mode == 'crawl':
         tc = TaskCrawler(args.provider, args.year, args.task)
-        print(tc.crawl())
+        tasks = tc.crawl()
+        print(json.dumps(tasks))
