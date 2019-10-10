@@ -11,6 +11,11 @@ make install
 ```
 ---
 
+## Useful links
+
+[Documentation (in progress)](igclib.rtfd.io)
+
+---
 ## Basic user manual
 
 ### Build a race and save it to disk

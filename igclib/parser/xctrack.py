@@ -26,7 +26,7 @@ class XCTask():
                 self.takeoff = self.wpt_to_dict(waypoint)
                 continue
             
-            if waypoint.get(XC_TYPE, None) == 'SSS':
+            elif waypoint.get(XC_TYPE, None) == 'SSS':
                 self.sss = self.wpt_to_dict(waypoint)
                 self.sss['direction'] = task[XC_SSS][XC_SSS_DIRECTION]
 

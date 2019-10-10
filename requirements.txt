@@ -25,6 +25,7 @@ pympler
 # documentation
 sphinx
 autodoc
+sphinx_rtd_theme
 
 # scientific computing
 numpy

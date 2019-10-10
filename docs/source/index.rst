@@ -5,7 +5,8 @@ igclib documentation
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-    README.rst
+
+.. include:: readme.rst
 
 Model
 -----------------
