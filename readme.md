@@ -38,7 +38,7 @@ From a Python shell
 >>> r =  Race(path='test_data/race.pkl')
 ```
 
-### Get task ingo
+### Get task optimization info in json
 
 From the igclib executable
 

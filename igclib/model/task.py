@@ -1,8 +1,9 @@
+import json
 import logging
 from datetime import datetime, time, timedelta
-from igclib.parser import xctrack
 
 from igclib.constants import distance_computation as distance
+from igclib.parser import xctrack
 from igclib.utils.optimizer import optimize
 
 # fast distance computations do not validate waypoints without tolerances
@@ -26,7 +27,7 @@ class Task():
         self.sss = task.sss
         self.waypoints = task.waypoints
         self.ess = task.ess
-        self.optimized_distance, self.fast_waypoints = optimize(self.takeoff, self.waypoints)
+        self.optimized_distance, self.fast_waypoints, self.leg_distances = optimize(self.takeoff, self.waypoints)
 
     def timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
@@ -92,7 +93,11 @@ class Task():
         return flight.pilot_id, goal_distances
 
     def to_json(self):
-        return str(self.optimized_distance)
+        return json.dumps({
+            'distance':self.optimized_distance, 
+            'fast_waypoints':self.fast_waypoints, 
+            'leg_distances':self.leg_distances
+            })
 
     def __len__(self):
         return int(self.optimized_distance)
