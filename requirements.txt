@@ -25,7 +25,3 @@ numpy
 # distance computation
 geopy
 geographiclib
-
-# maps viz
-cython
-cartopy
