@@ -39,7 +39,7 @@ def argument_parser():
     parser.add_argument('--output', type=str, help='Path to which you want to save the output')
     parser.add_argument('--n_jobs', type=int, default=-1, help='Number of CPU cores used for task validation (-1 to use all cores)')
     parser.add_argument('--provider', choices=TASK_PROVIDERS.keys(), default=DEFAULT_PROVIDER, help='Tasks provider')
-    parser.add_argument('--year', type=int, help='Fetch task from this year')
+    parser.add_argument('--year', type=int, default=datetime.now().year, help='Fetch task from this year')
     
     args = parser.parse_args()
     check(args)
@@ -63,6 +63,6 @@ if __name__ == '__main__':
             print(t.to_json())
 
     elif args.mode == 'crawl':
-        tc = TaskCrawler(args.provider, args.year, args.task)
+        tc = TaskCrawler(args.provider, args.year)
         tasks = tc.crawl()
         print(json.dumps(tasks))

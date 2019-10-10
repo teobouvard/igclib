@@ -1,3 +1,7 @@
+# async I/O
+aiohttp
+asyncio
+
 # HTML parsing for crawlers
 lxml
 beautifulsoup4

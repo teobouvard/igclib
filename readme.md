@@ -7,7 +7,7 @@
 ```{shell}
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
-make install
+pip install --user -e .
 ```
 ---
 
@@ -45,6 +45,23 @@ From the `igclib` executable
 ```shell
 igclib --mode optimize --task test_data/tasks/task.xctsk
 ```
+
+### Get all available tasks
+
+From the `igclib` executable
+
+```shell
+igclib --mode crawl --provider PWCA --year 2019
+```
+
+or from a Python shell
+
+```python
+from igclib.crawlers.task_crawler import TaskCrawler
+tc = TaskCrawler(provider='PWCA', year=2015)
+tasks = tc.crawl()
+```
+
 
 ---
 
