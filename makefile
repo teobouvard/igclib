@@ -9,5 +9,8 @@ export:
 install:
 	pip install --user -e .
 
-docs:
+docs: clean-docs
 	cd docs && make html && python3 -m http.server
+
+clean-docs:
+	cd docs && make clean

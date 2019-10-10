@@ -24,6 +24,7 @@ pympler
 
 # documentation
 sphinx
+autodoc
 
 # scientific computing
 numpy

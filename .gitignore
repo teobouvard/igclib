@@ -2,7 +2,7 @@
 data/
 
 # Documentation build files
-docs/_build
+docs/build
 
 # Virtual environment
 venv

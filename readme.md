@@ -66,7 +66,7 @@ tasks = tc.crawl()
 
 ## Build and view the documentation
 
-Once installed, run `make docs` and go to http://0.0.0.0:8000/_build/html/
+Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 
 ---
 
