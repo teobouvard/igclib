@@ -10,6 +10,7 @@ from tqdm import tqdm
 PWCA__TASKS_URL = 'http://pwca.org/sites/default/files/taskboards/pwctb'
 PWCA_URL = 'http://pwca.org/view/tour/'
 TASK_PATTERN = re.compile('xctask.map.taskjsn = (.*?);')
+TASK_DIR = 'data/tasks'
 
 def generate_tour_urls():
     return [PWCA_URL + str(x) for x in range(2010, 2020)]

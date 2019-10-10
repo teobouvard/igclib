@@ -7,7 +7,7 @@
 ```{shell}
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
-pip install --user -e .
+make install
 ```
 ---
 
