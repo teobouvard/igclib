@@ -9,8 +9,7 @@ from tqdm import tqdm
 
 PWCA__TASKS_URL = 'http://pwca.org/sites/default/files/taskboards/pwctb'
 PWCA_URL = 'http://pwca.org/view/tour/'
-TASK_DIR = 'data/tasks'
-pattern = re.compile('xctask.map.taskjsn = (.*?);')
+TASK_PATTERN = re.compile('xctask.map.taskjsn = (.*?);')
 
 def generate_tour_urls():
     return [PWCA_URL + str(x) for x in range(2010, 2020)]
@@ -35,7 +34,7 @@ def fetch_tasks(events):
     for event in tqdm(events, desc='Fetching tasks'):
         task = requests.get(event)
         if task.status_code == 200:
-            task = pattern.findall(task.text)[0]
+            task = TASK_PATTERN.findall(task.text)[0]
             tasks.append(json.loads(task))
     
     return tasks

@@ -18,7 +18,7 @@ pip install --user -e .
 From the `igclib` executable (installed in your path during pip install)
 
 ```shell
-igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --export test_data/race.pkl
+igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --output test_data/race.pkl
 ```
 
 or from a Python shell
@@ -50,8 +50,10 @@ igclib --mode optimize --task test_data/tasks/task.xctsk
 
 ## Data collection
 
-To fetch the IGC tracks, run `python3 crawlers/crawler_tracks.py`  
-To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
+Work in progress
+
+~~To fetch the IGC tracks, run `python3 crawlers/crawler_tracks.py`~~   
+~~To fetch the tasks, run `python3 crawlers/crawler_tasks.py`~~
 
 ---
 
