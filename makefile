@@ -1,3 +1,5 @@
+.PHONY: docs
+
 dev:
 	python3 igclib/main.py --race test_data/race.pkl --pilot 0035
 
@@ -6,3 +8,6 @@ export:
 
 install:
 	pip install --user -e .
+
+docs:
+	cd docs && make html && python3 -m http.server

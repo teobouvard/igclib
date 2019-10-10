@@ -22,6 +22,9 @@ seaborn
 # memory profiling
 pympler
 
+# documentation
+sphinx
+
 # scientific computing
 numpy
 

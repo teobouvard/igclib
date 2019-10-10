@@ -7,13 +7,13 @@
 ```{shell}
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
-pip install --user -e .
+make install
 ```
 ---
 
-## Basic usage
+## Basic user manual
 
-### Save a Race to disk
+### Build a race and save it to disk
 
 From the `igclib` executable (installed in your path during pip install)
 
@@ -29,7 +29,7 @@ r =  Race(tracks_dir='test_data/large_tracks', task_file='test_data/tasks/task.x
 r.save('test_data/race.pkl')
 ```
 
-### Load a Race
+### Load a race
 
 From a Python shell
 
@@ -38,7 +38,7 @@ from igclib.model.race import Race
 r =  Race(path='test_data/race.pkl')
 ```
 
-### Get task optimization info in json
+### Get a task optimization info in json
 
 From the `igclib` executable
 
@@ -46,7 +46,7 @@ From the `igclib` executable
 igclib --mode optimize --task test_data/tasks/task.xctsk
 ```
 
-### Get all available tasks
+### Get all available PWCA tasks from 2015
 
 From the `igclib` executable
 
@@ -62,15 +62,11 @@ tc = TaskCrawler(provider='PWCA', year=2015)
 tasks = tc.crawl()
 ```
 
-
 ---
 
-## Data collection
+## Build and view the documentation
 
-Work in progress
-
-~~To fetch the IGC tracks, run `python3 crawlers/crawler_tracks.py`~~   
-~~To fetch the tasks, run `python3 crawlers/crawler_tasks.py`~~
+Once installed, run `make docs` and go to http://0.0.0.0:8000/_build/html/
 
 ---
 

@@ -1,6 +1,9 @@
 # Datasets
 data/
 
+# Documentation build files
+docs/_build
+
 # Virtual environment
 venv
 
