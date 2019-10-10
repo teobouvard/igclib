@@ -56,16 +56,16 @@ def plot_evolution(features):
         mean_altitudes.append(altitudes.mean())
         mean_goal.append(goal_distances.mean())
         
-    gradient_altitudes = np.gradient(altitudes)
-    gradient_goal = np.gradient(goal_distances)
+    gradient_altitudes = np.gradient(mean_altitudes)
+    gradient_goal = np.gradient(mean_goal)
         
 
     fig, ax = plt.subplots(2, 2, tight_layout=True, sharex=True)
 
-    sns.lineplot(x=timestamps, y=mean_altitudes, ax=ax[0, 0])
-    sns.lineplot(x=timestamps, y=mean_goal, ax=ax[1, 0])
-    sns.lineplot(x=timestamps, y=gradient_altitudes, ax=ax[0, 1])
-    sns.lineplot(x=timestamps, y=gradient_goal, ax=ax[1, 1])
+    sns.lineplot(x=timestamps, y=mean_altitudes, ax=ax[0][0])
+    sns.lineplot(x=timestamps, y=mean_goal, ax=ax[1][0])
+    sns.lineplot(x=timestamps, y=gradient_altitudes, ax=ax[0][1])
+    sns.lineplot(x=timestamps, y=gradient_goal, ax=ax[1][1])
 
     plt.show()
 

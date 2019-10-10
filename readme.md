@@ -36,7 +36,7 @@ or from a Python shell
 
 From a Python shell
 
-```{python}
+```{ipython}
 >>> from igclib.model.race import Race
 >>> r =  Race(path='test_data/race.pkl')
 ```

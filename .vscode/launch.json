@@ -6,7 +6,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/igclib/main.py",
-            "args": ["--race", "data/race.pkl", "--pilot", "0035"],
+            "args": ["--race", "test_data/race.pkl", "--pilot", "0035"],
             "console": "integratedTerminal"
         },
         {
