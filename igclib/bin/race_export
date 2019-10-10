@@ -24,7 +24,7 @@ if __name__ == '__main__':
     TASK_FILE = args.task
     FLIGHTS_DIR = args.flights
     N_JOBS = args.n_jobs
-    RACE_PATH = args.export_path
+    RACE_PATH = args.export
 
     # checking arguments
     if not os.path.isfile(TASK_FILE):
