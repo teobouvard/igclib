@@ -19,7 +19,6 @@ seaborn
 pympler
 
 # scientific computing
-pandas
 numpy
 
 # distance computation

@@ -7,7 +7,7 @@ import math
 # https://github.com/julien66/meteor-task-creator/blob/master/client/imports/betterOptimiser.js
 
 def optimize(position, waypoints):
-    return omptimize_naive(position, waypoints)
+    return optimize_naive(position, waypoints)
 
 def get_heading(wptA, wptB):
     return Geodesic.WGS84.Inverse(wptA['lat'], wptA['lon'], wptB['lat'], wptB['lon'], outmask=Geodesic.AZIMUTH)['azi1']
@@ -16,7 +16,7 @@ def get_offset(wpt, heading, dist):
     offset = Geodesic.WGS84.Direct(wpt['lat'], wpt['lon'], heading, dist)
     return dict(lat = offset['lat2'], lon = offset['lon2'], radius=wpt['radius'])
 
-def omptimize_naive(position, waypoints):
+def optimize_naive(position, waypoints):
     # pushing current position as a fast waypoint, initializing cumulative distance at zero
     fast_waypoints = [position]
     leg_distances = []
