@@ -5,12 +5,6 @@ from igclib.parser import xctrack
 from igclib.constants import distance_computation as distance
 from igclib.utils.optimizer import optimize
 
-## DEBUG
-import matplotlib.pyplot as plt
-import cartopy.crs as ccrs
-import cartopy
-import math
-
 # fast distance computations do not validate waypoints without tolerances
 TOLERANCE = 20
 
@@ -33,8 +27,6 @@ class Task():
         self.waypoints = task.waypoints
         self.ess = task.ess
         self.optimized_distance = optimize(self.takeoff, self.waypoints)[0]
-        #self.debug_plot(self.takeoff, self.waypoints, self.waypoints)
-
 
     def timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
@@ -47,29 +39,7 @@ class Task():
         while current < stop:
             yield current.time()
             current += timedelta(seconds=1)
-    
 
-    @staticmethod
-    def debug_plot(pos, waypoints, remaining_waypoints):
-        _, fast_waypoints = optimize(pos, remaining_waypoints)
-
-        lats = [wp['lat'] for wp in waypoints]
-        lons = [wp['lon'] for wp in waypoints]
-        rads = [wp['radius'] for wp in waypoints]
-        
-        fast_lats = [wp['lat'] for wp in fast_waypoints]
-        fast_lons = [wp['lon'] for wp in fast_waypoints]
-        
-        plt.ioff()
-        ax = plt.axes(projection=ccrs.PlateCarree())
-        ax.coastlines()
-        ax.plot(fast_lons, fast_lats, alpha=0.5, transform=ccrs.PlateCarree())
-        # no working display with radius
-        #ax.scatter(lons, lats, s=rads, alpha=0.5, transform=ccrs.PlateCarree())
-        ax.scatter(pos['lon'], pos['lat'], s= 10, transform=ccrs.PlateCarree())
-        plt.pause(0.00001)
-        plt.clf()
-        #plt.show()
 
     def validate(self, flight):
         remaining_waypoints = self.waypoints.copy()
@@ -83,11 +53,8 @@ class Task():
             if timestamp < self.start:
                 goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
                 continue
-            
-            #if len(remaining_waypoints) < 6:
-                #self.debug_plot(point, self.waypoints, remaining_waypoints)
 
-            # race has started, checking for start validation
+            # race has started, check for start validation
             if start_passed == False:
                 goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
 

@@ -22,8 +22,6 @@ class Race():
         else:
             tracks = glob(os.path.join(tracks_dir, '*.igc'))
             self.n_pilots = len(tracks)
-            if self.n_pilots < 2:
-                raise ValueError('Only one pilot, you call that a race ?')
             
             self.task = Task(task_file)
             self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}

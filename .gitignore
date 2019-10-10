@@ -1,7 +1,14 @@
+# Datasets
 data/
+
+# Virtual environment
 venv
-readme.pdf
+
+# Logs
 log.txt
+
+# Pickles
+*.pkl
 
 # Compiled python modules.
 *.pyc

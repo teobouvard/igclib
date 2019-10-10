@@ -5,10 +5,7 @@
 ## Get started
 
 ```{shell}
-# Shitty cartopy requirements, will disappear once optimizer is built
-apt-get install python3-dev libproj-dev proj-data proj-bin libgeos-dev
-
-pip3 install wheel virtualenv cython 
+pip3 install wheel virtualenv
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
 python3 -m venv venv
@@ -21,18 +18,18 @@ pip3 install -e .
 
 ### Save a Race to disk
 
-From an executable script
+From an executable script (installed in your path during pip install)
 
 ```console
-race_export --task test/tasks/task0.xctsk --flights test/large_tracks  --n_jobs -1 --export_path data/race0.pkl
+race_export --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --export test_data/race.pkl
 ```
 
 or from a Python shell
 
 ```{python}
 >>> from igclib.model.race import Race
->>> r =  Race(tracks_dir='test/larg_tracks', task_file='test/tasks/task0.xctsk', n_jobs=-1)
->>> r.save('data/race0.pkl')
+>>> r =  Race(tracks_dir='test_data/large_tracks', task_file='test_data/tasks/task.xctsk', n_jobs=-1)
+>>> r.save('test_data/race.pkl')
 ```
 
 ---
@@ -65,8 +62,6 @@ To fetch the tasks, run `python3 crawlers/crawler_tasks.py`
 * merge tasks and tracks
 
 ### Misc
-
-* remove cython from fast install when cartopy is not needed anymore
 
 ---
 

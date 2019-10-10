@@ -13,7 +13,7 @@ from igclib.model.race import Race
 
 logging.basicConfig(filename='log.txt', format= '%(levelname)s: %(message)s', level=logging.INFO)
 
-def animate_features(race, features):
+def plot_kernel(race, features):
     fig, (ax1, ax2) = plt.subplots(1, 2, tight_layout=True)
     plt.ioff()
 
@@ -35,15 +35,33 @@ def animate_features(race, features):
         
         ax1.axhline(0, 0, 1)
         sns.distplot(altitudes, ax=ax1, vertical=True, bins=10)
-        ax1.invert_yaxis()
 
         ax2.axvline(0, 0, 1)
         sns.distplot(goal_distances, ax=ax2, vertical=False, bins=10)
-        #ax2.invert_yaxis()
 
         plt.pause(0.01)
         ax1.cla()
         ax2.cla()
+
+def plot_evolution(features):
+
+    mean_altitudes = []
+    mean_goal = []
+    timestamps = list(features.keys())
+
+    for feature in features.values():
+        altitudes = np.array(feature.group_relation.delta_altitude)
+        goal_distances = np.array(feature.group_relation.delta_distance)
+
+        mean_altitudes.append(altitudes.mean())
+        mean_goal.append(goal_distances.mean())
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, tight_layout=True, sharex=True)
+
+    sns.lineplot(x=timestamps, y=mean_altitudes, ax=ax1)
+    sns.lineplot(x=timestamps, y=mean_goal, ax=ax2)
+
+    plt.show()
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='igclib - dev module')
@@ -64,7 +82,8 @@ if __name__ == '__main__':
     r =  Race(path=RACE_FILE)
     print(r)
     features = r.get_pilot_features(PILOT_ID)
-    animate_features(r, features)
+    #plot_kernel(r, features)
+    plot_evolution(features)
 
     #print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
     #times = list(r.flights[PILOT_ID].points.keys())
