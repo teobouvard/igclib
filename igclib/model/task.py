@@ -10,15 +10,15 @@ from igclib.utils.optimizer import optimize
 TOLERANCE = 0.005
 
 class Task():
-    """[summary]
+    """
+    Task 
     
     Args:
-        task_file ([type]): [description]
-        task_type (str, optional): [description]. Defaults to 'xctrack'.
+        task_file (str): Path to a task file.
+        task_type (str, optional): Format of the task file. Defaults to 'xctrack'.
     
     Raises:
-        NotImplementedError: [description]
-        NotImplementedError: [description]
+        NotImplementedError: If the format is not known.
     """
 
     def __init__(self, task_file, task_type='xctrack'):
