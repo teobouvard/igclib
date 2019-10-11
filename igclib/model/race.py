@@ -61,6 +61,9 @@ class Race():
     def __getitem__(self, time_point):
         """
         Returns a snapshot of the race at a given time
+
+        Arguments:
+            time_point (~datetime.time) : The second at which the snapshot is taken
         """
         return {pilot_id:flight[time_point] for pilot_id, flight in self.flights.items() if flight[time_point] is not None}
     
@@ -97,7 +100,6 @@ class Race():
         Returns:
             PilotFeatures: The pilot features from start to stop 
         """
-        # check if pilot is in flight during the race
         if pilot_id not in self.flights:
             raise KeyError('Pilot {} is not in the race'.format(pilot_id))
 

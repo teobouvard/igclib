@@ -15,3 +15,6 @@ docs:
 deploy:
 	python3 setup.py sdist bdist_wheel
 	twine upload dist/*
+
+ext: install
+	python3 c_api_dev.py

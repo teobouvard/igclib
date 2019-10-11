@@ -3,5 +3,6 @@
     "restructuredtext.confPath": "${workspaceFolder}/docs/source",
     "files.associations": {
         "python.h": "c"
-    }
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Enabled"
 }
