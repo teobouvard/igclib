@@ -7,7 +7,7 @@ from igclib.parsers import xctrack
 from igclib.utils.optimizer import optimize
 
 # fast distance computations do not validate waypoints without tolerances
-TOLERANCE = 20
+TOLERANCE = 0.005
 
 class Task():
 
@@ -104,7 +104,7 @@ class Task():
 
     @staticmethod
     def is_in(pos, wpt):
-        return True if distance(pos, (wpt['lat'], wpt['lon'])).meters <= wpt['radius'] + TOLERANCE else False
+        return True if distance(*pos, wpt['lat'], wpt['lon']) <= wpt['radius']*(1 + TOLERANCE) else False
 
     @staticmethod
     def concentric_case(wptA, wptB):

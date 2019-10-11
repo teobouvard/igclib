@@ -2,8 +2,10 @@ import re
 
 ### DISTANCE COMPUTATION ###
 
-from geopy import distance
-distance_computation = distance.great_circle
+#from geopy import distance
+from geolib import haversine
+distance_computation = haversine
+#distance_computation = distance.great_circle
 #distance_computation = distance.vincenty -> slower
 #distance_computation = distance.distance -> slowest
 

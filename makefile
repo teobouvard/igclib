@@ -4,7 +4,7 @@ dev:
 	python3 igclib/main.py --race test_data/race.pkl --pilot 0035
 
 race:
-	igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --output test_data/race.pkl
+	igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/one_track --output /dev/null
 
 install:
 	pip install --user -e .

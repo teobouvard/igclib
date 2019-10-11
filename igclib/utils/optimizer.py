@@ -24,7 +24,7 @@ def optimize_naive(position, waypoints):
     # if only one waypoint left, go in a straight line
     if len(waypoints) < 2:
         fast_waypoints.append(waypoints[-1])
-        leg_distances.append(distance((position['lat'], position['lon']), (waypoints[-1]['lat'], waypoints[-1]['lon'])).meters)
+        leg_distances.append(distance(position['lat'], position['lon'], waypoints[-1]['lat'], waypoints[-1]['lon']))
 
     else:
         # consider the last optimized point (one) and the next two turnpoints (two, three)
@@ -32,8 +32,8 @@ def optimize_naive(position, waypoints):
             one = fast_waypoints[-1]
 
             in_heading = get_heading(two, one)
-            in_distance = distance((one['lat'], one['lon']), (two['lat'], two['lon'])).meters
-            out_distance = distance((two['lat'], two['lon']), (three['lat'], three['lon'])).meters
+            in_distance = distance(one['lat'], one['lon'], two['lat'], two['lon'])
+            out_distance = distance(two['lat'], two['lon'], three['lat'], three['lon'])
 
             # two next turnpoints are identical, can't test for equality because of numerical precision
             if out_distance < MIN_TURNPOINTS_DISTANCE:
@@ -51,7 +51,7 @@ def optimize_naive(position, waypoints):
             min_pivot_distance = min(pivot_distance, two['radius'])
             fast_wp = get_offset(two, pivot_heading, min_pivot_distance)
             fast_waypoints.append(fast_wp)
-            leg_distances.append(distance((one['lat'], one['lon']), (fast_wp['lat'], fast_wp['lon'])).meters)
+            leg_distances.append(distance(one['lat'], one['lon'], fast_wp['lat'], fast_wp['lon']))
 
     return sum(leg_distances), fast_waypoints, leg_distances
 

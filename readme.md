@@ -10,9 +10,6 @@ git clone https://github.com/teobouvard/igclib.git
 cd igclib
 make install
 ```
----
-
-## Useful links
 
 [Documentation (in progress)](https://igclib.readthedocs.io/en/latest/)
 
