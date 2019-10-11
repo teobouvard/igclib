@@ -1,7 +1,7 @@
 # igclib
 
-![](https://img.shields.io/circleci/build/github/teobouvard/igclib/master?style=flat-square)
-![](https://img.shields.io/readthedocs/igclib?style=flat-square)
+[![build status](https://img.shields.io/circleci/build/github/teobouvard/igclib/master?style=flat-square)](https://circleci.com/gh/teobouvard/igclib)
+[![docs status](https://img.shields.io/readthedocs/igclib?style=flat-square)](https://igclib.readthedocs.io/en/latest/)
 
 ## Get started
 
