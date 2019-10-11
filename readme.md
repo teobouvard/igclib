@@ -5,7 +5,7 @@
 
 ## Get started
 
-```{shell}
+```shell
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
 make install
@@ -18,7 +18,7 @@ make install
 
 ---
 
-## Build and view the documentation
+## Build the documentation locally
 
 Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 
@@ -39,7 +39,6 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 * is a real optimizer necessary ? only need a continuous distance function from start to goal
 
 ### Data collection
-
 
 
 ### Misc
