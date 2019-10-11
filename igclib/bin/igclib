@@ -19,7 +19,7 @@ def check(args):
             raise ValueError('Flights path {} is not a directory'.format(args.flights))
         if len(os.listdir(args.flights)) == 0:
             raise ValueError('Flights directory is empty')
-        os.makedirs(os.path.basename(args.output), exist_ok=True)
+        #os.makedirs(os.path.basename(args.output), exist_ok=True)
 
     elif args.mode == 'optimize':
         if args.task is None or not os.path.isfile(args.task):

@@ -53,6 +53,9 @@ def optimize_naive(position, waypoints):
             fast_waypoints.append(fast_wp)
             leg_distances.append(distance(one['lat'], one['lon'], fast_wp['lat'], fast_wp['lon']))
 
+        leg_distances.append(distance(fast_waypoints[-1]['lat'], fast_waypoints[-1]['lon'], waypoints[-1]['lat'], waypoints[-1]['lon']))
+        fast_waypoints.append(waypoints[-1])
+
     return sum(leg_distances), fast_waypoints, leg_distances
 
 def find_next_not_concentric(wpt, waypoints):

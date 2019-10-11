@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "vc_vector.h"
 #include <math.h>
 
 #define PY_SSIZE_T_CLEAN
@@ -23,6 +24,26 @@ double c_haversine(double th1, double ph1, double th2, double ph2){
 }
 
 void c_optimize(double lat, double lon, double **wpts, int nb_wpt, double *res){
+    res[0] = 0; // cumulative distance
+    res[1] = 0; // fast_waypoints (not implemented)
+    res[2] = 0; // leg distances (not implemented)
+
+    double fast_waypoints[nb_wpt+1][2];
+    fast_waypoints[0][0] = lat;
+    fast_waypoints[0][1] = lon;
+
+    if (nb_wpt < 2){
+        res[0] += c_haversine(lat, lon, wpts[0][0], wpts[0][1]);
+        return;
+    } 
+    else {
+        for (int i = 0; i < nb_wpt; i++){
+            double one[] = {fast_waypoints[i][0], fast_waypoints[i][0]};
+            double two[] = {wpts[i][0], wpts[i][1]};
+            double three[] = {wpts[i+1][0], wpts[i+1][1]};
+
+        }
+    }
     
 }
 
