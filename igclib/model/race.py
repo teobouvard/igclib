@@ -33,7 +33,7 @@ class Race():
 
     Attributes:
         n_pilots (int) : The number of pilots in the Race.
-        flights (dict) : A dictionnary with key : the pilot's ID, value : Flight instance of the pilot.
+        flights (dict) : A dictionnary with key : the pilot's ID, value : Flight instance of the associated pilot.
         task (Task) : The Task instance of the Race.
     """
 
