@@ -16,58 +16,6 @@ make install
 [Documentation (in progress)](https://igclib.readthedocs.io/en/latest/)
 
 ---
-## Basic user manual
-
-### Build a race and save it to disk
-
-From the `igclib` executable (installed in your path during pip install)
-
-```shell
-igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_tracks  --n_jobs -1 --output test_data/race.pkl
-```
-
-or from a Python shell
-
-```python
-from igclib.model.race import Race
-r =  Race(tracks_dir='test_data/large_tracks', task_file='test_data/tasks/task.xctsk', n_jobs=-1)
-r.save('test_data/race.pkl')
-```
-
-### Load a race
-
-From a Python shell
-
-```python
-from igclib.model.race import Race
-r =  Race(path='test_data/race.pkl')
-```
-
-### Get a task optimization info in json
-
-From the `igclib` executable
-
-```shell
-igclib --mode optimize --task test_data/tasks/task.xctsk
-```
-
-### Get all available PWCA tasks from 2015
-
-From the `igclib` executable
-
-```shell
-igclib --mode crawl --provider PWCA --year 2015
-```
-
-or from a Python shell
-
-```python
-from igclib.crawlers.task_crawler import TaskCrawler
-tc = TaskCrawler(provider='PWCA', year=2015)
-tasks = tc.crawl()
-```
-
----
 
 ## Build and view the documentation
 
@@ -91,7 +39,7 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 
 ### Data collection
 
-* parallellize requests when fetching data
+
 
 ### Misc
 

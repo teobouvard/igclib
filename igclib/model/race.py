@@ -13,11 +13,34 @@ from igclib.model.task import Task
 
 
 class Race():
+    """
+    You can create a Race instance in two different ways :
+
+    * Passing a tracks_dir and a task_file, which creates a new Race object and computes all pilot features.
+
+        >>> r =  Race(tracks_dir='tracks/', task_file='task.xctsk')
+
+    * Passing a path to a previously saved Race, loading the saved instance (much faster than recomputing features).
+
+        >>> r =  Race(path='race.pkl')
+
+    Keyword Arguments:
+        tracks_dir (str): A path to the directory containing IGC tracks.
+        task_file (str): A path to the task file.
+        n_jobs (int): The number of processes to use when validating the tracks.
+            The default value (-1) creates as many process as the CPU core count of the machine.
+        path (str): The path of a previously saved Race instance.
+
+    Attributes:
+        n_pilots (int) : The number of pilots in the Race.
+        flights (dict) : A dictionnary with key : the pilot's ID, value : Flight instance of the pilot.
+        task (Task) : The Task instance of the Race.
+    """
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None):
 
         if path is not None:
-            self.load(path)
+            self._load(path)
         
         else:
             tracks = glob(os.path.join(tracks_dir, '*.igc'))
@@ -43,7 +66,7 @@ class Race():
     
 
     def __len__(self):
-        return len([_ for _ in self.snapshots()])
+        return len([_ for _ in self._snapshots()])
 
 
     def __str__(self):
@@ -68,7 +91,7 @@ class Race():
 
         features = {}
         
-        for timestamp, snapshot in tqdm(self.snapshots(start, stop), desc='extracting features', total=len(self)):
+        for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self)):
             if pilot_id not in snapshot:
                 logging.debug('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
             else:
@@ -77,7 +100,7 @@ class Race():
         return features
 
 
-    def snapshots(self, start=None, stop=None):
+    def _snapshots(self, start=None, stop=None):
         """
         Generator of snapshots of the race at each second between start and stop
         """
@@ -94,7 +117,7 @@ class Race():
             pickle.dump(self.__dict__, f)
     
 
-    def load(self, path):
+    def _load(self, path):
         """
         Load the race instance from a pickle file
         """

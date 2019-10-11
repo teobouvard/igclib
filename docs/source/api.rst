@@ -1,7 +1,7 @@
 ##################################
-Examples
+API documentation
 ##################################
 
 .. toctree::
-    examples/examples_python.rst
-    examples/examples_command_line.rst
+    api/api_python.rst
+    api/api_command_line.rst
