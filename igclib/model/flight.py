@@ -7,6 +7,11 @@ from igclib.constants import IGC_HEADER, IGC_RECORDS, IGC_TIME
 
 
 class Flight():
+    """[summary]
+    
+    Returns:
+        [type]: [description]
+    """
 
     def __init__(self, track_file):
 

@@ -2,6 +2,8 @@ from igclib.constants import IGC_ALTITUDE
 from igclib.model.group_relation import GroupRelation
 
 class PilotFeatures():
+    """[summary]
+    """
 
     def __init__(self, pilot_id, timestamp, snapshot):
         self.pilot_id = pilot_id

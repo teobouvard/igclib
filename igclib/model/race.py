@@ -33,8 +33,8 @@ class Race():
 
     Attributes:
         n_pilots (int) : The number of pilots in the Race.
-        flights (dict) : A dictionnary with key : the pilot's ID, value : Flight instance of the associated pilot.
-        task (~igclib.model.task.Task) : The Task instance of the Race.
+        flights (dict [str, Flight]) : A collection of Flight indexed by pilot ID.
+        task (Task) : The Task instance of the Race.
     """
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None):
@@ -82,7 +82,7 @@ class Race():
 
 
     def get_pilot_features(self, pilot_id, start=None, stop=None):
-        """Extracts pilot features for the whole task
+        """Extracts pilot features
 
         Arguments:
             pilot_id (str) : The pilot identifier used as key in self.flights
@@ -95,7 +95,7 @@ class Race():
             KeyError: if pilot_id is not a key of self.flights dictionnary
         
         Returns:
-            (~igclib.model.pilot_features.PilotFeatures)
+            PilotFeatures: The pilot features from start to stop 
         """
         # check if pilot is in flight during the race
         if pilot_id not in self.flights:
@@ -123,7 +123,7 @@ class Race():
 
     def save(self, path):
         """
-        Save the race instance to a pickle file
+        Save the race instance to a file specified by path
         """
         with open(path, 'wb') as f:
             pickle.dump(self.__dict__, f)
