@@ -13,7 +13,7 @@ make install
 
 ## Useful links
 
-[Documentation (in progress)](igclib.rtfd.io)
+[Documentation (in progress)](https://igclib.readthedocs.io/en/latest/)
 
 ---
 ## Basic user manual
