@@ -1,6 +1,7 @@
 # igclib
 
-[![Actions Status](https://github.com/teobouvard/igclib/workflows/build/badge.svg)](https://github.com/teobouvard/igclib/actions)
+![](https://img.shields.io/circleci/build/github/teobouvard/igclib/master?style=flat-square)
+![](https://img.shields.io/readthedocs/igclib?style=flat-square)
 
 ## Get started
 
