@@ -34,7 +34,7 @@ class Race():
     Attributes:
         n_pilots (int) : The number of pilots in the Race.
         flights (dict) : A dictionnary with key : the pilot's ID, value : Flight instance of the associated pilot.
-        task (Task) : The Task instance of the Race.
+        task (~igclib.model.task.Task) : The Task instance of the Race.
     """
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None):
@@ -60,7 +60,7 @@ class Race():
 
     def __getitem__(self, time_point):
         """
-        Get a snapshot of the race at a given time
+        Returns a snapshot of the race at a given time
         """
         return {pilot_id:flight[time_point] for pilot_id, flight in self.flights.items() if flight[time_point] is not None}
     
@@ -82,8 +82,20 @@ class Race():
 
 
     def get_pilot_features(self, pilot_id, start=None, stop=None):
-        """
-        Extract pilot features for the whole task
+        """Extracts pilot features for the whole task
+
+        Arguments:
+            pilot_id (str) : The pilot identifier used as key in self.flights
+        
+        Keyword Arguments:
+            start (~datetime.time, optional) : Lower bound of the retrieved features (default)
+            stop (~datetime.time, optional) : Upper bound of the retrieved features
+        
+        Raises:
+            KeyError: if pilot_id is not a key of self.flights dictionnary
+        
+        Returns:
+            (~igclib.model.pilot_features.PilotFeatures)
         """
         # check if pilot is in flight during the race
         if pilot_id not in self.flights:
@@ -104,7 +116,7 @@ class Race():
         """
         Generator of snapshots of the race at each second between start and stop
         """
-        for timestamp in self.task.timerange(start, stop):
+        for timestamp in self.task._timerange(start, stop):
             if self[timestamp] != {}:
                 yield timestamp, self[timestamp]
 

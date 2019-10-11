@@ -10,6 +10,16 @@ from igclib.utils.optimizer import optimize
 TOLERANCE = 0.005
 
 class Task():
+    """[summary]
+    
+    Args:
+        task_file ([type]): [description]
+        task_type (str, optional): [description]. Defaults to 'xctrack'.
+    
+    Raises:
+        NotImplementedError: [description]
+        NotImplementedError: [description]
+    """
 
     def __init__(self, task_file, task_type='xctrack'):
         if task_type == 'xctrack':
@@ -29,7 +39,7 @@ class Task():
         self.ess = task.ess
         self.optimized_distance, self.fast_waypoints, self.leg_distances = optimize(self.takeoff, self.waypoints)
 
-    def timerange(self, start=None, stop=None):
+    def _timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
         stop = stop if stop is not None else self.stop
 
@@ -60,7 +70,7 @@ class Task():
                 goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
 
                 # this will not work for start without a turnpoint inside !
-                if self.sss['direction'] == 'EXIT' and self.is_in(position, self.sss) or self.sss['direction'] == 'ENTER' and not self.is_in(position, self.sss):
+                if self.sss['direction'] == 'EXIT' and self._is_in(position, self.sss) or self.sss['direction'] == 'ENTER' and not self._is_in(position, self.sss):
                     start_passed = True
                     del remaining_waypoints[0]
                     logging.info('START {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
@@ -71,10 +81,10 @@ class Task():
             if len(remaining_waypoints) > 1:
                 goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
 
-                if self.is_in(position, remaining_waypoints[0]) and not self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]):
+                if self._is_in(position, remaining_waypoints[0]) and not self._concentric_case(remaining_waypoints[0], remaining_waypoints[1]):
                     del remaining_waypoints[0]
                     logging.info('IN {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
-                elif self.concentric_case(remaining_waypoints[0], remaining_waypoints[1]) and not self.is_in(position, remaining_waypoints[0]):
+                elif self._concentric_case(remaining_waypoints[0], remaining_waypoints[1]) and not self._is_in(position, remaining_waypoints[0]):
                     del remaining_waypoints[0]
                     logging.info('OUT OR ESS {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
 
@@ -82,7 +92,7 @@ class Task():
             elif len(remaining_waypoints) == 1:
                 goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
 
-                if self.is_in(position, remaining_waypoints[0]):
+                if self._is_in(position, remaining_waypoints[0]):
                     del remaining_waypoints[0]
                     logging.info('GOAL {}'.format(timestamp))
 
@@ -103,9 +113,9 @@ class Task():
         return int(self.optimized_distance)
 
     @staticmethod
-    def is_in(pos, wpt):
+    def _is_in(pos, wpt):
         return True if distance(*pos, wpt['lat'], wpt['lon']) <= wpt['radius']*(1 + TOLERANCE) else False
 
     @staticmethod
-    def concentric_case(wptA, wptB):
+    def _concentric_case(wptA, wptB):
         return True if wptA['lat'] == wptB['lat'] and wptA['lon'] == wptB['lon'] and wptB['radius'] < wptA['radius'] else False

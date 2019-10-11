@@ -9,11 +9,8 @@ race:
 install:
 	pip install --user -e .
 
-docs: clean-docs
-	cd docs && make html && python3 -m http.server
-
-clean-docs:
-	cd docs && make clean
+docs:
+	cd docs && make clean && make html && python3 -m http.server
 
 deploy:
 	python3 setup.py sdist bdist_wheel
