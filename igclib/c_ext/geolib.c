@@ -1,14 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "vc_vector.h"
 #include <math.h>
+#include "vc_vector.h"
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 #define R 6372800.0
 #define TO_RAD (3.1415926536 / 180)
-#define MAX_WP 20
+
+typedef struct t_pos{
+    double lat;
+    double lon;
+} t_pos;
+
+typedef struct t_wp{
+    t_pos center;
+    double radius;
+} t_wp;
+
+typedef struct t_result{
+    vc_vector *fast_wp;
+    vc_vector *legs_dist;
+    double dist_opti;
+} t_result;
 
 /* PURE C FUNCTIONS */
 
@@ -23,28 +38,22 @@ double c_haversine(double th1, double ph1, double th2, double ph2){
 	return asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R;
 }
 
-void c_optimize(double lat, double lon, double **wpts, int nb_wpt, double *res){
-    res[0] = 0; // cumulative distance
-    res[1] = 0; // fast_waypoints (not implemented)
-    res[2] = 0; // leg distances (not implemented)
+void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
+    vc_vector_push_back(res->fast_wp, &position);
+    //printf("%d\n", nb_wpts);
 
-    double fast_waypoints[nb_wpt+1][2];
-    fast_waypoints[0][0] = lat;
-    fast_waypoints[0][1] = lon;
-
-    if (nb_wpt < 2){
-        res[0] += c_haversine(lat, lon, wpts[0][0], wpts[0][1]);
-        return;
+    if (nb_wpts < 2){
+        t_wp *last_wp  = vc_vector_back(wpts);
+        res->dist_opti = c_haversine(position.lat, position.lon, last_wp->center.lat, last_wp->center.lon);
     } 
     else {
-        for (int i = 0; i < nb_wpt; i++){
-            double one[] = {fast_waypoints[i][0], fast_waypoints[i][0]};
-            double two[] = {wpts[i][0], wpts[i][1]};
-            double three[] = {wpts[i+1][0], wpts[i+1][1]};
-
+        
+        for (int i = 0; i < nb_wpts; i++){
+            t_wp *one = vc_vector_back(res->fast_wp);
+            t_wp *two = vc_vector_at(wpts, i);
+            t_wp *three = vc_vector_at(wpts, i+1);
         }
     }
-    
 }
 
 
@@ -68,30 +77,38 @@ static PyObject* optimize(PyObject* self, PyObject* args){
 
     double lat = PyFloat_AsDouble(PyTuple_GetItem(pos, 0));
     double lon = PyFloat_AsDouble(PyTuple_GetItem(pos, 1));
+    t_pos position = {lat, lon};
 
     int nb_wpts = PyList_Size(wpts);
-    double **waypoints = (double **) malloc(nb_wpts * sizeof(double *)); 
-    for (int i = 0; i < nb_wpts; i++){
-        waypoints[i] = (double *) malloc(3 * sizeof(double));
-    }
+    vc_vector* waypoints = vc_vector_create(nb_wpts, sizeof(t_wp), NULL);
 
     for (int i = 0; i < nb_wpts; i++){
         PyObject *curr_wpt = PyList_GetItem(wpts, i);
-        waypoints[i][0] = PyFloat_AsDouble(PyObject_GetAttrString(curr_wpt, "lat"));
-        waypoints[i][1] = PyFloat_AsDouble(PyObject_GetAttrString(curr_wpt, "lon"));
-        waypoints[i][2] = PyFloat_AsDouble(PyObject_GetAttrString(curr_wpt, "radius"));
+        t_wp wp = {
+            {
+                PyFloat_AsDouble(PyObject_GetAttrString(curr_wpt, "lat")),
+                PyFloat_AsDouble(PyObject_GetAttrString(curr_wpt, "lon"))
+            },
+            PyFloat_AsDouble(PyObject_GetAttrString(curr_wpt, "radius"))
+        };
+        vc_vector_push_back(waypoints, &wp);
     }
 
-    double res[3];
-    c_optimize(lat, lon, waypoints, nb_wpts, res);
 
-    PyObject *obj = Py_BuildValue("[ddd]", res[0], res[1], res[2]);
+    t_result *res = (t_result*) malloc(sizeof (t_result*));
+    res->fast_wp = vc_vector_create(nb_wpts, sizeof (t_wp), NULL);
+    res->legs_dist = vc_vector_create(nb_wpts, sizeof (double), NULL);
+    c_optimize(position, waypoints, nb_wpts, res);
 
-    for (int i = 0; i < nb_wpts; i++){
-        free(waypoints[i]); 
-    }
-    free(waypoints);
+    PyObject *dist = Py_BuildValue("d", res->dist_opti);
+    PyObject *fwp = Py_BuildValue("[]");
+    PyObject *legs = Py_BuildValue("[]");
 
+    PyObject *obj = Py_BuildValue("(OOO)", dist, fwp, legs);
+
+    vc_vector_release(waypoints);
+    free(res);
+    
     return obj;
 }
 
@@ -114,9 +131,4 @@ static struct PyModuleDef module = {
 
 PyMODINIT_FUNC PyInit_geolib(void){
     return PyModule_Create(&module);
-}
-
-int main(){
-    double a = c_haversine(36.12, -86.67, 33.94, -118.4);
-    printf("dist: %.1f km\n", a);
 }

@@ -21,7 +21,10 @@ setup(name='igclib',
     license='GPL-3',
     packages=find_packages(include=['igclib']),
     ext_modules = [
-        Extension('geolib', ['igclib/c_ext/geolib.c'])
+        Extension('geolib', [
+            'igclib/c_ext/geolib.c', 
+            'igclib/c_ext/vc_vector.c'
+            ])
     ],
     install_requires=requirements(),
     scripts=['igclib/bin/igclib'],

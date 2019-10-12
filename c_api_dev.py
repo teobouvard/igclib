@@ -1,4 +1,4 @@
-from geolib import optimize
+from geolib import optimize, haversine
 
 class Position():
     def __init__(self, lat, lon):
@@ -11,10 +11,11 @@ class Waypoint():
         self.lon = lon
         self.radius = radius
 
-pos = (22, 44)
-wp0 = Waypoint(10, 12, 4000)
+pos = (36.12, -86.67)
+wp0 = Waypoint(33.94, -118.4, 4000)
 wp1 = Waypoint(11, 13, 2000)
-wpts = [wp0, wp1]
+wpts = [wp0]#, wp1]
 
+#print(haversine(36.12, -86.67, 33.94, -118.4))
 print(optimize(pos, wpts))
 
