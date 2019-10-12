@@ -4,6 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
+                "${workspaceFolder}/igclib/c_ext",
                 "/usr/include/python3.6m"
             ],
             "defines": [],

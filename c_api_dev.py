@@ -11,11 +11,12 @@ class Waypoint():
         self.lon = lon
         self.radius = radius
 
-pos = (36.12, -86.67)
-wp0 = Waypoint(33.94, -118.4, 4000)
-wp1 = Waypoint(11, 13, 2000)
-wpts = [wp0]#, wp1]
+pos = (30, 30)
+wp0 = Waypoint(30.5, 30.5, 4)
+wp1 = Waypoint(30, 30, 2)
+wpts = [wp0, wp1]
 
-#print(haversine(36.12, -86.67, 33.94, -118.4))
-print(optimize(pos, wpts))
+#print(haversine(30, 30, 30.5, 30.5))
+a = optimize(pos, wpts)
+print(a)
 

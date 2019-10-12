@@ -18,3 +18,6 @@ deploy:
 
 ext: install
 	python3 c_api_dev.py
+
+devext:
+	gcc -g igclib/c_ext/c_api_dev.c igclib/c_ext/vc_vector.c -o igclib/c_ext/c_dev -lm
