@@ -26,8 +26,8 @@ typedef struct t_wp{
 
 typedef struct t_result{
     vc_vector *fast_wp;
-    vc_vector *legs_dist;
     double dist_opti;
+    double *legs_dist;
 } t_result;
 
 /* PURE C FUNCTIONS */
@@ -61,7 +61,8 @@ double c_heading(double lat1, double lon1, double lat2, double lon2){
 
 void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
     double in_heading, out_heading, pivot_heading;
-    double in_distance, out_distance, pivot_distance, next_distance;
+    double in_distance, out_distance, pivot_distance;
+    double next_distance;
     double angle;
 
     t_wp fwp;
@@ -74,7 +75,7 @@ void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
         last_wp  = vc_vector_back(wpts);
         vc_vector_push_back(res->fast_wp, last_wp);
         res->dist_opti = c_haversine(position.lat, position.lon, last_wp->center.lat, last_wp->center.lon);
-        vc_vector_push_back(res->legs_dist, &res->dist_opti);
+        res->legs_dist[0] = res->dist_opti;
     } 
 
     else {
@@ -106,7 +107,7 @@ void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
             vc_vector_push_back(res->fast_wp, &fwp);
 
             next_distance = c_haversine(one->center.lat, one->center.lon, fwp.center.lat, fwp.center.lon);
-            vc_vector_push_back(res->legs_dist, &next_distance);
+            res->legs_dist[i] = next_distance;
             res->dist_opti += next_distance;
         }
 
@@ -114,7 +115,7 @@ void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
         last_fwp = vc_vector_back(res->fast_wp);
         last_wp  = vc_vector_back(wpts);
         next_distance = c_haversine(last_fwp->center.lat, last_fwp->center.lon, last_wp->center.lat, last_wp->center.lon);
-        vc_vector_push_back(res->legs_dist, &next_distance);
+        res->legs_dist[nb_wpts] = next_distance;
         
         vc_vector_push_back(res->fast_wp, vc_vector_back(wpts));
         res->dist_opti += next_distance;
@@ -137,15 +138,18 @@ static PyObject* optimize(PyObject* self, PyObject* args){
 	PyObject *wpts;
 	PyObject *curr_wpt;
 
+    // parse arguments
     if(!PyArg_ParseTuple(args, "OO", &pos, &wpts))
         return NULL;
 
-    double lat = PyFloat_AsDouble(PyTuple_GetItem(pos, 0));
-    double lon = PyFloat_AsDouble(PyTuple_GetItem(pos, 1));
-    t_pos position = {lat, lon};
+    // create C types from arguments
+    t_pos position = {
+        PyFloat_AsDouble(PyTuple_GetItem(pos, 0)), 
+        PyFloat_AsDouble(PyTuple_GetItem(pos, 1))
+    };
 
     int nb_wpts = PyList_Size(wpts);
-    vc_vector* waypoints = vc_vector_create(nb_wpts, sizeof(t_wp), NULL);
+    t_wp *waypoints = vc_vector_create(nb_wpts, sizeof(t_wp), NULL);
 
     for (int i = 0; i < nb_wpts; i++){
         curr_wpt = (PyObject*) PyList_GetItem(wpts, i);
@@ -159,18 +163,19 @@ static PyObject* optimize(PyObject* self, PyObject* args){
         vc_vector_push_back(waypoints, &wp);
     }
 
-
+    // create a result type, to be filled by c_optimize
     t_result *res = (t_result*) malloc(sizeof (t_result*));
     res->fast_wp = vc_vector_create(nb_wpts, sizeof (t_wp), NULL);
-    res->legs_dist = vc_vector_create(nb_wpts, sizeof (double), NULL);
+    res->legs_dist = malloc(nb_wpts * sizeof (double));
     c_optimize(position, waypoints, nb_wpts, res);
 
+    // create python types to be returned
     PyObject *optimized_dist = Py_BuildValue("d", res->dist_opti);
     PyObject *fwp = Py_BuildValue("[]");
     PyObject *legs = Py_BuildValue("[]");
 
     for (int i = 0; i < nb_wpts; i++){
-        PyList_Append(legs, Py_BuildValue("d", vc_vector_at(res->legs_dist, i)));
+        PyList_Append(legs, Py_BuildValue("d", res->legs_dist[i]));
         t_wp *wp = vc_vector_at(res->fast_wp, i);
         PyObject_SetAttrString(curr_wpt, "lat", Py_BuildValue("d", wp->center.lat));
         PyObject_SetAttrString(curr_wpt, "lon", Py_BuildValue("d", wp->center.lon));
@@ -180,9 +185,10 @@ static PyObject* optimize(PyObject* self, PyObject* args){
 
     PyObject *obj = Py_BuildValue("(OOO)", optimized_dist, fwp, legs);
 
+    // free allocated memory
     vc_vector_release(waypoints);
     vc_vector_release(res->fast_wp);
-    vc_vector_release(res->legs_dist);
+    free(res->legs_dist);
     free(res);
     
     return obj;

@@ -11,13 +11,16 @@ class Waypoint():
         self.lon = lon
         self.radius = radius
 
-pos = (30, 30)
-wp0 = Waypoint(30.5, 30.5, 4)
-wp1 = Waypoint(30, 30, 2)
-wpts = [wp0, wp1]
+pos = (0, 0)
+wp1 = Waypoint(0.5, 0, 10000)
+wp2 = Waypoint(0.5, 0.5, 10000)
+wp3 = Waypoint(0, 0.5, 10000)
+wp4 = Waypoint(0, 0, 100)
+wpts = [wp1, wp2, wp3, wp4]
 
 #print(haversine(30, 30, 30.5, 30.5))
 dist, fwp, legs = optimize(pos, wpts)
 print(dist)
-print(fwp[0].lon)
+print(fwp)
+print(legs)
 
