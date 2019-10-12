@@ -6,8 +6,9 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#define R 6372800.0
-#define TO_RAD (3.1415926536 / 180)
+#define R  6378137.0
+#define TO_RAD (3.14159265358979323846 / 180.0)
+#define TO_DEG (180.0 / 3.14159265358979323846)
 #define MIN_WP_DIST 50
 #define MIN(a,b) (((a)<(b))?(a):(b))
 
@@ -43,28 +44,31 @@ double c_haversine(double lat1, double lon1, double lat2, double lon2){
 }
 
 t_pos c_offset(double lat1, double lon1, double distance, double heading){
-    const double lat2 =  asin(sin(lat1) * cos(distance/R)  + cos(lat1) * sin(distance/R) * cos(heading));
-    const double lon2 = lon1 + atan2(sin(heading) * sin(distance/R) * cos(lat1) , cos(distance/R) - sin(lat1) * sin(lat2));
-    t_pos end_point = {lat2, lon2};
+    lat1 *= TO_RAD, lon1 *= TO_RAD, heading *= TO_RAD;
+    double lat2 =  asin(sin(lat1) * cos(distance/R)  + cos(lat1) * sin(distance/R) * cos(heading));
+    double lon2 = lon1 + atan2(sin(heading) * sin(distance/R) * cos(lat1) , cos(distance/R) - sin(lat1) * sin(lat2));
+    t_pos end_point = {lat2 *= TO_DEG, lon2 *= TO_DEG};
     return end_point;
 }
 
 double c_heading(double lat1, double lon1, double lat2, double lon2){
+    lat1 *= TO_RAD, lat2 *= TO_RAD, lon1 *= TO_RAD, lon2 *= TO_RAD;
     double x =  cos(lat2) * sin(lon2-lon1);
     double y =  cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(lon2-lon1);
-    double heading = atan2(x, y);
+    double heading = atan2(x, y) * TO_DEG;
     return heading;
 }
 
 void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
-    vc_vector_push_back(res->fast_wp, &position);
-    //printf("%d\n", nb_wpts);
     double in_heading, out_heading, pivot_heading;
-    double in_distance, out_distance, pivot_distance, min_pivot_distance, next_distance;
+    double in_distance, out_distance, pivot_distance, next_distance;
     double angle;
+
     t_wp fwp;
     t_wp *last_wp;
     t_wp *last_fwp;
+
+    vc_vector_push_back(res->fast_wp, &position);
 
     if (nb_wpts < 2){
         last_wp  = vc_vector_back(wpts);
@@ -91,13 +95,13 @@ void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
             }
             else{
                 out_heading = c_heading(two->center.lat, two->center.lon, three->center.lat, three->center.lon);
-                angle = out_heading - in_heading;
+                angle = fmod(out_heading - in_heading + 540.0, 360.0) - 180.0;
                 pivot_heading = in_heading  + 0.5 * angle;
-                pivot_distance = (2 * in_distance * out_distance * cos((angle * 0.5) * TO_RAD)) / (in_distance + out_distance);
+                pivot_distance = (2.0 * in_distance * out_distance * cos(angle * 0.5 * TO_RAD)) / (in_distance + out_distance);
             }
 
-            min_pivot_distance = MIN(pivot_distance, two->radius);
-            fwp.center = c_offset(two->center.lat, two->center.lon, min_pivot_distance, out_heading);
+            pivot_distance = MIN(pivot_distance, two->radius);
+            fwp.center = c_offset(two->center.lat, two->center.lon, pivot_distance, pivot_heading);
             fwp.radius = two->radius;
             vc_vector_push_back(res->fast_wp, &fwp);
 
@@ -117,7 +121,6 @@ void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
     }
 }
 
-
 /* PYTHON FUNCTION CALL INTERFACE */
 
 static PyObject* haversine(PyObject* self, PyObject* args){
@@ -132,6 +135,7 @@ static PyObject* haversine(PyObject* self, PyObject* args){
 static PyObject* optimize(PyObject* self, PyObject* args){
 	PyObject *pos;
 	PyObject *wpts;
+	PyObject *curr_wpt;
 
     if(!PyArg_ParseTuple(args, "OO", &pos, &wpts))
         return NULL;
@@ -144,7 +148,7 @@ static PyObject* optimize(PyObject* self, PyObject* args){
     vc_vector* waypoints = vc_vector_create(nb_wpts, sizeof(t_wp), NULL);
 
     for (int i = 0; i < nb_wpts; i++){
-        PyObject *curr_wpt = PyList_GetItem(wpts, i);
+        curr_wpt = (PyObject*) PyList_GetItem(wpts, i);
         t_wp wp = {
             {
                 PyFloat_AsDouble(PyObject_GetAttrString(curr_wpt, "lat")),
@@ -161,11 +165,20 @@ static PyObject* optimize(PyObject* self, PyObject* args){
     res->legs_dist = vc_vector_create(nb_wpts, sizeof (double), NULL);
     c_optimize(position, waypoints, nb_wpts, res);
 
-    PyObject *dist = Py_BuildValue("d", res->dist_opti);
+    PyObject *optimized_dist = Py_BuildValue("d", res->dist_opti);
     PyObject *fwp = Py_BuildValue("[]");
     PyObject *legs = Py_BuildValue("[]");
 
-    PyObject *obj = Py_BuildValue("(OOO)", dist, fwp, legs);
+    for (int i = 0; i < nb_wpts; i++){
+        PyList_Append(legs, Py_BuildValue("d", vc_vector_at(res->legs_dist, i)));
+        t_wp *wp = vc_vector_at(res->fast_wp, i);
+        PyObject_SetAttrString(curr_wpt, "lat", Py_BuildValue("d", wp->center.lat));
+        PyObject_SetAttrString(curr_wpt, "lon", Py_BuildValue("d", wp->center.lon));
+        PyObject_SetAttrString(curr_wpt, "radius", Py_BuildValue("d", wp->radius));
+        PyList_Append(fwp, curr_wpt);
+    }
+
+    PyObject *obj = Py_BuildValue("(OOO)", optimized_dist, fwp, legs);
 
     vc_vector_release(waypoints);
     vc_vector_release(res->fast_wp);

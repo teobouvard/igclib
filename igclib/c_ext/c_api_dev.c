@@ -76,7 +76,7 @@ void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
 
     else {
         
-        for (int i = 0; i < nb_wpts; i++){
+        for (int i = 0; i < nb_wpts-1; i++){
             t_wp *one = vc_vector_back(res->fast_wp);
             t_wp *two = vc_vector_at(wpts, i);
             t_wp *three = vc_vector_at(wpts, i+1);
@@ -120,14 +120,14 @@ void c_optimize(t_pos position, vc_vector *wpts, int nb_wpts, t_result *res){
 
 int main(){
 
-    int nb_wpts = 3;
+    int nb_wpts = 4;
     t_wp wp1 = {0, 0, 100};
     t_wp wp2 = {0.5, 0, 10000};
     t_wp wp3 = {0.5, 0.5, 10000};
     t_wp wp4 = {0, 0.5, 10000};
     t_pos pos = {0, 0};
 
-    vc_vector *wpts = vc_vector_create(3, sizeof(t_wp), NULL);
+    vc_vector *wpts = vc_vector_create(4, sizeof(t_wp), NULL);
     //vc_vector_push_back(wpts, &wp1);
     vc_vector_push_back(wpts, &wp2);
     vc_vector_push_back(wpts, &wp3);
@@ -135,10 +135,9 @@ int main(){
     vc_vector_push_back(wpts, &wp1);
 
     t_result *res = (t_result*) malloc(sizeof (t_result*));
-    res->fast_wp = vc_vector_create(nb_wpts+1, sizeof (t_wp), NULL);
+    res->fast_wp = vc_vector_create(nb_wpts, sizeof (t_wp), NULL);
     res->legs_dist = vc_vector_create(nb_wpts, sizeof (double), NULL);
     c_optimize(pos, wpts, nb_wpts, res);
-
 
     vc_vector_release(wpts);
     vc_vector_release(res->fast_wp);

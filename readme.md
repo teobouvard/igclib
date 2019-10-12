@@ -29,6 +29,7 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 * write native code for distance calculation
 * remember entry start check will not work without a turnpoint inside
 * add tests
+* autoparse task type
 
 ### Optimizer
 

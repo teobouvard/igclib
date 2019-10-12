@@ -17,6 +17,7 @@ wp1 = Waypoint(30, 30, 2)
 wpts = [wp0, wp1]
 
 #print(haversine(30, 30, 30.5, 30.5))
-a = optimize(pos, wpts)
-print(a)
+dist, fwp, legs = optimize(pos, wpts)
+print(dist)
+print(fwp[0].lon)
 

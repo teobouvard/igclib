@@ -21,6 +21,7 @@ class Task():
         NotImplementedError: If the format is not known.
     """
 
+    # TODO autoparse task type
     def __init__(self, task_file, task_type='xctrack'):
         if task_type == 'xctrack':
             task = xctrack.XCTask(task_file)
