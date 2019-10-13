@@ -1,7 +1,6 @@
 import math
 import sys
 
-from igclib.constants import IGC_ALTITUDE, IGC_LAT, IGC_LON
 from igclib.constants import distance_computation as distance
 
 
@@ -14,13 +13,11 @@ class GroupRelation():
         self.glide_ratio = []
         self.delta_distance = []
 
-        #pilot_id_postition = (snapshot[pilot_id][IGC_LAT], snapshot[pilot_id][IGC_LON])
 
         for other_pilot_id, flight in snapshot.items():
-            #other_pilot_postition = (flight[IGC_LAT], flight[IGC_LON])
 
-            delta_altitude = snapshot[pilot_id][IGC_ALTITUDE] - flight[IGC_ALTITUDE]
-            delta_distance = flight['goal_dist'] - snapshot[pilot_id]['goal_dist']
+            delta_altitude = snapshot[pilot_id].altitude - flight.altitude
+            delta_distance = flight.goal_distance - snapshot[pilot_id].goal_distance
             #raw_distance = distance(pilot_id_postition, other_pilot_postition).meters
             #glide_ratio = raw_distance/delta_altitude if delta_altitude > 0 else sys.maxsize
             # angle = math.atan(dist/delta_altitude) if delta_altitude != 0 else math.pi/2

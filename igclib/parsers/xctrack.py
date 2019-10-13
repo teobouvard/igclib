@@ -2,7 +2,7 @@ import json
 import time as timeparse
 from datetime import time
 
-from igclib.model.waypoint import Waypoint
+from igclib.model.geo import Turnpoint
 from igclib.constants import (XC_GOAL, XC_GOAL_DEADLINE, XC_SSS, XC_SSS_DIRECTION,
                        XC_SSS_TIMEGATES, XC_TIME_FORMAT, XC_TURNPOINTS,
                        XC_TURNPOINTS_RADIUS, XC_TYPE, XC_WAYPOINT,
@@ -42,11 +42,11 @@ class XCTask():
 
     @staticmethod
     def _build_wpt(wpt, task=None):
-        return Waypoint(
+        return Turnpoint(
             lat=wpt[XC_WAYPOINT][XC_WAYPOINT_LAT],
             lon=wpt[XC_WAYPOINT][XC_WAYPOINT_LON],
             radius=wpt[XC_TURNPOINTS_RADIUS],
-            alt=wpt[XC_WAYPOINT][XC_WAYPOINT_ALT],
+            altitude=wpt[XC_WAYPOINT][XC_WAYPOINT_ALT],
             name=wpt[XC_WAYPOINT][XC_WAYPOINT_NAME],
             desc=wpt[XC_WAYPOINT][XC_WAYPOINT_DESC],
             role=wpt.get(XC_TYPE, 'TURNPOINT'),

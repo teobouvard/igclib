@@ -1,6 +1,6 @@
 from geographiclib.geodesic import Geodesic 
 from igclib.constants import distance_computation as distance
-from igclib.model.waypoint import Waypoint
+from igclib.model.geo import Turnpoint
 from igclib.constants import MIN_TURNPOINTS_DISTANCE
 import math
 
@@ -15,7 +15,7 @@ def get_heading(wptA, wptB):
 
 def get_offset(wpt, heading, dist):
     offset = Geodesic.WGS84.Direct(wpt.lat, wpt.lon, heading, dist)
-    return Waypoint(lat = offset['lat2'], lon = offset['lon2'], radius=wpt.radius)
+    return Turnpoint(lat = offset['lat2'], lon = offset['lon2'], radius=wpt.radius)
 
 def optimize_naive(position, waypoints):
     # pushing current position as a fast waypoint, initializing cumulative distance at zero

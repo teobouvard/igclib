@@ -4,6 +4,7 @@ import os
 from aerofiles import igc
 
 from igclib.constants import IGC_HEADER, IGC_RECORDS, IGC_TIME
+from igclib.model.geo import Point
 
 
 class Flight():
@@ -20,12 +21,7 @@ class Flight():
         try:
             with open(track_file, 'r') as f:
                 records = igc.Reader().read(f)
-                zero_indexed_points = [point for subrecord in records[IGC_RECORDS] for point in subrecord]
-                time_indexed_points = {point[IGC_TIME]:point for point in zero_indexed_points}
-                
-                self.headers = records[IGC_HEADER]
-                self.points = time_indexed_points
-                
+                self._build(records)
 
         except UnicodeDecodeError:
             logging.debug('{} is not utf-8 valid, trying iso encoding'.format(track_file))
@@ -33,11 +29,14 @@ class Flight():
             # we have to try a different file encoding for people having accents in their names
             with open(track_file, 'r', encoding='iso-8859-1') as f:
                 records = igc.Reader().read(f)
-                zero_indexed_points = [point for subrecord in records[IGC_RECORDS] for point in subrecord]
-                time_indexed_points = {point[IGC_TIME]:point for point in zero_indexed_points}
-
-                self.headers = records[IGC_HEADER]
-                self.points = time_indexed_points
+                self._build(records)
+    
+    def _build(self, records):
+        zero_indexed_points = [point for subrecord in records[IGC_RECORDS] for point in subrecord]
+        time_indexed_points = {point[IGC_TIME]:Point(record=point) for point in zero_indexed_points}
+        
+        self.headers = records[IGC_HEADER]
+        self.points = time_indexed_points
         
     def __getitem__(self, time_point):
         return self.points.get(time_point, None)
