@@ -128,6 +128,25 @@ static PyObject* haversine(PyObject* self, PyObject* args){
     return Py_BuildValue("d", c_haversine(lat1, lon1, lat2, lon2));
 }
 
+static PyObject* get_offset(PyObject* self, PyObject* args){
+	double lat1, lon1, distance, heading;
+
+    if(!PyArg_ParseTuple(args, "dddd", &lat1, &lon1, &distance, &heading))
+        return NULL;
+
+    t_wp offset = c_offset(lat1, lon1, distance, heading);
+    return Py_BuildValue("(dd)", offset.lat, offset.lon);
+}
+
+static PyObject* get_heading(PyObject* self, PyObject* args){
+	double lat1, lon1, lat2, lon2;
+
+    if(!PyArg_ParseTuple(args, "dddd", &lat1, &lon1, &lat2, &lon2))
+        return NULL;
+
+    return Py_BuildValue("d", c_heading(lat1, lon1, lat2, lon2));
+}
+
 static PyObject* optimize(PyObject* self, PyObject* args){
 	PyObject *pos;
 	PyObject *wpts;
@@ -193,7 +212,9 @@ static PyObject* optimize(PyObject* self, PyObject* args){
 
 static PyMethodDef methods[] = {
     { "haversine", haversine, METH_VARARGS, "Returns the distance between two points" },
-    { "optimize", optimize, METH_VARARGS, "Returns the optimized distance through waypoints" },
+    { "get_offset", get_offset, METH_VARARGS, "Returns the distance between two points" },
+    { "get_heading", get_heading, METH_VARARGS, "Returns the heading between two points" },
+    //{ "optimize", optimize, METH_VARARGS, "Returns the optimized distance through waypoints" },
     { NULL, NULL, 0, NULL }
 };
 

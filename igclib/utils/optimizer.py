@@ -1,5 +1,6 @@
 from geographiclib.geodesic import Geodesic 
 from igclib.constants import distance_computation as distance
+from geolib import get_heading, get_offset
 from igclib.model.geo import Turnpoint, Opti
 from igclib.constants import MIN_TURNPOINTS_DISTANCE
 import math
@@ -10,12 +11,12 @@ import math
 def optimize(position, waypoints):
     return optimize_naive(position, waypoints)
 
-def get_heading(wptA, wptB):
-    return Geodesic.WGS84.Inverse(wptA.lat, wptA.lon, wptB.lat, wptB.lon, outmask=Geodesic.AZIMUTH)['azi1']
+#def get_heading(wptA, wptB):
+#    return Geodesic.WGS84.Inverse(wptA.lat, wptA.lon, wptB.lat, wptB.lon, outmask=Geodesic.AZIMUTH)['azi1']
 
-def get_offset(wpt, heading, dist):
-    offset = Geodesic.WGS84.Direct(wpt.lat, wpt.lon, heading, dist)
-    return Turnpoint(lat = offset['lat2'], lon = offset['lon2'], radius=wpt.radius)
+#def get_offset(wpt, heading, dist):
+#    offset = Geodesic.WGS84.Direct(wpt.lat, wpt.lon, heading, dist)
+#    return Turnpoint(lat = offset['lat2'], lon = offset['lon2'], radius=wpt.radius)
 
 def optimize_naive(position, waypoints):
     # pushing current position as a fast waypoint, initializing cumulative distance at zero
@@ -32,25 +33,26 @@ def optimize_naive(position, waypoints):
         for two, three in zip(waypoints[:], waypoints[1:]):
             one = fast_waypoints[-1]
 
-            in_heading = get_heading(two, one)
+            in_heading = get_heading(two.lat, two.lon, one.lat, one.lon)
             in_distance = distance(one.lat, one.lon, two.lat, two.lon)
             out_distance = distance(two.lat, two.lon, three.lat, three.lon)
 
             # two next turnpoints are identical, can't test for equality because of numerical precision
             if out_distance < MIN_TURNPOINTS_DISTANCE:
                 next_target, nb_concentric = find_next_not_concentric(two, waypoints)
-                out_heading = get_heading(two, next_target)
+                out_heading = get_heading(two.lat, two.lon, next_target.lat, next_target.lon)
                 angle = out_heading - in_heading
                 pivot_distance = two.radius
                 pivot_heading = in_heading # + (0.5/nb_concentric) * angle
             else:
-                out_heading = get_heading(two, three)
+                out_heading = get_heading(two.lat, two.lon, three.lat, three.lon)
                 angle = out_heading - in_heading
                 pivot_heading = in_heading + 0.5 * angle
                 pivot_distance = (2 * in_distance * out_distance * math.cos(math.radians(angle * 0.5))) / (in_distance + out_distance)
                 
             min_pivot_distance = min(pivot_distance, two.radius)
-            fast_wp = get_offset(two, pivot_heading, min_pivot_distance)
+            x, y = get_offset(two.lat, two.lon, min_pivot_distance, pivot_heading)
+            fast_wp = Turnpoint(x, y, two.radius)
             fast_waypoints.append(fast_wp)
             leg_distances.append(distance(one.lat, one.lon, fast_wp.lat, fast_wp.lon))
 

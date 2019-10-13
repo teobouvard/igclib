@@ -29,6 +29,7 @@ class Point():
         
         self.goal_distance = None
 
+
 class Opti():
 
     __slots__ = ['distance', 'legs', 'points']
