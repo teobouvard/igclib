@@ -11,13 +11,6 @@ import math
 def optimize(position, waypoints):
     return optimize_naive(position, waypoints)
 
-#def get_heading(wptA, wptB):
-#    return Geodesic.WGS84.Inverse(wptA.lat, wptA.lon, wptB.lat, wptB.lon, outmask=Geodesic.AZIMUTH)['azi1']
-
-#def get_offset(wpt, heading, dist):
-#    offset = Geodesic.WGS84.Direct(wpt.lat, wpt.lon, heading, dist)
-#    return Turnpoint(lat = offset['lat2'], lon = offset['lon2'], radius=wpt.radius)
-
 def optimize_naive(position, waypoints):
     # pushing current position as a fast waypoint, initializing cumulative distance at zero
     fast_waypoints = [position]
