@@ -6,11 +6,13 @@ from igclib.constants import distance_computation as distance
 
 class GroupRelation():
 
+    __slots__ = ['other_pilot_id', 'delta_altitude', 'delta_distance']
+
     def __init__(self, pilot_id, snapshot):
         self.other_pilot_id = []
         self.delta_altitude = []
-        self.raw_distance = []
-        self.glide_ratio = []
+        #self.raw_distance = []
+        #self.glide_ratio = []
         self.delta_distance = []
 
 

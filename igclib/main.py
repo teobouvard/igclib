@@ -91,7 +91,7 @@ if __name__ == '__main__':
     #plot_kernel(r, features)
     plot_evolution(features)
 
-    #print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
+    print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
     #times = list(r.flights[PILOT_ID].points.keys())
     #dist = list(point['goal_dist'] for point in r.flights[PILOT_ID].points.values())
     #plt.plot(times, dist)

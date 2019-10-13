@@ -20,7 +20,7 @@ class XCTask():
         start_time = timeparse.strptime(task[XC_SSS][XC_SSS_TIMEGATES][0], XC_TIME_FORMAT)
         stop_time = timeparse.strptime(task[XC_GOAL][XC_GOAL_DEADLINE], XC_TIME_FORMAT)
 
-        waypoints = []
+        turnpoints = []
 
         for waypoint in task[XC_TURNPOINTS]:
 
@@ -34,11 +34,11 @@ class XCTask():
             elif waypoint.get(XC_TYPE, None) == 'ESS':
                 self.ess = self._build_wpt(waypoint)
 
-            waypoints.append(self._build_wpt(waypoint))
+            turnpoints.append(self._build_wpt(waypoint))
 
         self.start = time(start_time.tm_hour, start_time.tm_min, start_time.tm_sec)
         self.stop = time(stop_time.tm_hour, stop_time.tm_min, stop_time.tm_sec)
-        self.waypoints = waypoints
+        self.turnpoints = turnpoints
 
     @staticmethod
     def _build_wpt(wpt, task=None):

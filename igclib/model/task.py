@@ -6,7 +6,7 @@ from igclib.model.geo import Turnpoint, Point
 from igclib.constants import distance_computation as distance
 from igclib.parsers import xctrack
 from igclib.utils.optimizer import optimize
-# fast distance computations do not validate waypoints without tolerances
+# fast distance computations do not validate turnpoints without tolerances
 TOLERANCE = 0.005
 
 class Task():
@@ -36,9 +36,9 @@ class Task():
 
         self.takeoff = task.takeoff
         self.sss = task.sss
-        self.waypoints = task.waypoints
+        self.turnpoints = task.turnpoints
         self.ess = task.ess
-        self.optimized_distance, self.fast_waypoints, self.leg_distances = optimize(self.takeoff, self.waypoints)
+        self.optimized_distance, self.fast_turnpoints, self.leg_distances = optimize(self.takeoff, self.turnpoints)
 
     def _timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
@@ -54,7 +54,7 @@ class Task():
 
 
     def validate(self, flight):
-        remaining_waypoints = self.waypoints.copy()
+        remaining_turnpoints = self.turnpoints.copy()
         start_passed = False
         goal_distances = {}
         
@@ -62,38 +62,87 @@ class Task():
 
             # race has not started yet
             if timestamp < self.start:
-                goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
+                goal_distances[timestamp] = optimize(point, remaining_turnpoints)[0]
                 continue
 
             # race has started, check for start validation
             if start_passed == False:
-                goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
+                goal_distances[timestamp] = optimize(point, remaining_turnpoints)[0]
 
                 # this will not work for start without a turnpoint inside !
                 if self.sss.direction == 'EXIT' and self._is_in(point, self.sss) or self.sss.direction == 'ENTER' and not self._is_in(point, self.sss):
                     start_passed = True
-                    del remaining_waypoints[0]
-                    logging.info('START {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
+                    del remaining_turnpoints[0]
+                    logging.info('START {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
 
                 continue
                 
             # at least two turnpoints remaining, check for concentric ones
-            if len(remaining_waypoints) > 1:
-                goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
+            if len(remaining_turnpoints) > 1:
+                goal_distances[timestamp] = optimize(point, remaining_turnpoints)[0]
 
-                if self._is_in(point, remaining_waypoints[0]) and not self._concentric_case(remaining_waypoints[0], remaining_waypoints[1]):
-                    del remaining_waypoints[0]
-                    logging.info('IN {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
-                elif self._concentric_case(remaining_waypoints[0], remaining_waypoints[1]) and not self._is_in(point, remaining_waypoints[0]):
-                    del remaining_waypoints[0]
-                    logging.info('OUT OR ESS {}, {} wp remaining'.format(timestamp, len(remaining_waypoints)))
+                if self._is_in(point, remaining_turnpoints[0]) and not self._concentric_case(remaining_turnpoints[0], remaining_turnpoints[1]):
+                    del remaining_turnpoints[0]
+                    logging.info('IN {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
+                elif self._concentric_case(remaining_turnpoints[0], remaining_turnpoints[1]) and not self._is_in(point, remaining_turnpoints[0]):
+                    del remaining_turnpoints[0]
+                    logging.info('OUT OR ESS {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
 
             # only one turnpoint remaining, check for goal
-            elif len(remaining_waypoints) == 1:
-                goal_distances[timestamp] = optimize(point, remaining_waypoints)[0]
+            elif len(remaining_turnpoints) == 1:
+                goal_distances[timestamp] = optimize(point, remaining_turnpoints)[0]
 
-                if self._is_in(point, remaining_waypoints[0]):
-                    del remaining_waypoints[0]
+                if self._is_in(point, remaining_turnpoints[0]):
+                    del remaining_turnpoints[0]
+                    logging.info('GOAL {}'.format(timestamp))
+
+            # in goal, fill zeros until landing
+            else:
+                goal_distances[timestamp] = 0
+        
+        return flight.pilot_id, goal_distances
+
+    def validate_raw(self, flight):
+        remaining_turnpoints = self.turnpoints.copy()
+        start_passed = False
+        goal_distances = {}
+        
+        for timestamp, point in flight.points.items():
+
+            # race has not started yet
+            if timestamp < self.start:
+                flight[timestamp] = optimize(point, remaining_turnpoints)[0]
+                continue
+
+            # race has started, check for start validation
+            if start_passed == False:
+                goal_distances[timestamp] = optimize(point, remaining_turnpoints)[0]
+
+                # this will not work for start without a turnpoint inside !
+                if self.sss.direction == 'EXIT' and self._is_in(point, self.sss) or self.sss.direction == 'ENTER' and not self._is_in(point, self.sss):
+                    start_passed = True
+                    del remaining_turnpoints[0]
+                    logging.info('START {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
+
+                continue
+                
+            # at least two turnpoints remaining, check for concentric ones
+            if len(remaining_turnpoints) > 1:
+                goal_distances[timestamp] = optimize(point, remaining_turnpoints)[0]
+
+                if self._is_in(point, remaining_turnpoints[0]) and not self._concentric_case(remaining_turnpoints[0], remaining_turnpoints[1]):
+                    del remaining_turnpoints[0]
+                    logging.info('IN {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
+                elif self._concentric_case(remaining_turnpoints[0], remaining_turnpoints[1]) and not self._is_in(point, remaining_turnpoints[0]):
+                    del remaining_turnpoints[0]
+                    logging.info('OUT OR ESS {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
+
+            # only one turnpoint remaining, check for goal
+            elif len(remaining_turnpoints) == 1:
+                goal_distances[timestamp] = optimize(point, remaining_turnpoints)[0]
+
+                if self._is_in(point, remaining_turnpoints[0]):
+                    del remaining_turnpoints[0]
                     logging.info('GOAL {}'.format(timestamp))
 
             # in goal, fill zeros until landing
@@ -105,7 +154,7 @@ class Task():
     def to_json(self):
         return json.dumps({
             'distance':self.optimized_distance, 
-            'fast_waypoints':self.fast_waypoints, 
+            'fast_turnpoints':self.fast_turnpoints, 
             'leg_distances':self.leg_distances
             })
 

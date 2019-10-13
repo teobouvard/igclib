@@ -38,6 +38,8 @@ class Race():
         task (Task) : The Task instance of the Race.
     """
 
+    __solts__ = ['n_pilots', 'flights']
+
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None):
 
         if path is not None:

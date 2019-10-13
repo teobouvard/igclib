@@ -14,6 +14,8 @@ class Flight():
         [type]: [description]
     """
 
+    __slots__ = ['pilot_id', 'headers', 'points']
+
     def __init__(self, track_file):
 
         self.pilot_id = os.path.basename(track_file).split('.')[0]
@@ -32,11 +34,8 @@ class Flight():
                 self._build(records)
     
     def _build(self, records):
-        zero_indexed_points = [point for subrecord in records[IGC_RECORDS] for point in subrecord]
-        time_indexed_points = {point[IGC_TIME]:Point(record=point) for point in zero_indexed_points}
-        
         self.headers = records[IGC_HEADER]
-        self.points = time_indexed_points
+        self.points = {point[IGC_TIME]:Point(record=point) for subrecord in records[IGC_RECORDS] for point in subrecord} 
         
     def __getitem__(self, time_point):
         return self.points.get(time_point, None)
