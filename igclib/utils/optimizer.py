@@ -1,6 +1,6 @@
 from geographiclib.geodesic import Geodesic 
 from igclib.constants import distance_computation as distance
-from igclib.model.geo import Turnpoint
+from igclib.model.geo import Turnpoint, Opti
 from igclib.constants import MIN_TURNPOINTS_DISTANCE
 import math
 
@@ -57,7 +57,7 @@ def optimize_naive(position, waypoints):
         leg_distances.append(distance(fast_waypoints[-1].lat, fast_waypoints[-1].lon, waypoints[-1].lat, waypoints[-1].lon))
         fast_waypoints.append(waypoints[-1])
 
-    return sum(leg_distances), fast_waypoints, leg_distances
+    return Opti(sum(leg_distances), leg_distances, fast_waypoints)
 
 def find_next_not_concentric(wpt, waypoints):
     index = waypoints.index(wpt)

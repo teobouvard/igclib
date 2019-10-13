@@ -33,7 +33,7 @@ class Opti():
 
     __slots__ = ['distance', 'legs', 'points']
 
-    def __init__(self, distance, legs, points):
+    def __init__(self, distance=0, legs=[], points=[]):
         self.distance = distance
         self.legs = legs
         self.points = points
