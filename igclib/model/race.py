@@ -32,7 +32,7 @@ class Race():
 
     Attributes:
         n_pilots (int) : The number of pilots in the Race.
-        flights (dict [str, Flight]) : A collection of Flight indexed by pilot ID.
+        flights (dict [str, Flight]) : A collection of Flights indexed by pilot ID.
         task (Task) : The Task instance of the Race.
     """
 
@@ -116,7 +116,7 @@ class Race():
 
     def _snapshots(self, start=None, stop=None):
         """
-        Generator of snapshots of the race at each second between start and stop
+        Generates snapshots of the race at each second between start and stop
         """
         for timestamp in self.task._timerange(start, stop):
             if self[timestamp] != {}:
@@ -125,7 +125,7 @@ class Race():
 
     def save(self, path):
         """
-        Save the race instance to a file specified by path
+        Saves the race instance to a file specified by path
         """
         with open(path, 'wb') as f:
             pickle.dump(self.__dict__, f)
@@ -133,7 +133,7 @@ class Race():
 
     def _load(self, path):
         """
-        Load the race instance from a pickle file
+        Loads the race instance from a pickle file
         """
         with open(path, 'rb') as f:
             self.__dict__.update(pickle.load(f)) 

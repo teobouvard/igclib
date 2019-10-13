@@ -1,4 +1,7 @@
 class Turnpoint():
+    """
+    Turnpoint
+    """
 
     __slots__ = ['lat', 'lon', 'radius', 'altitude', 'name', 'desc', 'role', 'direction']
 
@@ -14,6 +17,9 @@ class Turnpoint():
         
 
 class Point():
+    """
+    Point
+    """
 
     __slots__ = ['lat', 'lon', 'altitude', 'goal_distance']
 
@@ -31,6 +37,9 @@ class Point():
 
 
 class Opti():
+    """
+    Opti
+    """
 
     __slots__ = ['distance', 'legs', 'points']
 

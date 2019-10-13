@@ -1,4 +1,3 @@
-from geographiclib.geodesic import Geodesic 
 from igclib.constants import distance_computation as distance
 from geolib import get_heading, get_offset
 from igclib.model.geo import Turnpoint, Opti
@@ -36,7 +35,7 @@ def optimize_naive(position, waypoints):
                 out_heading = get_heading(two.lat, two.lon, next_target.lat, next_target.lon)
                 angle = out_heading - in_heading
                 pivot_distance = two.radius
-                pivot_heading = in_heading # + (0.5/nb_concentric) * angle
+                pivot_heading = in_heading + (0.5/nb_concentric) * angle
             else:
                 out_heading = get_heading(two.lat, two.lon, three.lat, three.lon)
                 angle = out_heading - in_heading

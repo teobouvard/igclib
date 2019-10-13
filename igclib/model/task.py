@@ -11,14 +11,12 @@ TOLERANCE = 0.005
 
 class Task():
     """
-    Task 
-    
     Args:
         task_file (str): Path to a task file.
         task_type (str, optional): Format of the task file. Defaults to 'xctrack'.
     
     Raises:
-        NotImplementedError: If the format is not known.
+        NotImplementedError: If the task_type is not known.
     """
 
     # TODO autoparse task type

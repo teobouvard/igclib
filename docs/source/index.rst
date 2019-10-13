@@ -10,4 +10,5 @@ Welcome to igclib's documentation
    install.rst
    examples.rst
    architecture.rst
-   api.rst
+   python_api.rst
+   command_line_manual.rst
