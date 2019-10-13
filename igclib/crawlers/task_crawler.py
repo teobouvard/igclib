@@ -6,7 +6,6 @@ import aiohttp
 import requests
 from bs4 import BeautifulSoup
 from igclib.constants import DEFAULT_PROVIDER, MAX_TASKS_PER_EVENT, TASK_PROVIDERS
-from tqdm import tqdm
 
 
 class TaskCrawler():
@@ -59,7 +58,7 @@ class TaskCrawler():
                     step = asyncio.ensure_future(self.fetch(client, event_name, link))
                     steps.append(step)
 
-            responses = [await r for r in tqdm(asyncio.as_completed(steps), total=len(steps))]
+            responses = [await r for r in asyncio.as_completed(steps)]
             responses = [r for r in responses if r is not None]
 
             for response in responses:

@@ -40,6 +40,7 @@ def argument_parser():
     parser.add_argument('--n_jobs', type=int, default=-1, help='Number of CPU cores used for task validation (-1 to use all cores)')
     parser.add_argument('--provider', choices=TASK_PROVIDERS.keys(), default=DEFAULT_PROVIDER, help='Tasks provider')
     parser.add_argument('--year', type=int, default=datetime.now().year, help='Fetch task from this year')
+    parser.add_argument('--progress', action='store_true', help='Display prgress percentage on stderr. Should only be used if you want gui output on stdout AND ratio output on stderr.')
     
     args = parser.parse_args()
     check(args)
@@ -51,7 +52,7 @@ if __name__ == '__main__':
     args = argument_parser()
     
     if args.mode == 'race':
-        r =  Race(args.flights, args.task, args.n_jobs)
+        r =  Race(tracks_dir=args.flights, task_file=args.task, n_jobs=args.n_jobs, stderr_progress=args.progress)
         r.save(args.output)
 
     elif args.mode == 'optimize':

@@ -2,14 +2,15 @@ import logging
 import multiprocessing
 import os
 import pickle
+import sys
 from datetime import time
 from glob import glob
-
-from tqdm import tqdm
 
 from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
+from tqdm import tqdm
+
 
 class Race():
     """
@@ -38,7 +39,7 @@ class Race():
 
     __solts__ = ['n_pilots', 'flights']
 
-    def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None):
+    def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, stderr_progress=False):
 
         if path is not None:
             self._load(path)
@@ -48,15 +49,26 @@ class Race():
             self.n_pilots = len(tracks)
             
             self.task = Task(task_file)
-            self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
+
+            self.flights = {}
+            progress = 1
+            for x in tqdm(tracks, desc='reading tracks', file=sys.stdout):
+                pilot_id = os.path.basename(x).split('.')[0]
+                self.flights[pilot_id] = Flight(x)
+                if stderr_progress == True:
+                    print('{}/{}'.format(progress, self.n_pilots))
+                    progress +=1
             
             n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
             with multiprocessing.Pool(n_jobs) as p:
+                progress = 1
                 # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
-                for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots):
+                for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=None):
                     for timestamp, point in self.flights[pilot_id].points.items():
                         point.goal_distance = goal_distances[timestamp]
-                    pass
+                    if stderr_progress == True:
+                        print('{}/{}'.format(progress, self.n_pilots), file=sys.stderr)
+                        progress +=1
 
     def __getitem__(self, time_point):
         """
@@ -105,7 +117,7 @@ class Race():
 
         features = {}
         
-        for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self)):
+        for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self), file=sys.stdout):
             if pilot_id not in snapshot:
                 logging.debug('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
             else:
