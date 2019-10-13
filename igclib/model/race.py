@@ -11,6 +11,7 @@ from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
 
+DEBUG = False
 
 class Race():
     """
@@ -49,14 +50,19 @@ class Race():
             self.task = Task(task_file)
             self.flights = {os.path.basename(x).split('.')[0]:Flight(x) for x in tqdm(tracks, desc='reading tracks')}
             
-            n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
-            with multiprocessing.Pool(n_jobs) as p:
-                # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
-                for result in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots):
-                    pilot_id = result[0]
-                    goal_distances = result[1]
+            if DEBUG == True:
+                for pilot_id, goal_distances in map(self.task.validate, self.flights.values()):
                     for timestamp, point in self.flights[pilot_id].points.items():
                         point['goal_dist'] = goal_distances[timestamp]
+            else:
+                n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
+                with multiprocessing.Pool(n_jobs) as p:
+                    # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
+                    for result in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots):
+                        pilot_id = result[0]
+                        goal_distances = result[1]
+                        for timestamp, point in self.flights[pilot_id].points.items():
+                            point['goal_dist'] = goal_distances[timestamp]
 
     def __getitem__(self, time_point):
         """

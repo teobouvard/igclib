@@ -1,10 +1,10 @@
 .PHONY: docs
 
 dev:
-	python3 igclib/main.py --race test_data/racetest.pkl --pilot 0035
+	python3 igclib/main.py --race test_data/regression.pkl --pilot 0035
 
 race:
-	igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/one_track --output /dev/null
+	igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/one_track --output test_data/regression.pkl
 
 install:
 	pip install --user -e .

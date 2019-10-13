@@ -25,15 +25,15 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/igclib/main.py",
-            "args": ["--race", "test_data/race.pkl", "--pilot", "0035"],
+            "args": ["--race", "test_data/regression.pkl", "--pilot", "0035"],
             "console": "integratedTerminal"
         },
         {
             "name": "export",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/igclib/bin/race_exporter.py",
-            "args": ["--task", "test/tasks/task0.xctsk", "--flights", "test/large_tracks", "--n_jobs", "-1", "--export_path", "/dev/null"],
+            "program": "${workspaceFolder}/igclib/bin/igclib",
+            "args": ["--mode", "race", "--task", "test_data/tasks/task.xctsk", "--flights", "test_data/one_track", "--output", "/dev/null"],
             "console": "integratedTerminal"
         },
         {

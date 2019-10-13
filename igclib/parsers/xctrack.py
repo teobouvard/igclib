@@ -50,5 +50,5 @@ class XCTask():
             name=wpt[XC_WAYPOINT][XC_WAYPOINT_NAME],
             desc=wpt[XC_WAYPOINT][XC_WAYPOINT_DESC],
             role=wpt.get(XC_TYPE, 'TURNPOINT'),
-            direction=task[XC_SSS][XC_SSS_DIRECTION]
+            direction=task[XC_SSS][XC_SSS_DIRECTION] if task is not None else None
         )
