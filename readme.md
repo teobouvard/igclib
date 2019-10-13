@@ -26,7 +26,7 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 ### Library
 
 * safety check on task and tracks 
-* C extension for task validation
+* C extension for task validation -> how to rebuild PyObject from C ?
 * remember entry start check will not work without a turnpoint inside
 * add tests
 * autoparse task type

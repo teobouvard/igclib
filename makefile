@@ -1,7 +1,7 @@
 .PHONY: docs
 
 dev:
-	python3 igclib/main.py --race test_data/regression.pkl --pilot 0035
+	python3 igclib/main.py --race test_data/regression.pkl --pilot 0090
 
 race:
 	igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_tracks --output test_data/regression.pkl

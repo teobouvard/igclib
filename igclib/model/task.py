@@ -1,13 +1,15 @@
 import json
 import logging
 from datetime import datetime, time, timedelta
-
+from matplotlib import pyplot as plt
 from igclib.model.geo import Turnpoint, Point, Opti
 from igclib.constants import distance_computation as distance
+from igclib.constants import DEBUG
 from igclib.parsers import xctrack
 from igclib.utils.optimizer import optimize
+
 # fast distance computations do not validate turnpoints without tolerances
-TOLERANCE = 0.005
+TOLERANCE = 0.05
 
 class Task():
     """
@@ -68,7 +70,7 @@ class Task():
                 goal_distances[timestamp] = optimize(point, remaining_turnpoints).distance
 
                 # this will not work for start without a turnpoint inside !
-                if self.sss.direction == 'EXIT' and self._is_in(point, self.sss) or self.sss.direction == 'ENTER' and not self._is_in(point, self.sss):
+                if self._close_enough(point, self.sss):
                     start_passed = True
                     del remaining_turnpoints[0]
                     logging.info('START {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
@@ -79,25 +81,25 @@ class Task():
             if len(remaining_turnpoints) > 1:
                 goal_distances[timestamp] = optimize(point, remaining_turnpoints).distance
 
-                if self._is_in(point, remaining_turnpoints[0]) and not self._concentric_case(remaining_turnpoints[0], remaining_turnpoints[1]):
+                if self._close_enough(point, remaining_turnpoints[0]):
                     del remaining_turnpoints[0]
                     logging.info('IN {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
-                elif self._concentric_case(remaining_turnpoints[0], remaining_turnpoints[1]) and not self._is_in(point, remaining_turnpoints[0]):
-                    del remaining_turnpoints[0]
-                    logging.info('OUT OR ESS {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
 
             # only one turnpoint remaining, check for goal
             elif len(remaining_turnpoints) == 1:
                 goal_distances[timestamp] = optimize(point, remaining_turnpoints).distance
 
-                if self._is_in(point, remaining_turnpoints[0]):
+                if self._close_enough(point, remaining_turnpoints[0]):
                     del remaining_turnpoints[0]
                     logging.info('GOAL {}'.format(timestamp))
 
             # in goal, fill zeros until landing
             else:
                 goal_distances[timestamp] = 0
-        
+
+        if DEBUG ==True:
+            self.debug_plot(goal_distances)
+            
         return flight.pilot_id, goal_distances
 
     def to_json(self):
@@ -111,9 +113,16 @@ class Task():
         return int(self.opti.distance)
 
     @staticmethod
-    def _is_in(pos, wpt):
-        return True if distance(pos.lat, pos.lon, wpt.lat, wpt.lon) <= wpt.radius*(1 + TOLERANCE) else False
+    def _close_enough(pos, wpt):
+        return True if abs(distance(pos.lat, pos.lon, wpt.lat, wpt.lon) - wpt.radius) < wpt.radius*TOLERANCE else False
 
     @staticmethod
     def _concentric_case(wptA, wptB):
         return True if wptA.lat == wptB.lat and wptA.lon == wptB.lon and wptB.radius < wptA.radius else False
+
+
+    def debug_plot(self, distances):
+        timestamps = [str(x) for x in distances.keys()]
+        distances = [float(x) for x in distances.values()]
+        plt.plot(distances)
+        plt.show()

@@ -1,15 +1,14 @@
 import argparse
 import logging
 import multiprocessing
-multiprocessing.set_start_method('fork', True)
+from datetime import time
 
 import numpy as np
 import seaborn as sns
+from igclib.model.race import Race
 from matplotlib import pyplot as plt
 from pympler import asizeof
-from datetime import time
-
-from igclib.model.race import Race
+from scipy.signal import savgol_filter
 
 logging.basicConfig(filename='log.txt', format= '%(levelname)s: %(message)s', level=logging.INFO)
 
@@ -59,11 +58,15 @@ def plot_evolution(features):
     #gradient_altitudes = np.gradient(mean_altitudes)
     #gradient_goal = np.gradient(mean_goal)
         
+    smoothed_altitudes = savgol_filter(mean_altitudes, 101, 2)
+    smoothed_distances = savgol_filter(mean_goal, 101, 2)
 
-    fig, ax = plt.subplots(2, tight_layout=True, sharex=True)
+    fig, ax = plt.subplots(2, 2, tight_layout=True, sharex=True)
 
-    sns.lineplot(x=timestamps, y=mean_altitudes, ax=ax[0])
-    sns.lineplot(x=timestamps, y=mean_goal, ax=ax[1])
+    sns.lineplot(x=timestamps, y=smoothed_altitudes, ax=ax[0][0])
+    sns.lineplot(x=timestamps, y=mean_altitudes, ax=ax[1][0])
+    sns.lineplot(x=timestamps, y=smoothed_distances, ax=ax[0][1])
+    sns.lineplot(x=timestamps, y=mean_goal, ax=ax[1][1])
     plt.show()
 
 def argument_parser():
@@ -88,7 +91,7 @@ if __name__ == '__main__':
     #plot_kernel(r, features)
     plot_evolution(features)
 
-    print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
+    #print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
     #times = list(r.flights[PILOT_ID].points.keys())
     #dist = list(point['goal_dist'] for point in r.flights[PILOT_ID].points.values())
     #plt.plot(times, dist)

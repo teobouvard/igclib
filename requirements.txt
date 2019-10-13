@@ -29,3 +29,4 @@ sphinx_rtd_theme
 
 # scientific computing
 numpy
+scipy

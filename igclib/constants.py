@@ -1,10 +1,15 @@
 import re
 
+
+DEBUG = False
+
 ### DISTANCE COMPUTATION ###
 
-#from geopy import distance
 from geolib import haversine
 distance_computation = haversine
+#from geopy import distance
+#def distance_computation(x1, x2, y1, y2):
+#    return distance.distance((x1, x2), (y1, y2)).meters
 #distance_computation = distance.great_circle
 #distance_computation = distance.vincenty -> slower
 #distance_computation = distance.distance -> slowest
