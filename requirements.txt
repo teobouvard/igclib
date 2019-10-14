@@ -18,6 +18,7 @@ aerofiles
 # visualization 
 matplotlib
 seaborn
+pptk
 
 # memory profiling
 pympler

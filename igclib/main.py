@@ -2,13 +2,14 @@ import argparse
 import logging
 import multiprocessing
 from datetime import time
+import pptk
 
 import numpy as np
 import seaborn as sns
 from igclib.model.race import Race
 from matplotlib import pyplot as plt
 from pympler import asizeof
-from scipy.signal import savgol_filter
+
 
 logging.basicConfig(filename='log.txt', format= '%(levelname)s: %(message)s', level=logging.INFO)
 
@@ -42,32 +43,22 @@ def plot_kernel(race, features):
         ax1.cla()
         ax2.cla()
 
-def plot_evolution(features):
+def plot_3d(r):
+    for _, snap in r._snapshots():
+        x = []
+        y = []
+        z = []
+        for flight in snap.values():
+            x.append(flight.lon)
+            y.append(flight.lat)
+            z.append(flight.altitude)
+        points = [x, y, z]
+        v = pptk.viewer(points)
+        v.set(point_size=2)
+        v.wait()
+        v.close()
 
-    mean_altitudes = []
-    mean_goal = []
-    timestamps = list(features.keys())
-
-    for feature in features.values():
-        altitudes = np.array(feature.group_relation.delta_altitude)
-        goal_distances = np.array(feature.group_relation.delta_distance)
-
-        mean_altitudes.append(altitudes.mean())
-        mean_goal.append(goal_distances.mean())
-        
-    #gradient_altitudes = np.gradient(mean_altitudes)
-    #gradient_goal = np.gradient(mean_goal)
-        
-    smoothed_altitudes = savgol_filter(mean_altitudes, 101, 2)
-    smoothed_distances = savgol_filter(mean_goal, 101, 2)
-
-    fig, ax = plt.subplots(2, 2, tight_layout=True, sharex=True)
-
-    sns.lineplot(x=timestamps, y=smoothed_altitudes, ax=ax[0][0])
-    sns.lineplot(x=timestamps, y=mean_altitudes, ax=ax[1][0])
-    sns.lineplot(x=timestamps, y=smoothed_distances, ax=ax[0][1])
-    sns.lineplot(x=timestamps, y=mean_goal, ax=ax[1][1])
-    plt.show()
+    #v.color_map('gray',scale=[10,65])
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='igclib - dev module')
@@ -87,9 +78,10 @@ if __name__ == '__main__':
     
     r =  Race(path=RACE_FILE)
     print(r)
-    features = r.get_pilot_features(PILOT_ID)
+    #features = r.get_pilot_features(PILOT_ID)
     #plot_kernel(r, features)
-    plot_evolution(features)
+    r.pilot_schema(PILOT_ID)
+    #plot_3d(r)
 
     #print('memory size of race : {}'.format(asizeof.asizeof(r) / 10e6))
     #times = list(r.flights[PILOT_ID].points.keys())

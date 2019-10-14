@@ -6,10 +6,14 @@ import sys
 from datetime import time
 from glob import glob
 
+import numpy as np
+import seaborn as sns
 from igclib.constants import DEBUG
 from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
+from matplotlib import pyplot as plt
+from scipy.signal import savgol_filter
 from tqdm import tqdm
 
 
@@ -129,6 +133,34 @@ class Race():
                 features[timestamp] = PilotFeatures(pilot_id, timestamp, snapshot)
 
         return features
+
+    def pilot_schema(self, pilot_id):
+        features = self.get_pilot_features(pilot_id)
+
+        mean_altitudes = []
+        mean_goal = []
+        timestamps = list(features.keys())
+
+        for feature in features.values():
+            altitudes = np.array(feature.group_relation.delta_altitude)
+            goal_distances = np.array(feature.group_relation.delta_distance)
+
+            mean_altitudes.append(altitudes.mean())
+            mean_goal.append(goal_distances.mean())
+            
+            
+        smoothed_altitudes = savgol_filter(mean_altitudes, 121, 1)
+        smoothed_distances = savgol_filter(mean_goal, 121, 1)
+        gradient_altitudes = np.gradient(smoothed_altitudes)
+        gradient_goal = np.gradient(smoothed_distances)
+
+        _, ax = plt.subplots(2, 2, tight_layout=True, sharex=True)
+
+        sns.lineplot(x=timestamps, y=smoothed_altitudes, ax=ax[0][0])
+        sns.lineplot(x=timestamps, y=gradient_altitudes, ax=ax[1][0])
+        sns.lineplot(x=timestamps, y=smoothed_distances, ax=ax[0][1])
+        sns.lineplot(x=timestamps, y=gradient_goal, ax=ax[1][1])
+        plt.show()
 
 
     def _snapshots(self, start=None, stop=None):
