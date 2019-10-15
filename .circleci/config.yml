@@ -11,10 +11,13 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
+      
       - run:
-          command: |
-            pytest
+          name: Install package
+          command: pip install --user .
+      - run:
           name: Test
+          command: pytest
 
 workflows:
   main:
