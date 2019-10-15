@@ -19,7 +19,7 @@ jobs:
           command: pip install --user .
       - run:
           name: Test
-          command: pytest
+          command: py.test
 
 workflows:
   main:
