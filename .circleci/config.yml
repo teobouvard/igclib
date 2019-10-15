@@ -12,14 +12,16 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          name: Update pip
-          command: pip install --user --upgrade pip
-      - run:
-          name: Install package
-          command: pip install --user .
+          name: Get pipenv
+          command: |
+            pip install --user --upgrade pip
+            sudo pip install pipenv
+            pipenv install      
       - run:
           name: Test
-          command: py.test
+          command: pipenv run py.test
+      - store_test_results:
+          path: test-results
 
 workflows:
   main:
