@@ -11,7 +11,9 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      
+      - run:
+          name: Update pip
+          command: pip install --user --upgrade pip
       - run:
           name: Install package
           command: pip install --user .
