@@ -9,14 +9,12 @@ jobs:
     steps:
       - checkout
       - python/load-cache
-      - python/install-deps
-      - python/save-cache
       - run:
-          name: Get pipenv
+          name: Install dependencies
           command: |
-            pip install --user --upgrade pip
-            sudo pip install pipenv
-            pipenv install      
+            pip install --upgrade pip
+            sudo pip install . 
+      - python/save-cache
       - run:
           name: Test
           command: pipenv run py.test
