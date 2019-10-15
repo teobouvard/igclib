@@ -5,8 +5,7 @@ orbs:
 
 jobs:
   build:
-    executor:
-      tag: 3.6
+    executor: python/default
     steps:
       - checkout
       - python/load-cache
@@ -18,7 +17,6 @@ jobs:
           name: Test
 
 workflows:
-  version: 2
-  build:
+  main:
     jobs:
       - build
