@@ -44,7 +44,10 @@ class Race():
 
     __solts__ = ['n_pilots', 'flights']
 
-    def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, stderr_progress=False):
+    def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
+        disable_tqdm = True if progress != 'gui' else False
+        print(progress == 'ratio')
+
 
         if path is not None:
             self._load(path)
@@ -56,13 +59,13 @@ class Race():
             self.task = Task(task_file)
 
             self.flights = {}
-            progress = 1
-            for x in tqdm(tracks, desc='reading tracks', disable=True):
+            steps = 1
+            for x in tqdm(tracks, desc='reading tracks', disable=disable_tqdm):
                 pilot_id = os.path.basename(x).split('.')[0]
                 self.flights[pilot_id] = Flight(x)
-                if stderr_progress == True:
-                    print('{}/{}'.format(progress, self.n_pilots))
-                    progress +=1
+                if progress == 'ratio':
+                    print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr)
+                    steps +=1
 
             if DEBUG == True:
                 for pilot_id, flight in self.flights.items():
@@ -70,14 +73,14 @@ class Race():
             else:
                 n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
                 with multiprocessing.Pool(n_jobs) as p:
-                    progress = 1
+                    steps = 1
                     # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
-                    for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=True):
+                    for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=disable_tqdm):
                         for timestamp, point in self.flights[pilot_id].points.items():
                             point.goal_distance = goal_distances[timestamp]
-                        if stderr_progress == True:
-                            print('{}/{}'.format(progress, self.n_pilots), file=sys.stderr)
-                            progress +=1
+                        if progress == 'ratio':
+                            print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr)
+                            steps +=1
 
     def __getitem__(self, time_point):
         """

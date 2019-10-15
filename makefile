@@ -25,7 +25,7 @@ dev:
 	python3 igclib/main.py --race test_data/regression.pkl --pilot 0421
 
 race:
-	igclib --mode race --task igclib/tests/test_data/tasks/task.xctsk --flights igclib/tests/test_data/small_tracks --output test.pkl
+	igclib --mode race --task igclib/tests/test_data/tasks/task.xctsk --flights igclib/tests/test_data/small_tracks --output test.pkl --progress ratio
 
 task:
 	igclib --mode optimize --task igclib/tests/test_data/tasks/task.xctsk
