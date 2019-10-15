@@ -1,25 +1,24 @@
 version: 2.1
 
 orbs:
+  tester: thekevjames/tester@1.1.2
   python: circleci/python@0.2.1
 
 jobs:
   build:
-    executor: python/default
+    docker:
+      - image: circleci/python:3.6
     steps:
       - checkout
       - python/load-cache
       - run:
-          name: Install dependencies
-          command: |
-            pip install --upgrade pip
-            sudo pip install . 
-      - python/save-cache
+          name: Update pip
+          command: pip install --user --upgrade pip
       - run:
-          name: Test
-          command: pipenv run py.test
-      - store_test_results:
-          path: test-results
+          name: Install package
+          command: pip install --user .
+      - python/save-cache
+      - tester/pytest
 
 workflows:
   main:
