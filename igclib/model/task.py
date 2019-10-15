@@ -1,11 +1,14 @@
 import json
 import logging
 from datetime import datetime, time, timedelta
+
 from matplotlib import pyplot as plt
-from igclib.model.geo import Turnpoint, Point, Opti
-from igclib.constants import distance_computation as distance
+
 from igclib.constants import DEBUG
+from igclib.constants import distance_computation as distance
+from igclib.model.geo import Opti, Point, Turnpoint
 from igclib.parsers import xctrack
+from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
 
 # fast distance computations do not validate turnpoints without tolerances
@@ -103,11 +106,7 @@ class Task():
         return flight.pilot_id, goal_distances
 
     def to_json(self):
-        return json.dumps({
-            'distance':self.opti.distance, 
-            'fast_turnpoints':self.opti.points, 
-            'leg_distances':self.opti.legs
-            })
+        return json.dumps(self.opti, cls=ComplexEncoder)
 
     def __len__(self):
         return int(self.opti.distance)

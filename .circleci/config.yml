@@ -1,16 +1,21 @@
-version: 2
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
 jobs:
   build:
-    docker:
-      - image: circleci/python:3.6
+    executor:
+      tag: 3.6
     steps:
       - checkout
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
       - run:
-          name: Update pip
-          command: pip install --user --upgrade pip
-      - run:
-          name: Install package
-          command: pip install --user .
+          command: |
+            pytest
+          name: Test
 
 workflows:
   version: 2

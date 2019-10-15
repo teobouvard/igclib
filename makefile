@@ -1,10 +1,8 @@
-.PHONY: docs
+.PHONY: docs tests
 
-dev:
-	python3 igclib/main.py --race test_data/regression.pkl --pilot 0421
-
-race:
-	igclib --mode race --task test_data/tasks/task.xctsk --flights test_data/large_tracks --output test_data/regression.pkl
+# ================ #
+#  USEFUL TARGETS  #
+# ================ #
 
 install:
 	pip install --user -e .
@@ -12,9 +10,25 @@ install:
 docs:
 	cd docs && make clean && make html && python3 -m http.server
 
+tests:
+	pytest -vv
+
 deploy:
 	python3 setup.py sdist bdist_wheel
 	twine upload dist/*
+
+# ================ #
+#   DEV TARGETS    #
+# ================ #
+
+dev:
+	python3 igclib/main.py --race test_data/regression.pkl --pilot 0421
+
+race:
+	igclib --mode race --task igclib/tests/test_data/tasks/task.xctsk --flights igclib/tests/test_data/small_tracks --output test.pkl
+
+task:
+	igclib --mode optimize --task igclib/tests/test_data/tasks/task.xctsk
 
 ext: install
 	python3 c_api_dev.py

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from distutils.core import Extension
 
-VERSION = 0.1
+VERSION = '0.1.1'
 
 def requirements():
     with open('requirements.txt', 'r') as f:

@@ -57,7 +57,7 @@ class Race():
 
             self.flights = {}
             progress = 1
-            for x in tqdm(tracks, desc='reading tracks', file=sys.stdout):
+            for x in tqdm(tracks, desc='reading tracks', disable=True):
                 pilot_id = os.path.basename(x).split('.')[0]
                 self.flights[pilot_id] = Flight(x)
                 if stderr_progress == True:
@@ -72,7 +72,7 @@ class Race():
                 with multiprocessing.Pool(n_jobs) as p:
                     progress = 1
                     # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
-                    for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=None):
+                    for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=True):
                         for timestamp, point in self.flights[pilot_id].points.items():
                             point.goal_distance = goal_distances[timestamp]
                         if stderr_progress == True:

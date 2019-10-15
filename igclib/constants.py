@@ -1,6 +1,5 @@
 import re
 
-
 DEBUG = False
 
 ### DISTANCE COMPUTATION ###
@@ -68,3 +67,4 @@ TASK_PROVIDERS = {
         'TASK_PATTERN' : re.compile('xctask.map.taskjsn = (.*?);')
     },
 }
+
