@@ -8,13 +8,14 @@ from glob import glob
 
 import numpy as np
 import seaborn as sns
+from matplotlib import pyplot as plt
+from scipy.signal import savgol_filter
+from tqdm import tqdm
+
 from igclib.constants import DEBUG
 from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
-from matplotlib import pyplot as plt
-from scipy.signal import savgol_filter
-from tqdm import tqdm
 
 
 class Race():
@@ -46,18 +47,17 @@ class Race():
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
         disable_tqdm = True if progress != 'gui' else False
-        print(progress == 'ratio')
 
-
+        # load race from pickle
         if path is not None:
             self._load(path)
         
+        # create race from task and flights
         else:
-            tracks = glob(os.path.join(tracks_dir, '*.igc'))
-            self.n_pilots = len(tracks)
-            
             self.task = Task(task_file)
 
+            tracks = glob(os.path.join(tracks_dir, '*.igc'))
+            self.n_pilots = len(tracks)
             self.flights = {}
             steps = 1
             for x in tqdm(tracks, desc='reading tracks', disable=disable_tqdm):
