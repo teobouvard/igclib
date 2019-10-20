@@ -31,7 +31,6 @@ def optplot(t, x, y, r):
     #plt.pause(0.01)
 
 
-
 if __name__ == '__main__':
     #plt.ion()
     
@@ -62,6 +61,15 @@ if __name__ == '__main__':
     res = minimize(tasklen, x2, args=(X2, Y2, R2))
     optplot(res.x, X2, Y2, R2)
 
+    # Test 3
+    X3 = np.array([0, 1, -8, -2, 4, 10, 0])
+    Y3 = np.array([0, 10, 20, 30, 40, 50, 60])
+    R3 = np.array([0, 3, 9, 10, 5, 12, 0])
+    x3 = np.ones(R3.shape)
+
+    #res = minimize(tasklen, x3, args=(X3, Y3, R3))
+    res = basinhopping(tasklen, x3, minimizer_kwargs=dict(args=(X3, Y3, R3)))
+    optplot(res.x, X3, Y3, R3)
 
     #d = tasklen(T, X, Y, R)
     stop = True

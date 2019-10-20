@@ -40,7 +40,7 @@ def argument_parser():
     parser.add_argument('--n_jobs', type=int, default=-1, help='Number of CPU cores used for task validation (-1 to use all cores)')
     parser.add_argument('--provider', choices=TASK_PROVIDERS.keys(), default=DEFAULT_PROVIDER, help='Tasks provider')
     parser.add_argument('--year', type=int, default=datetime.now().year, help='Fetch task from this year')
-    parser.add_argument('--progress', choices=['gui', 'ratio', 'silent'], help='Display progress bar, print progress ratio or run silently.')
+    parser.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
     
     args = parser.parse_args()
     check(args)

@@ -68,7 +68,7 @@ class Race():
                     steps +=1
 
             if DEBUG == True:
-                for pilot_id, flight in self.flights.items():
+                for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
                     self.task.validate(flight)
             else:
                 n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs

@@ -44,12 +44,13 @@ class Opti():
     Opti
     """
 
-    __slots__ = ['distance', 'legs', 'points']
+    __slots__ = ['distance', 'legs', 'points', 'angles']
 
-    def __init__(self, distance=0, legs=[], points=[]):
+    def __init__(self, distance=0, legs=[], points=[], angles=[]):
         self.distance = distance
         self.legs = legs
         self.points = points
+        self.angles = angles
 
     def to_json(self):
         return dict(distance=self.distance, legs=self.legs, points=self.points)

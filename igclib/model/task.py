@@ -60,47 +60,31 @@ class Task():
         remaining_turnpoints = self.turnpoints.copy()
         start_passed = False
         goal_distances = {}
+        optimizer_init_vector = None
         
         for timestamp, point in flight.points.items():
 
             # race has not started yet
             if timestamp < self.start:
-                goal_distances[timestamp] = optimize(point, remaining_turnpoints).distance
+                opti = optimize(point, remaining_turnpoints, optimizer_init_vector)
+                goal_distances[timestamp] = opti.distance
+                optimizer_init_vector = opti.angles
                 continue
 
-            # race has started, check for start validation
-            if start_passed == False:
-                goal_distances[timestamp] = optimize(point, remaining_turnpoints).distance
-
-                # this will not work for start without a turnpoint inside !
-                if self._close_enough(point, self.sss):
-                    start_passed = True
-                    del remaining_turnpoints[0]
-                    logging.info('START {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
-
-                continue
-                
-            # at least two turnpoints remaining, check for concentric ones
-            if len(remaining_turnpoints) > 1:
-                goal_distances[timestamp] = optimize(point, remaining_turnpoints).distance
+            if len(remaining_turnpoints) > 0:
+                opti = optimize(point, remaining_turnpoints, optimizer_init_vector)
+                goal_distances[timestamp] = opti.distance
+                optimizer_init_vector = opti.angles
 
                 if self._close_enough(point, remaining_turnpoints[0]):
                     del remaining_turnpoints[0]
-                    logging.info('IN {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
-
-            # only one turnpoint remaining, check for goal
-            elif len(remaining_turnpoints) == 1:
-                goal_distances[timestamp] = optimize(point, remaining_turnpoints).distance
-
-                if self._close_enough(point, remaining_turnpoints[0]):
-                    del remaining_turnpoints[0]
-                    logging.info('GOAL {}'.format(timestamp))
+                    logging.info('Turnpoint passed at {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
 
             # in goal, fill zeros until landing
             else:
                 goal_distances[timestamp] = 0
 
-        if DEBUG ==True:
+        if DEBUG:
             self.debug_plot(goal_distances)
             
         return flight.pilot_id, goal_distances
@@ -121,7 +105,7 @@ class Task():
 
 
     def debug_plot(self, distances):
-        timestamps = [str(x) for x in distances.keys()]
+        #timestamps = [str(x) for x in distances.keys()]
         distances = [float(x) for x in distances.values()]
         plt.plot(distances)
         plt.show()

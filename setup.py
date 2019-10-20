@@ -20,12 +20,7 @@ setup(name='igclib',
     author_email='teobouvard@gmail.com',
     license='GPL-3',
     packages=find_packages(include=['igclib']),
-    ext_modules = [
-        Extension('geolib', [
-            'igclib/c_ext/geolib.c', 
-            'igclib/c_ext/vc_vector.c'
-            ])
-    ],
+    ext_modules = [Extension('geolib', ['igclib/c_ext/geolib.c'])],
     install_requires=requirements(),
     scripts=['igclib/bin/igclib'],
     python_requires='>=3.6',

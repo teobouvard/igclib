@@ -26,17 +26,14 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 ### Library
 
 * safety check on task and tracks 
-* C extension for task validation -> how to rebuild PyObject from C ?
-* remember entry start check will not work without a turnpoint inside
+* change task validation method to closeness of next fast waypoint
 * add tests
 * autoparse task type
-
-### Optimizer
-
-* when going out of a concentric turnpoint, optimized point depends on the distance of the pilot from the center, and not only of the angles
-* is a real optimizer necessary ? only need a continuous distance function from start to goal
+* add PWCA task parser to build race from client choice
 
 ### Data collection
+
+* PWCA : find tracks from task date
 
 
 ### Misc

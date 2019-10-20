@@ -6,6 +6,7 @@ DEBUG = False
 
 from geolib import haversine
 distance_computation = haversine
+
 #from geopy import distance
 #def distance_computation(x1, x2, y1, y2):
 #    return distance.distance((x1, x2), (y1, y2)).meters
