@@ -14,10 +14,8 @@ distance_computation = haversine
 #distance_computation = distance.vincenty -> slower
 #distance_computation = distance.distance -> slowest
 
-
-### NUMERICAL APPROXIMATION 
-
-MIN_TURNPOINTS_DISTANCE = 1 # meters
+# threshold of distance minimizer validation in meters
+OPTIMIZER_PRECISION = 1
 
 
 ### IGC FILE CONSTANTS ###

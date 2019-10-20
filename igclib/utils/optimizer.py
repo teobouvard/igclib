@@ -1,16 +1,16 @@
 import math
 
 import numpy as np
-from igclib.constants import MIN_TURNPOINTS_DISTANCE
+from igclib.constants import OPTIMIZER_PRECISION
 from igclib.constants import distance_computation as distance
 from igclib.model.geo import Opti, Turnpoint
-from scipy.optimize import basinhopping, minimize
+from scipy.optimize import minimize
 
 from geolib import get_heading, get_offset
 
 def optimize(position, waypoints, prev_opti=None):
     x0 = np.zeros(len(waypoints)) if prev_opti is None else prev_opti
-    result = minimize(tasklen, x0, args=(position, waypoints), tol=10)
+    result = minimize(tasklen, x0, args=(position, waypoints), tol=OPTIMIZER_PRECISION)
 
     distances = []
     fast_waypoints = [Turnpoint(position.lat, position.lon)]

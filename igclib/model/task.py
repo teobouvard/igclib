@@ -58,7 +58,6 @@ class Task():
 
     def validate(self, flight):
         remaining_turnpoints = self.turnpoints.copy()
-        start_passed = False
         goal_distances = {}
         optimizer_init_vector = None
         
@@ -75,7 +74,7 @@ class Task():
                 opti = optimize(point, remaining_turnpoints, optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti.angles
-
+                
                 if self._close_enough(point, remaining_turnpoints[0]):
                     del remaining_turnpoints[0]
                     logging.info('Turnpoint passed at {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
