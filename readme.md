@@ -42,4 +42,4 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 
 ## Requirements
 
-* Python 3.6 or higher (Python 3.5 will NOT work because of await list comprehensions)
+* Python 3.5 or higher
