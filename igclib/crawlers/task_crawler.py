@@ -58,7 +58,7 @@ class TaskCrawler():
     async def download_list(self, links):
         events = {}
         steps = []
-        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50)) as client:
+        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as client:
             for event_name, links in links.items():
                 for link in links:
                     step = asyncio.ensure_future(self.fetch(client, event_name, link))
@@ -69,7 +69,7 @@ class TaskCrawler():
                 response = await r
                 responses.append(response)
                 if self._progress == 'ratio':
-                    print('{}/{}'.format(len(responses), len(steps)), file=sys.stderr)
+                    print('{}/{}'.format(len(responses), len(steps)), file=sys.stderr, flush=True)
 
             responses = [r for r in responses if r is not None]
 
