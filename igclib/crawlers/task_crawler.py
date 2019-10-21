@@ -1,16 +1,22 @@
 import asyncio
 import json
+import sys
 from datetime import datetime
 
 import aiohttp
 import requests
 from bs4 import BeautifulSoup
-from igclib.constants import DEFAULT_PROVIDER, MAX_TASKS_PER_EVENT, TASK_PROVIDERS
+from tqdm import tqdm
+
+from igclib.constants import (DEFAULT_PROVIDER, MAX_TASKS_PER_EVENT,
+                              TASK_PROVIDERS)
 
 
 class TaskCrawler():
 
-    def __init__(self, provider=DEFAULT_PROVIDER, year=datetime.now().year):
+    def __init__(self, provider=DEFAULT_PROVIDER, year=datetime.now().year, progress='gui'):
+        self._disable_tqdm = True if progress != 'gui' else False
+        self._progress = progress
         self.provider = TASK_PROVIDERS[provider]
         self.year = str(year)
 
@@ -58,7 +64,13 @@ class TaskCrawler():
                     step = asyncio.ensure_future(self.fetch(client, event_name, link))
                     steps.append(step)
 
-            responses = [await r for r in asyncio.as_completed(steps)]
+            responses = []
+            for r in tqdm(asyncio.as_completed(steps), total=len(steps), disable=self._disable_tqdm):
+                response = await r
+                responses.append(response)
+                if self._progress == 'ratio':
+                    print('{}/{}'.format(len(responses), len(steps)), file=sys.stderr)
+
             responses = [r for r in responses if r is not None]
 
             for response in responses:

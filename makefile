@@ -30,6 +30,9 @@ race:
 task:
 	igclib --mode optimize --task igclib/tests/test_data/tasks/task.xctsk
 
+crawl:
+	igclib --mode crawl --provider PWCA --year 2015 --progress ratio
+
 fix-lib:
 	mv $(HOME)/.local/lib/python3.6/site-packages/pptk/libs/libz.so.1 $(HOME)/.local/lib/python3.6/site-packages/pptk/libs/libz.so.1.old
 	sudo ln -s /lib/x86_64-linux-gnu/libz.so.1 $(HOME)/.local/lib/python3.6/site-packages/pptk/libs/

@@ -64,6 +64,6 @@ if __name__ == '__main__':
             print(t.to_json())
 
     elif args.mode == 'crawl':
-        tc = TaskCrawler(args.provider, args.year)
+        tc = TaskCrawler(args.provider, args.year, args.progress)
         tasks = tc.crawl()
         print(json.dumps(tasks))
