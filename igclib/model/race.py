@@ -64,7 +64,7 @@ class Race():
                 pilot_id = os.path.basename(x).split('.')[0]
                 self.flights[pilot_id] = Flight(x)
                 if progress == 'ratio':
-                    print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr)
+                    print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr, flush=True)
                     steps +=1
 
             if DEBUG == True:
@@ -79,7 +79,7 @@ class Race():
                         for timestamp, point in self.flights[pilot_id].points.items():
                             point.goal_distance = goal_distances[timestamp]
                         if progress == 'ratio':
-                            print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr)
+                            print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr, flush=True)
                             steps +=1
 
     def __getitem__(self, time_point):
