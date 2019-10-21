@@ -5,6 +5,7 @@ asyncio
 # HTML parsing for crawlers
 lxml
 beautifulsoup4
+validators
 
 # tests
 pytest
