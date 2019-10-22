@@ -9,16 +9,18 @@ from glob import glob
 
 import numpy as np
 import seaborn as sns
-from matplotlib import pyplot as plt
-from scipy.signal import savgol_filter
-from tqdm import tqdm
-
 from igclib.constants import DEBUG
 from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
+<<<<<<< HEAD
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.crawlers.flight_crawler import FlightCrawler
+=======
+from matplotlib import pyplot as plt
+from scipy.signal import savgol_filter
+from tqdm import tqdm
+>>>>>>> Switch machine
 
 
 class Race():
@@ -203,9 +205,13 @@ class Race():
             with open(path, 'wb') as f:
                 pickle.dump(self.__dict__, f)
         else:
+<<<<<<< HEAD
             raise NotImplementedError('Provide an --output file')#dict(flights=self.flights)
             #s = json.dumps(dict(task=self.task), cls=ComplexEncoder)
             #print(s)
+=======
+            return json.dumps(self.__dict__)
+>>>>>>> Switch machine
     
 
     def _load(self, path):
