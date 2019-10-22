@@ -25,7 +25,7 @@ dev:
 	python3 igclib/main.py --race test_data/test.pkl --pilot 0090
 
 race:
-	igclib --mode race --task igclib/tests/test_data/tasks/task.xctsk --flights igclib/tests/test_data/large_tracks --output test_data/test.pkl
+	igclib --mode race --task igclib/tests/test_data/tasks/task.xctsk --flights igclib/tests/test_data/large_tracks
 
 task:
 	igclib --mode optimize --task igclib/tests/test_data/tasks/task.xctsk

@@ -1,3 +1,4 @@
+import json
 import logging
 import multiprocessing
 import os
@@ -8,14 +9,13 @@ from glob import glob
 
 import numpy as np
 import seaborn as sns
-from matplotlib import pyplot as plt
-from scipy.signal import savgol_filter
-from tqdm import tqdm
-
 from igclib.constants import DEBUG
 from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
+from matplotlib import pyplot as plt
+from scipy.signal import savgol_filter
+from tqdm import tqdm
 
 
 class Race():
@@ -179,8 +179,11 @@ class Race():
         """
         Saves the race instance to a file specified by path
         """
-        with open(path, 'wb') as f:
-            pickle.dump(self.__dict__, f)
+        if path is not None:
+            with open(path, 'wb') as f:
+                pickle.dump(self.__dict__, f)
+        else:
+            return json.dumps(self.__dict__)
     
 
     def _load(self, path):
