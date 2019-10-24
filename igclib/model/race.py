@@ -53,7 +53,7 @@ class Race():
             self._load(path)
         
         # create race from task and flights
-        else:
+        elif os.path.isfile(task_file):
             self.task = Task(task_file)
 
             tracks = glob(os.path.join(tracks_dir, '*.igc'))
@@ -81,6 +81,10 @@ class Race():
                         if progress == 'ratio':
                             print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr, flush=True)
                             steps +=1
+        else:
+            self.task = self.parse_task(task_file)
+            self.flights = self.crawl_flights()
+
 
     def __getitem__(self, time_point):
         """
@@ -106,6 +110,13 @@ class Race():
 
     def __repr__(self):
         return str(self)
+
+
+    def parse_task(self, task_string):
+        raise NotImplementedError()
+
+    def parse_task(self, task_string):
+        raise NotImplementedError()
 
 
     def get_pilot_features(self, pilot_id, start=None, stop=None):
