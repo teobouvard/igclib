@@ -1,3 +1,4 @@
+import json
 import logging
 import multiprocessing
 import os
@@ -16,6 +17,7 @@ from igclib.constants import DEBUG
 from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
+from igclib.utils.json_encoder import ComplexEncoder
 
 
 class Race():
@@ -57,6 +59,8 @@ class Race():
             self.task = Task(task_file)
 
             tracks = glob(os.path.join(tracks_dir, '*.igc'))
+            if len(tracks) == 0:
+                raise ValueError('Flight directory does not contain any igc files')
             self.n_pilots = len(tracks)
             self.flights = {}
             steps = 1
@@ -190,8 +194,13 @@ class Race():
         """
         Saves the race instance to a file specified by path
         """
-        with open(path, 'wb') as f:
-            pickle.dump(self.__dict__, f)
+        if path is not None:
+            with open(path, 'wb') as f:
+                pickle.dump(self.__dict__, f)
+        else:
+            raise NotImplementedError('Provide an --output file')
+            #s = json.dumps(self.__dict__, cls=ComplexEncoder)
+            #print(s)
     
 
     def _load(self, path):

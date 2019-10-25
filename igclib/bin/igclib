@@ -19,9 +19,9 @@ def check(args):
         else:
             task_type = 'json'
         if args.flights is None and task_type =='file':
-            raise ValueError(f'Flights path must be specified')
+            raise ValueError(f'If --task is a file, you must specify flights directory with --flights argument')
         if task_type == 'file' and not os.path.isdir(args.flights):
-            raise ValueError(f'Flights path {args.flights} is not a directory')
+            raise ValueError(f'Flights path "{args.flights}" is not a directory')
         if task_type == 'file' and len(os.listdir(args.flights)) == 0:
             raise ValueError('Flights directory is empty')
 
