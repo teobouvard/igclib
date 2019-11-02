@@ -2,12 +2,10 @@ import json
 import logging
 from datetime import datetime, time, timedelta
 
-from matplotlib import pyplot as plt
-
 from igclib.constants import DEBUG
 from igclib.constants import distance_computation as distance
 from igclib.model.geo import Opti, Point, Turnpoint
-from igclib.parsers import xctrack
+from igclib.parsers import xctrack, pwca
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
 
@@ -17,22 +15,24 @@ TOLERANCE = 0.05
 class Task():
     """
     Args:
-        task_file (str): Path to a task file.
-        task_type (str, optional): Format of the task file. Defaults to 'xctrack'.
-    
+        task_file (str): Path to a task file or string representation of the task.
     Raises:
-        NotImplementedError: If the task_type is not known.
+        NotImplementedError: If the task could not be parsed.
     """
 
     # TODO autoparse task type
-    def __init__(self, task_file, task_type='xctrack'):
-        if task_type == 'xctrack':
-            task = xctrack.XCTask(task_file)
-        elif task_type == 'pwca':
-            # TODO pwca parser
-            raise NotImplementedError('{} tasks are not yet supported'.format(task_type))
-        else:
-            raise NotImplementedError('{} tasks are not yet supported'.format(task_type))
+    def __init__(self, task_file):
+
+        # try to parse with every implemented format, raise if no match
+        task = None
+        for task_format in [xctrack.XCTask, pwca.PWCATask]:
+            try:
+                task = task_format(task_file)
+                break
+            except KeyError:
+                logging.debug(f'Task file does not fit into {task_format}')
+        if task is None:
+            raise NotImplementedError(f'{task_type} tasks are not yet supported')
 
         self.start = task.start
         self.stop = task.stop if task.stop > self.start else time(23, 59, 59)
@@ -82,9 +82,6 @@ class Task():
             # in goal, fill zeros until landing
             else:
                 goal_distances[timestamp] = 0
-
-        if DEBUG:
-            self.debug_plot(goal_distances)
             
         return flight.pilot_id, goal_distances
 
@@ -101,10 +98,3 @@ class Task():
     @staticmethod
     def _concentric_case(wptA, wptB):
         return True if wptA.lat == wptB.lat and wptA.lon == wptB.lon and wptB.radius < wptA.radius else False
-
-
-    def debug_plot(self, distances):
-        #timestamps = [str(x) for x in distances.keys()]
-        distances = [float(x) for x in distances.values()]
-        plt.plot(distances)
-        plt.show()

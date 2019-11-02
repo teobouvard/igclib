@@ -34,6 +34,8 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 ### Data collection
 
 * PWCA : find tracks from task date
+* refactor constants
+* task _build_wpt task=None ?
 
 
 ### Misc

@@ -1,6 +1,7 @@
 import json
 import time as timeparse
 from datetime import time
+import os
 
 from igclib.model.geo import Turnpoint
 from igclib.constants import (XC_GOAL, XC_GOAL_DEADLINE, XC_SSS, XC_SSS_DIRECTION,
@@ -14,8 +15,12 @@ from igclib.constants import (XC_GOAL, XC_GOAL_DEADLINE, XC_SSS, XC_SSS_DIRECTIO
 class XCTask():
 
     def __init__(self, task_file):
-        with open(task_file, 'r') as f:
-            task = json.load(f)
+        
+        if os.path.isfile(task_file):
+            with open(task_file, 'r') as f:
+                task = json.load(f)
+        else:
+            task = json.loads(task_file)
 
         start_time = timeparse.strptime(task[XC_SSS][XC_SSS_TIMEGATES][0], XC_TIME_FORMAT)
         stop_time = timeparse.strptime(task[XC_GOAL][XC_GOAL_DEADLINE], XC_TIME_FORMAT)

@@ -30,11 +30,8 @@ IGC_LON = 'lon'
 
 ### XCTRACK FILE CONSTANTS ### (https://xctrack.org/Competition_Interfaces.html)
 
-XC_EARTH = 'earthModel'
-XC_TASK_TYPE = 'taskType'
 XC_TIME_FORMAT = '%H:%M:%SZ'
 XC_TYPE = 'type'
-XC_VERSION = 'version'
 
 XC_GOAL = 'goal'
 XC_GOAL_DEADLINE = 'deadline'
@@ -51,6 +48,26 @@ XC_WAYPOINT_DESC = 'description'
 XC_WAYPOINT_LAT = 'lat'
 XC_WAYPOINT_LON = 'lon'
 XC_WAYPOINT_NAME = 'name'
+
+
+### PWCA FILE CONSTANTS ### (No standard)
+
+PWCA_TASK_DATE = 'task_date'
+PWCA_TASK = 'task'
+PWCA_TIME_FORMAT = '%H:%M'
+PWCA_TYPE = 'race'
+PWCA_DETAILS = 'details'
+
+PWCA_START = 'start'
+PWCA_STOP = 'end'
+
+PWCA_TYPE = 'ss'
+PWCA_ID = 'id'
+
+PWCA_TURNPOINTS = 'points'
+PWCA_TURNPOINT_RADIUS = 'radius'
+PWCA_TURNPOINT = 'center' # or 'fix', who knows ?
+PWCA_TURNPOINT_NAME = 'name'
 
 
 ### CRAWLERS ###

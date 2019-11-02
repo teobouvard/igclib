@@ -28,3 +28,9 @@ build
 
 # Shared objects
 *.so
+
+# Swaps
+*.swp
+
+# Temporary excluded files
+pwca_task.json
