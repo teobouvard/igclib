@@ -31,7 +31,6 @@ class Task():
                 task_file = base64.b64decode(task_file)
             except TypeError:
                 logging.debug(f'Task is not base64')
-                print('nope')
 
         # try to parse with every implemented format, raise if no match
         for task_format in [xctrack.XCTask, pwca.PWCATask]:
