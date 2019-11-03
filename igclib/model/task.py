@@ -86,7 +86,7 @@ class Task():
         return flight.pilot_id, goal_distances
 
     def to_json(self):
-        return json.dumps(self.opti, cls=ComplexEncoder)
+        return self.__dict__
 
     def __len__(self):
         return int(self.opti.distance)

@@ -63,7 +63,7 @@ class Race():
             self._validate_flights(n_jobs)
 
     def crawl_flights(self):
-        fc = FlightCrawler(self.task)
+        fc = FlightCrawler(self.task, progress=self.progress)
         return fc.directory
 
 
@@ -199,12 +199,16 @@ class Race():
         Saves the race instance to a file specified by path
         """
         if path is not None:
-            with open(path, 'wb') as f:
-                pickle.dump(self.__dict__, f)
-        else:
-            raise NotImplementedError('Provide an --output file')#dict(flights=self.flights)
-            #s = json.dumps(dict(task=self.task), cls=ComplexEncoder)
-            #print(s)
+            if path.endswith('.pkl'):
+                with open(path, 'wb') as f:
+                    pickle.dump(self.__dict__, f)
+            elif path.endswith('.json'):
+                with open(path, 'w') as f:
+                    obj = dict(task=self.task, flights=self.flights, n_pilots=self.n_pilots)
+                    json.dump(obj, f, cls=ComplexEncoder, indent=None)
+            else:
+                raise NotImplementedError('Supported output files : .json, .pkl')
+            
 
     
 

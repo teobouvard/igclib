@@ -1,12 +1,10 @@
 import logging
 import os
-import json
 
 from aerofiles import igc
 
 from igclib.constants import IGC_HEADER, IGC_RECORDS, IGC_TIME
 from igclib.model.geo import Point
-from igclib.utils.json_encoder import ComplexEncoder
 
 
 class Flight():
@@ -43,5 +41,6 @@ class Flight():
         return self.points.get(time_point, None)
 
     def to_json(self):
-        return dict(points=self.points)
-        #return dict(points=self.points)
+        points = {str(k):v for k, v in self.points.items()}
+        obj = dict(pilot_id=self.pilot_id, points=points)
+        return obj

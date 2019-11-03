@@ -16,7 +16,7 @@ class Turnpoint():
         self.direction = direction
     
     def to_json(self):
-        return dict(lat=self.lat, lon=self.lon, radius=self.radius)
+        return self.__dict__
         
 
 class Point():
@@ -38,8 +38,8 @@ class Point():
         
         self.goal_distance = None
     
-        def to_json(self):
-            return dict(lat=self.lat, lon=self.lon, altitude=self.altitude)
+    def to_json(self):
+        return self.__dict__
 
 
 class Opti():
@@ -56,4 +56,5 @@ class Opti():
         self.angles = angles
 
     def to_json(self):
-        return dict(distance=self.distance, legs=self.legs, points=self.points)
+        obj = dict(points=self.points, distance=self.distance, legs=self.legs)
+        return obj
