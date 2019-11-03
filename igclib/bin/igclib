@@ -5,7 +5,6 @@ import json
 import os
 from datetime import datetime
 
-from validators.url import url as is_url
 from igclib.constants import DEFAULT_PROVIDER, MIN_YEAR, TASK_PROVIDERS
 from igclib.crawlers.task_crawler import TaskCrawler
 from igclib.model.race import Race
@@ -14,25 +13,20 @@ from igclib.model.task import Task
 
 def check(args):
     if args.command == 'race':
-        if os.path.isfile(args.task):
-            task_type = 'file'
-        else:
-            task_type = 'json'
-        if args.flights is None and task_type =='file':
-            raise ValueError(f'If --task is a file, you must specify flights directory with --flights argument')
-        if task_type == 'file' and not os.path.isdir(args.flights):
-            raise ValueError(f'Flights path "{args.flights}" is not a directory')
-        if task_type == 'file' and len(os.listdir(args.flights)) == 0:
-            raise ValueError('Flights directory is empty')
-
+        #if os.path.isfile(args.task):
+        #    task_type = 'file'
+        #else:
+        #    task_type = 'json'
+        #if args.flights is None and task_type =='file':
+        #    raise ValueError(f'If --task is a file, you must specify flights directory with --flights argument')
+        #if task_type == 'file' and not os.path.isdir(args.flights):
+        #    raise ValueError(f'Flights path "{args.flights}" is not a directory')
+        #if task_type == 'file' and len(os.listdir(args.flights)) == 0:
+        #    raise ValueError('Flights directory is empty')
+        pass
 
     elif args.command == 'optimize':
-        if  os.path.isfile(args.task):
-            args.task_type = 'file'
-        elif is_url(args.task):
-            args.task_type = 'link'
-        else:
-            raise ValueError('Task must be either a file or a link')
+        pass
     
     elif args.command == 'crawl':
         if args.year is None or not MIN_YEAR < args.year <= datetime.now().year:
@@ -49,7 +43,7 @@ def argument_parser():
     parser_race = commands.add_parser('race', help='Create a race')
     parser_race.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
     parser_race.add_argument('--output', type=argparse.FileType('w', encoding='UTF-8'), help='File to which you want to save the output')
-    parser_race.add_argument('--task', type=str, help='Path or link to the task file', required=True)
+    parser_race.add_argument('--task', type=str, help='Path or string of the task', required=True)
     parser_race.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
     parser_race.add_argument('--n_jobs', type=int, default=-1, help='Number of CPU cores used for task validation (-1 to use all cores)')
 
@@ -57,7 +51,7 @@ def argument_parser():
     parser_task = commands.add_parser('optimize', help='Optimize a task')
     parser_task.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
     parser_task.add_argument('--output', type=argparse.FileType('w', encoding='UTF-8'), help='File to which you want to save the output')
-    parser_task.add_argument('--task', type=str, help='Path or link to the task file', required=True)
+    parser_task.add_argument('--task', type=str, help='Path or string of the task', required=True)
 
     parser_crawl = commands.add_parser('crawl', help='Crawl providers for data')
     parser_crawl.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')

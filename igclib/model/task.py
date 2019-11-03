@@ -30,10 +30,11 @@ class Task():
                 task = task_format(task_file)
                 break
             except KeyError:
-                logging.debug(f'Task file does not fit into {task_format}')
+                logging.debug(f'Task format does not fit into {task_format}')
         if task is None:
-            raise NotImplementedError(f'{task_type} tasks are not yet supported')
-
+            raise NotImplementedError('Task format not recognized')
+        
+        self.date = task.date
         self.start = task.start
         self.stop = task.stop if task.stop > self.start else time(23, 59, 59)
 
@@ -94,7 +95,3 @@ class Task():
     @staticmethod
     def _close_enough(pos, wpt):
         return True if abs(distance(pos.lat, pos.lon, wpt.lat, wpt.lon) - wpt.radius) < wpt.radius*TOLERANCE else False
-
-    @staticmethod
-    def _concentric_case(wptA, wptB):
-        return True if wptA.lat == wptB.lat and wptA.lon == wptB.lon and wptB.radius < wptA.radius else False

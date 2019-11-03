@@ -52,7 +52,7 @@ XC_WAYPOINT_NAME = 'name'
 
 ### PWCA FILE CONSTANTS ### (No standard)
 
-PWCA_TASK_DATE = 'task_date'
+PWCA_TASK_DATE = 'date'
 PWCA_TASK = 'task'
 PWCA_TIME_FORMAT = '%H:%M'
 PWCA_TYPE = 'race'

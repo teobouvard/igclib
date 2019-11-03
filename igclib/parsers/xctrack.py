@@ -41,6 +41,7 @@ class XCTask():
 
             turnpoints.append(self._build_wpt(waypoint))
 
+        self.date = 'Unknown'
         self.start = time(start_time.tm_hour, start_time.tm_min, start_time.tm_sec)
         self.stop = time(stop_time.tm_hour, stop_time.tm_min, stop_time.tm_sec)
         self.turnpoints = turnpoints

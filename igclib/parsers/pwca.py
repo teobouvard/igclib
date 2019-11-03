@@ -5,7 +5,7 @@ from datetime import time
 
 from igclib.constants import (PWCA_DETAILS, PWCA_START, PWCA_STOP, PWCA_TASK,
                               PWCA_TIME_FORMAT, PWCA_TURNPOINT_RADIUS,
-                              PWCA_TURNPOINTS, PWCA_TYPE, PWCA_ID, PWCA_TURNPOINT, PWCA_TURNPOINT_NAME)
+                              PWCA_TURNPOINTS, PWCA_TYPE, PWCA_ID, PWCA_TURNPOINT, PWCA_TURNPOINT_NAME, PWCA_TASK_DATE)
 from igclib.model.geo import Turnpoint
 
 
@@ -38,6 +38,7 @@ class PWCATask():
 
             turnpoints.append(self._build_wpt(waypoint))
 
+        self.date = task[PWCA_DETAILS][PWCA_TASK_DATE]
         self.start = time(start_time.tm_hour, start_time.tm_min, start_time.tm_sec)
         self.stop = time(stop_time.tm_hour, stop_time.tm_min, stop_time.tm_sec)
         self.turnpoints = turnpoints

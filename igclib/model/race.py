@@ -45,18 +45,18 @@ class Race():
         task (Task) : The Task instance of the Race.
     """
 
-    __solts__ = ['n_pilots', 'flights']
+    __slots__ = ['n_pilots', 'flights', 'task']
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
-        disable_tqdm = True if progress != 'gui' else False
 
-        # load race from pickle
+        # load race from pickle or build it from args
         if path is not None:
             self._load(path)
-        
-        # create race from task and flights
-        elif os.path.isfile(task_file):
+        else:
             self.task = Task(task_file)
+    
+        # create race from task and flights
+        if tracks_dir is not None and os.path.isdir(tracks_dir):
 
             tracks = glob(os.path.join(tracks_dir, '*.igc'))
             if len(tracks) == 0:
@@ -64,30 +64,21 @@ class Race():
             self.n_pilots = len(tracks)
             self.flights = {}
             steps = 1
-            for x in tqdm(tracks, desc='reading tracks', disable=disable_tqdm):
+            for x in tqdm(tracks, desc='reading tracks', disable=progress!='gui'):
                 pilot_id = os.path.basename(x).split('.')[0]
                 self.flights[pilot_id] = Flight(x)
                 if progress == 'ratio':
                     print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr, flush=True)
                     steps +=1
 
-            if DEBUG == True:
-                for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
-                    self.task.validate(flight)
-            else:
-                n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
-                with multiprocessing.Pool(n_jobs) as p:
-                    steps = 1
-                    # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
-                    for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=disable_tqdm):
-                        for timestamp, point in self.flights[pilot_id].points.items():
-                            point.goal_distance = goal_distances[timestamp]
-                        if progress == 'ratio':
-                            print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr, flush=True)
-                            steps +=1
         else:
-            self.task = self.parse_task(task_file)
             self.flights = self.crawl_flights()
+
+        self._validate(n_jobs, progress)
+
+    def crawl_flights(self):
+        print(self.task.date)
+        exit(0)
 
 
     def __getitem__(self, time_point):
@@ -103,6 +94,24 @@ class Race():
     def __len__(self):
         return len([_ for _ in self._snapshots()])
 
+    
+    def _validate(self, n_jobs, progress):
+        """Computes the validation of each flight on the race"""
+        if DEBUG == True:
+                for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
+                    self.task.validate(flight)
+        else:
+            n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
+            with multiprocessing.Pool(n_jobs) as p:
+                steps = 1
+                # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
+                for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=progress!='gui'):
+                    for timestamp, point in self.flights[pilot_id].points.items():
+                        point.goal_distance = goal_distances[timestamp]
+                    if progress == 'ratio':
+                        print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr, flush=True)
+                        steps +=1
+
 
     def __str__(self):
         s = '{} pilots - '.format(self.n_pilots)
@@ -114,13 +123,6 @@ class Race():
 
     def __repr__(self):
         return str(self)
-
-
-    def parse_task(self, task_string):
-        raise NotImplementedError()
-
-    def parse_task(self, task_string):
-        raise NotImplementedError()
 
 
     def get_pilot_features(self, pilot_id, start=None, stop=None):
@@ -151,6 +153,7 @@ class Race():
                 features[timestamp] = PilotFeatures(pilot_id, timestamp, snapshot)
 
         return features
+
 
     def pilot_schema(self, pilot_id):
         features = self.get_pilot_features(pilot_id)
