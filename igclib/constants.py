@@ -84,3 +84,9 @@ TASK_PROVIDERS = {
     },
 }
 
+FLIGHT_PROVIDERS = {
+    'PWCA': {
+        'NAME' : 'PWCA',
+        'BASE_URL' : 'http://pwca.org/results/',
+    },
+}

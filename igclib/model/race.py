@@ -18,6 +18,7 @@ from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
 from igclib.utils.json_encoder import ComplexEncoder
+from igclib.crawlers.flight_crawler import FlightCrawler
 
 
 class Race():
@@ -45,40 +46,26 @@ class Race():
         task (Task) : The Task instance of the Race.
     """
 
-    __slots__ = ['n_pilots', 'flights', 'task']
+    __slots__ = ['progress', 'n_pilots', 'flights', 'task']
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
+        self.progress = progress
 
         # load race from pickle or build it from args
         if path is not None:
             self._load(path)
         else:
             self.task = Task(task_file)
-    
-        # create race from task and flights
-        if tracks_dir is not None and os.path.isdir(tracks_dir):
 
-            tracks = glob(os.path.join(tracks_dir, '*.igc'))
-            if len(tracks) == 0:
-                raise ValueError('Flight directory does not contain any igc files')
-            self.n_pilots = len(tracks)
-            self.flights = {}
-            steps = 1
-            for x in tqdm(tracks, desc='reading tracks', disable=progress!='gui'):
-                pilot_id = os.path.basename(x).split('.')[0]
-                self.flights[pilot_id] = Flight(x)
-                if progress == 'ratio':
-                    print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr, flush=True)
-                    steps +=1
+            if tracks_dir is None:
+                tracks_dir = self.crawl_flights()
 
-        else:
-            self.flights = self.crawl_flights()
-
-        self._validate(n_jobs, progress)
+            self._create_flights(tracks_dir)
+            self._validate_flights(n_jobs)
 
     def crawl_flights(self):
-        print(self.task.date)
-        exit(0)
+        fc = FlightCrawler(self.task)
+        return fc.flights
 
 
     def __getitem__(self, time_point):
@@ -94,8 +81,23 @@ class Race():
     def __len__(self):
         return len([_ for _ in self._snapshots()])
 
+
+    def _create_flights(self, tracks_dir):
+        tracks = glob(os.path.join(tracks_dir, '*.igc'))
+        if len(tracks) == 0:
+            raise ValueError('Flight directory does not contain any igc files')
+        self.n_pilots = len(tracks)
+        self.flights = {}
+        steps = 1
+        for x in tqdm(tracks, desc='reading tracks', disable=self.progress!='gui'):
+            pilot_id = os.path.basename(x).split('.')[0]
+            self.flights[pilot_id] = Flight(x)
+            if self.progress == 'ratio':
+                print(f'{steps}/{self.n_pilots}', file=sys.stderr, flush=True)
+                steps +=1
+
     
-    def _validate(self, n_jobs, progress):
+    def _validate_flights(self, n_jobs):
         """Computes the validation of each flight on the race"""
         if DEBUG == True:
                 for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
@@ -105,11 +107,11 @@ class Race():
             with multiprocessing.Pool(n_jobs) as p:
                 steps = 1
                 # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
-                for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=progress!='gui'):
+                for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=self.progress!='gui'):
                     for timestamp, point in self.flights[pilot_id].points.items():
                         point.goal_distance = goal_distances[timestamp]
-                    if progress == 'ratio':
-                        print('{}/{}'.format(steps, self.n_pilots), file=sys.stderr, flush=True)
+                    if self.progress == 'ratio':
+                        print(f'{steps}/{self.n_pilots}', file=sys.stderr, flush=True)
                         steps +=1
 
 
@@ -148,7 +150,7 @@ class Race():
         
         for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self), file=sys.stdout):
             if pilot_id not in snapshot:
-                logging.debug('Pilot {} has no track at time {}'.format(pilot_id, timestamp))
+                logging.debug(f'Pilot {pilot_id} has no track at time {timestamp}')
             else:
                 features[timestamp] = PilotFeatures(pilot_id, timestamp, snapshot)
 

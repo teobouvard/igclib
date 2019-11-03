@@ -25,7 +25,7 @@ class TaskCrawler():
         if self.provider['NAME'] == 'PWCA':
             return self.crawl_pwca()
         else:
-            raise NotImplementedError('Provider {} not yet implemented'.format(self.provider['NAME']))
+            raise NotImplementedError(f'Provider {self.provider['NAME']} not yet implemented')
 
 
     def crawl_pwca(self):
@@ -69,7 +69,7 @@ class TaskCrawler():
                 response = await r
                 responses.append(response)
                 if self._progress == 'ratio':
-                    print('{}/{}'.format(len(responses), len(steps)), file=sys.stderr, flush=True)
+                    print(f'{len(responses)}/{len(steps)}', file=sys.stderr, flush=True)
 
             responses = [r for r in responses if r is not None]
 
