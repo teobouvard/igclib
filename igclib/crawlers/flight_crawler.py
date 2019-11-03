@@ -12,7 +12,7 @@ class FlightCrawler():
 
     def __init__(self, task):
         self.crawl_pwca(task)
-        self.directory = f'tmp/{task.date}'
+        self.directory = f'/tmp/{task.date}'
 
     def crawl_pwca(self, task):
         date = datetime.strptime(task.date, '%Y-%m-%d')
@@ -27,12 +27,13 @@ class FlightCrawler():
 
         tracks = requests.get(URL + tracks_link, stream=True)
         file_size = int(tracks.headers.get('content-length', 0))
-        with open('tmpfile.zip', 'wb') as f: 
+
+        with open(f'/tmp/{task.date}.zip', 'wb') as f: 
             with tqdm(total=file_size, desc='downloading_tracks') as pbar: 
                 for data in tracks.iter_content(32*1024): 
                     f.write(data); 
                     pbar.update(len(data))
 
-        z = zipfile.ZipFile(f'tmp/{task.date}.zip')
-        z.extractall(f'tmp/{task.date}')
-        os.remove(f'tmp/{task.date}.zip')
+        z = zipfile.ZipFile(f'/tmp/{task.date}.zip')
+        z.extractall(f'/tmp/{task.date}')
+        os.remove(f'/tmp/{task.date}.zip')

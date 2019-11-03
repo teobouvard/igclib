@@ -46,7 +46,7 @@ class Race():
         task (Task) : The Task instance of the Race.
     """
 
-    __slots__ = ['progress', 'n_pilots', 'flights', 'task']
+    #__slots__ = ['progress', 'n_pilots', 'flights', 'task']
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
         self.progress = progress
@@ -203,8 +203,8 @@ class Race():
             with open(path, 'wb') as f:
                 pickle.dump(self.__dict__, f)
         else:
-            raise NotImplementedError('Provide an --output file')
-            #s = json.dumps(self.__dict__, cls=ComplexEncoder)
+            raise NotImplementedError('Provide an --output file')#dict(flights=self.flights)
+            #s = json.dumps(dict(task=self.task), cls=ComplexEncoder)
             #print(s)
     
 

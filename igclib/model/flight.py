@@ -16,7 +16,7 @@ class Flight():
         [type]: [description]
     """
 
-    __slots__ = ['pilot_id', 'headers', 'points']
+    #__slots__ = ['pilot_id', 'headers', 'points']
 
     def __init__(self, track_file):
 
@@ -43,4 +43,5 @@ class Flight():
         return self.points.get(time_point, None)
 
     def to_json(self):
-        return json.dumps(self.__dict__, cls=ComplexEncoder)
+        return dict(points=self.points)
+        #return dict(points=self.points)

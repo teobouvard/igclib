@@ -3,7 +3,7 @@ class Turnpoint():
     Turnpoint
     """
 
-    __slots__ = ['lat', 'lon', 'radius', 'altitude', 'name', 'desc', 'role', 'direction']
+    #__slots__ = ['lat', 'lon', 'radius', 'altitude', 'name', 'desc', 'role', 'direction']
 
     def __init__(self, lat, lon, radius=None, altitude=None, name=None, desc=None, role=None, direction=None):
         self.lat = lat
@@ -16,7 +16,7 @@ class Turnpoint():
         self.direction = direction
     
     def to_json(self):
-        return dict(lat=self.lat, lon=self.lon)
+        return dict(lat=self.lat, lon=self.lon, radius=self.radius)
         
 
 class Point():
@@ -24,7 +24,7 @@ class Point():
     Point
     """
 
-    __slots__ = ['lat', 'lon', 'altitude', 'goal_distance']
+    #__slots__ = ['lat', 'lon', 'altitude', 'goal_distance']
 
     def __init__(self, lat=None, lon=None, altitude=None, record=None):
         if record is not None:
@@ -37,6 +37,9 @@ class Point():
             self.altitude = altitude
         
         self.goal_distance = None
+    
+        def to_json(self):
+            return dict(lat=self.lat, lon=self.lon, altitude=self.altitude)
 
 
 class Opti():
@@ -44,7 +47,7 @@ class Opti():
     Opti
     """
 
-    __slots__ = ['distance', 'legs', 'points', 'angles']
+    #__slots__ = ['distance', 'legs', 'points', 'angles']
 
     def __init__(self, distance=0, legs=[], points=[], angles=[]):
         self.distance = distance

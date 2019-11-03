@@ -20,7 +20,6 @@ class Task():
         NotImplementedError: If the task could not be parsed.
     """
 
-    # TODO autoparse task type
     def __init__(self, task_file):
 
         # try to parse with every implemented format, raise if no match
