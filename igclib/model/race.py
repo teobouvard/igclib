@@ -205,6 +205,7 @@ class Race():
             raise NotImplementedError('Provide an --output file')#dict(flights=self.flights)
             #s = json.dumps(dict(task=self.task), cls=ComplexEncoder)
             #print(s)
+
     
 
     def _load(self, path):
