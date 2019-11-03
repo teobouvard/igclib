@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "(gdb) Launch",
             "type": "cppdbg",
@@ -24,8 +25,8 @@
             "name": "dev",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/igclib/main.py",
-            "args": ["--race", "test_data/regression.pkl", "--pilot", "0035"],
+            "program": "${workspaceFolder}/igclib/bin/igclib",
+            "args": ["race", "--task", "pwca_task.json"],
             "console": "integratedTerminal"
         },
         {

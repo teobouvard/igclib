@@ -65,7 +65,7 @@ class Race():
 
     def crawl_flights(self):
         fc = FlightCrawler(self.task)
-        return fc.flights
+        return fc.directory
 
 
     def __getitem__(self, time_point):

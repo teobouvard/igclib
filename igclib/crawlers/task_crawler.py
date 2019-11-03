@@ -15,7 +15,6 @@ from igclib.constants import (DEFAULT_PROVIDER, MAX_TASKS_PER_EVENT,
 class TaskCrawler():
 
     def __init__(self, provider=DEFAULT_PROVIDER, year=datetime.now().year, progress='gui'):
-        self._disable_tqdm = True if progress != 'gui' else False
         self._progress = progress
         self.provider = TASK_PROVIDERS[provider]
         self.year = str(year)
@@ -25,7 +24,7 @@ class TaskCrawler():
         if self.provider['NAME'] == 'PWCA':
             return self.crawl_pwca()
         else:
-            raise NotImplementedError(f'Provider {self.provider['NAME']} not yet implemented')
+            raise NotImplementedError(f'Provider {self.provider["NAME"]} not yet implemented')
 
 
     def crawl_pwca(self):
@@ -65,7 +64,7 @@ class TaskCrawler():
                     steps.append(step)
 
             responses = []
-            for r in tqdm(asyncio.as_completed(steps), total=len(steps), disable=self._disable_tqdm):
+            for r in tqdm(asyncio.as_completed(steps), total=len(steps), disable=self._progress!='gui'):
                 response = await r
                 responses.append(response)
                 if self._progress == 'ratio':
