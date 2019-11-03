@@ -1,11 +1,12 @@
-import json
+import base64
 import logging
 from datetime import datetime, time, timedelta
+import os
 
 from igclib.constants import DEBUG
 from igclib.constants import distance_computation as distance
 from igclib.model.geo import Opti, Point, Turnpoint
-from igclib.parsers import xctrack, pwca
+from igclib.parsers import pwca, xctrack
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
 
@@ -22,8 +23,17 @@ class Task():
 
     def __init__(self, task_file):
 
-        # try to parse with every implemented format, raise if no match
         task = None
+
+        # try to base64 decode the task
+        if not os.path.isfile(task_file):
+            try:
+                task_file = base64.b64decode(task_file)
+            except TypeError:
+                logging.debug(f'Task is not base64')
+                print('nope')
+
+        # try to parse with every implemented format, raise if no match
         for task_format in [xctrack.XCTask, pwca.PWCATask]:
             try:
                 task = task_format(task_file)

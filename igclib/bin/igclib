@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     # parse and check arguments
     args = argument_parser()
-    
+  
     if args.command == 'race':
         r =  Race(tracks_dir=args.flights, task_file=args.task, n_jobs=args.n_jobs, progress=args.progress)
         r.save(args.output)
