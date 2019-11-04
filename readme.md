@@ -33,7 +33,7 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 ### Data collection
 
 * refactor constants
-* task _build_wpt task=None ?
+* ADD CHECKS OR RAISE FLIGHT CRAWLER FORMAT
 * superfinal result not on the same index !
 * maybe not rm downloaded tracks zip ?
 

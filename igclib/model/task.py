@@ -25,7 +25,6 @@ class Task():
     def __init__(self, task_file):
 
         task = None
-
         # try to base64 decode the task
         if not os.path.isfile(task_file):
             try:

@@ -4,17 +4,18 @@ import multiprocessing
 import os
 import pickle
 import sys
+import zipfile
 from datetime import time
 from glob import glob
 
 import numpy as np
 import seaborn as sns
 from igclib.constants import DEBUG
+from igclib.crawlers.flight_crawler import FlightCrawler
 from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
 from igclib.utils.json_encoder import ComplexEncoder
-from igclib.crawlers.flight_crawler import FlightCrawler
 from matplotlib import pyplot as plt
 from scipy.signal import savgol_filter
 from tqdm import tqdm
@@ -55,7 +56,10 @@ class Race():
             self.task = Task(task_file)
 
             if tracks_dir is None:
-                tracks_dir = self.crawl_flights()
+                try:
+                    tracks_dir = self.crawl_flights()
+                except ValueError:
+                    logging.error('This task format does not support flight crawling yet, provide --flights directory.')
 
             self._create_flights(tracks_dir)
             self._validate_flights(n_jobs)
@@ -81,15 +85,25 @@ class Race():
 
 
     def _create_flights(self, tracks_dir):
-        tracks = glob(os.path.join(tracks_dir, '*.igc'))
+        if zipfile.is_zipfile(tracks_dir):
+            archive = zipfile.ZipFile(tracks_dir)
+            archive.extractall(path='/tmp')
+            tracks_dir = os.path.join('/tmp', os.path.basename(tracks_dir).split('.', maxsplit=1)[0])
+
+        if os.path.isdir(tracks_dir):
+            tracks = glob(os.path.join(tracks_dir, '*.igc'))
+
         if len(tracks) == 0:
             raise ValueError('Flight directory does not contain any igc files')
+
         self.n_pilots = len(tracks)
         self.flights = {}
+
         steps = 1
         for x in tqdm(tracks, desc='reading tracks', disable=self.progress!='gui'):
             pilot_id = os.path.basename(x).split('.')[0]
             self.flights[pilot_id] = Flight(x)
+
             if self.progress == 'ratio':
                 print(f'{steps}/{self.n_pilots}', file=sys.stderr, flush=True)
                 steps +=1
@@ -100,6 +114,7 @@ class Race():
         if DEBUG == True:
                 for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
                     self.task.validate(flight)
+
         else:
             n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
             with multiprocessing.Pool(n_jobs) as p:
@@ -156,6 +171,11 @@ class Race():
 
 
     def pilot_schema(self, pilot_id):
+        """In dev !
+        
+        Args:
+            pilot_id (str): ID of the pilot being studied
+        """
         features = self.get_pilot_features(pilot_id)
 
         mean_altitudes = []
@@ -208,7 +228,7 @@ class Race():
             else:
                 raise NotImplementedError('Supported output files : .json, .pkl')
             
-            
+
     def _load(self, path):
         """
         Loads the race instance from a pickle file
