@@ -223,7 +223,7 @@ class Race():
                     pickle.dump(self.__dict__, f)
             elif path.endswith('.json'):
                 with open(path, 'w') as f:
-                    obj = dict(task=self.task, flights=self.flights, n_pilots=self.n_pilots)
+                    obj = dict(task=self.task, snapshots=[_ for _ in self._snapshots()])
                     json.dump(obj, f, cls=ComplexEncoder, indent=None)
             else:
                 raise NotImplementedError('Supported output files : .json, .pkl')
