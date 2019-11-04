@@ -1,7 +1,8 @@
 import base64
+import json
 import logging
-from datetime import datetime, time, timedelta
 import os
+from datetime import datetime, time, timedelta
 
 from igclib.constants import DEBUG
 from igclib.constants import distance_computation as distance
@@ -96,6 +97,13 @@ class Task():
 
     def to_json(self):
         return self.__dict__
+    
+    def optimized(self, output=None):
+        if output is not None:
+            with open (output, 'w') as f:
+                json.dump(self.opti, f, cls=ComplexEncoder)
+        else:
+            print(json.dumps(self.opti, cls=ComplexEncoder))
 
     def __len__(self):
         return int(self.opti.distance)

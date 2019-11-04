@@ -74,11 +74,7 @@ if __name__ == '__main__':
 
     elif args.command == 'optimize':
         t = Task(args.task)
-        if args.output is not None:
-            with open(args.output, 'r') as f:
-                f.write(t.to_json())
-        else:
-            print(t.to_json())
+        t.optimized(output=args.output)
 
     elif args.command == 'crawl':
         tc = TaskCrawler(args.provider, args.year, args.progress)

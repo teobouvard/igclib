@@ -28,8 +28,7 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 * safety check on task and tracks 
 * change task validation method to closeness of next fast waypoint
 * add tests
-* autoparse task type
-* add PWCA task parser to build race from client choice
+* test base64 inside task and not race ?
 
 ### Data collection
 
