@@ -223,8 +223,9 @@ class Race():
                     pickle.dump(self.__dict__, f)
             elif path.endswith('.json'):
                 with open(path, 'w') as f:
-                    obj = dict(task=self.task, snapshots=[_ for _ in self._snapshots()])
-                    json.dump(obj, f, cls=ComplexEncoder, indent=None)
+                    snaps = {str(_[0]):_[1] for _ in self._snapshots()}
+                    obj = dict(task=self.task, snapshots=snaps)
+                    json.dump(obj, f, cls=ComplexEncoder, indent=4)
             else:
                 raise NotImplementedError('Supported output files : .json, .pkl')
             
