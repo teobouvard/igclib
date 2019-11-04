@@ -225,7 +225,7 @@ class Race():
                 with open(path, 'w') as f:
                     snaps = {str(_[0]):_[1] for _ in self._snapshots()}
                     obj = dict(task=self.task, snapshots=snaps)
-                    json.dump(obj, f, cls=ComplexEncoder, indent=4)
+                    json.dump(obj, f, cls=ComplexEncoder, indent=None)
             else:
                 raise NotImplementedError('Supported output files : .json, .pkl')
             
