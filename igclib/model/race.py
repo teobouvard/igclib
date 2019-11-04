@@ -45,8 +45,6 @@ class Race():
         task (Task) : The Task instance of the Race.
     """
 
-    #__slots__ = ['progress', 'n_pilots', 'flights', 'task']
-
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
         self.progress = progress
 
@@ -61,6 +59,7 @@ class Race():
 
             self._create_flights(tracks_dir)
             self._validate_flights(n_jobs)
+
 
     def crawl_flights(self):
         fc = FlightCrawler(self.task, progress=self.progress)
@@ -209,9 +208,7 @@ class Race():
             else:
                 raise NotImplementedError('Supported output files : .json, .pkl')
             
-
-    
-
+            
     def _load(self, path):
         """
         Loads the race instance from a pickle file

@@ -1,7 +1,6 @@
 import json
 import os
-import time as timeparse
-from datetime import time
+from datetime import datetime, time
 
 from igclib.constants import (PWCA_DETAILS, PWCA_START, PWCA_STOP, PWCA_TASK,
                               PWCA_TIME_FORMAT, PWCA_TURNPOINT_RADIUS,
@@ -19,8 +18,8 @@ class PWCATask():
         else:
             task = json.loads(task_file)[PWCA_TASK]
 
-        start_time = timeparse.strptime(task[PWCA_DETAILS][PWCA_START], PWCA_TIME_FORMAT)
-        stop_time = timeparse.strptime(task[PWCA_DETAILS][PWCA_STOP], PWCA_TIME_FORMAT)
+        start_time = datetime.strptime(task[PWCA_DETAILS][PWCA_START], PWCA_TIME_FORMAT)
+        stop_time = datetime.strptime(task[PWCA_DETAILS][PWCA_STOP], PWCA_TIME_FORMAT)
 
         turnpoints = []
 
@@ -39,8 +38,8 @@ class PWCATask():
             turnpoints.append(self._build_wpt(waypoint))
 
         self.date = task[PWCA_DETAILS][PWCA_TASK_DATE]
-        self.start = time(start_time.tm_hour, start_time.tm_min, start_time.tm_sec)
-        self.stop = time(stop_time.tm_hour, stop_time.tm_min, stop_time.tm_sec)
+        self.start = time(start_time.hour, start_time.minute, start_time.second)
+        self.stop = time(stop_time.hour, stop_time.minute, stop_time.second)
         self.turnpoints = turnpoints
 
     @staticmethod
@@ -51,6 +50,6 @@ class PWCATask():
             radius=wpt[PWCA_TURNPOINT_RADIUS],
             altitude=0,
             name=wpt[PWCA_TURNPOINT_NAME],
-            desc='',
+            desc='No description available',
             role=role,
         )

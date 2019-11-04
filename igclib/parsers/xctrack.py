@@ -1,6 +1,5 @@
 import json
-import time as timeparse
-from datetime import time
+from datetime import datetime, time
 import os
 
 from igclib.model.geo import Turnpoint
@@ -22,8 +21,8 @@ class XCTask():
         else:
             task = json.loads(task_file)
 
-        start_time = timeparse.strptime(task[XC_SSS][XC_SSS_TIMEGATES][0], XC_TIME_FORMAT)
-        stop_time = timeparse.strptime(task[XC_GOAL][XC_GOAL_DEADLINE], XC_TIME_FORMAT)
+        start_time = datetime.strptime(task[XC_SSS][XC_SSS_TIMEGATES][0], XC_TIME_FORMAT)
+        stop_time = datetime.strptime(task[XC_GOAL][XC_GOAL_DEADLINE], XC_TIME_FORMAT)
 
         turnpoints = []
 
@@ -42,8 +41,8 @@ class XCTask():
             turnpoints.append(self._build_wpt(waypoint))
 
         self.date = 'Unknown'
-        self.start = time(start_time.tm_hour, start_time.tm_min, start_time.tm_sec)
-        self.stop = time(stop_time.tm_hour, stop_time.tm_min, stop_time.tm_sec)
+        self.start = time(start_time.hour, start_time.minute, start_time.second)
+        self.stop = time(stop_time.hour, stop_time.minute, stop_time.second)
         self.turnpoints = turnpoints
 
     @staticmethod
