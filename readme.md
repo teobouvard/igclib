@@ -4,6 +4,8 @@
 [![build status](https://img.shields.io/circleci/build/github/teobouvard/igclib/master?style=flat-square)](https://circleci.com/gh/teobouvard/igclib)
 [![docs status](https://img.shields.io/readthedocs/igclib?style=flat-square)](https://igclib.readthedocs.io/en/latest/)
 
+``igclib`` is a Python module and a command line tool designed for the analysis of paragliding competitions.
+
 ## Get started
 
 ```shell
@@ -12,30 +14,26 @@ cd igclib
 make install
 ```
 
-[Documentation (in progress)](https://igclib.readthedocs.io/en/latest/)
+For a quick guide on how to use this library, take a look at the [documentation](https://igclib.readthedocs.io/en/latest/).
 
+## Interesting links
 
-## Build the documentation locally
-
-Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
-
+[Solving the task optimization problem using Quasi-Newton methods](https://teobouvard.github.io/2019/10/20/task_optimization.html)
 
 ## Todo
 
-### Library
+* Library
 
-* change task validation method to closeness of next fast waypoint
-* add tests
+    * change task validation method to closeness of next fast waypoint
+    * add tests
 
-### Data collection
+* Data collection
 
-* refactor constants
-* ADD CHECKS OR RAISE FLIGHT CRAWLER FORMAT
-* superfinal result not on the same index !
-* maybe not rm downloaded tracks zip ? -> implement tracks caching in tmp dir
+    * refactor constants
+    * ADD CHECKS OR RAISE FLIGHT CRAWLER FORMAT
+    * superfinal result not on the same index !
+    * maybe not rm downloaded tracks zip ? -> implement tracks caching in tmp dir
 
-
-### Misc
 
 ## Requirements
 
