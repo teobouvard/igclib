@@ -14,13 +14,11 @@ make install
 
 [Documentation (in progress)](https://igclib.readthedocs.io/en/latest/)
 
----
 
 ## Build the documentation locally
 
 Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 
----
 
 ## Todo
 
@@ -38,8 +36,6 @@ Once installed, run `make docs` and go to http://0.0.0.0:8000/build/html/
 
 
 ### Misc
-
----
 
 ## Requirements
 
