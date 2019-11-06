@@ -33,6 +33,4 @@ build
 *.swp
 
 # Temporary excluded files
-pwca_task.json
-tmp/
-test.json
+test_race.json
