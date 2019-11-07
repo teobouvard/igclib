@@ -232,8 +232,16 @@ class Race():
                 snaps = {str(_[0]):_[1] for _ in self._snapshots()}
                 obj = dict(task=self.task, snapshots=snaps)
                 json.dump(obj, f, cls=ComplexEncoder, indent=None)
+        elif output.endswith('.igclib'):
+            path = os.path.dirname(output)
+            filename = os.path.basename(output)
+            canonical = os.path.splitext(filename)[0]
+            json_output = os.path.join(path, f'{canonical}.json')
+            pkl_output = os.path.join(path, f'{canonical}.pkl')
+            self.save(output=json_output)
+            self.save(output=pkl_output)
         else:
-            raise NotImplementedError('Supported output files : .json, .pkl')
+            raise NotImplementedError('Supported output files : .json, .pkl, .igclib')
             
 
     def _load(self, path):

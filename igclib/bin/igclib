@@ -45,7 +45,7 @@ def argument_parser():
     parser_race = commands.add_parser('race', help='Create a race')
     parser_race.add_argument('--task', type=str, help='Path or string of the task', required=True)
     parser_race.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
-    parser_race.add_argument('--output', type=str, help='File to which you want to save the output')
+    parser_race.add_argument('--output', type=str, help='File to which you want to save the output [.pkl, .json, .igclib]')
     parser_race.add_argument('--n_jobs', type=int, default=-1, help='Number of CPU cores used for task validation (-1 to use all cores)')
 
     parser_task = commands.add_parser('optimize', help='Optimize a task')

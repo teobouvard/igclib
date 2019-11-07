@@ -20,20 +20,6 @@ For a quick guide on how to use this library, take a look at the [documentation]
 
 [Solving the task optimization problem using Quasi-Newton methods](https://teobouvard.github.io/2019/10/20/task_optimization.html)
 
-## Todo
-
-* Library
-
-    * change task validation method to closeness of next fast waypoint
-    * add tests
-
-* Data collection
-
-    * refactor constants
-    * ADD CHECKS OR RAISE FLIGHT CRAWLER FORMAT
-    * superfinal result not on the same index !
-    * maybe not rm downloaded tracks zip ? -> implement tracks caching in tmp dir
-
 
 ## Requirements
 
