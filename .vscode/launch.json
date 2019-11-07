@@ -30,11 +30,11 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "export",
+            "name": "race",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/igclib/bin/igclib",
-            "args": ["--mode", "race", "--task", "igclib/tests/test_data/tasks/task.xctsk", "--flights", "igclib/tests/test_data/one_track", "--output", "/dev/null"],
+            "args": ["race", "--task", "igclib/tests/test_data/tasks/task.xctsk", "--flights", "igclib/tests/test_data/one_track"],
             "console": "integratedTerminal"
         },
         {

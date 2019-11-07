@@ -91,10 +91,10 @@ class Race():
         if zipfile.is_zipfile(tracks_dir):
             archive = zipfile.ZipFile(tracks_dir)
             archive.extractall(path='/tmp')
-            tracks_dir = os.path.join('/tmp', os.path.basename(tracks_dir).split('.', maxsplit=1)[0])
+            tracks_dir = os.path.join('/tmp', os.path.splitext(os.path.basename(tracks_dir))[0])
 
         if os.path.isdir(tracks_dir):
-            tracks = glob(os.path.join(tracks_dir, '*.igc'))
+            tracks = glob(os.path.join(tracks_dir, '*.igc'));
 
         if len(tracks) == 0:
             raise ValueError('Flight directory does not contain any igc files')
@@ -104,7 +104,7 @@ class Race():
 
         steps = 1
         for x in tqdm(tracks, desc='reading tracks', disable=self.progress!='gui'):
-            pilot_id = os.path.basename(x).split('.')[0]
+            pilot_id = os.path.splitext(os.path.basename(x))[0]
             self.flights[pilot_id] = Flight(x)
 
             if self.progress == 'ratio':
@@ -220,18 +220,18 @@ class Race():
                     yield timestamp, self[timestamp]
 
 
-    def save(self, output=None):
+    def save(self, output):
         """
         Saves the race instance to a file specified by output
         """
         if output.endswith('.pkl'):
             with open(output, 'wb') as f:
                 pickle.dump(self.__dict__, f)
+
         elif output.endswith('.json'):
             with open(output, 'w') as f:
-                snaps = {str(_[0]):_[1] for _ in self._snapshots()}
-                obj = dict(task=self.task, snapshots=snaps)
-                json.dump(obj, f, cls=ComplexEncoder, indent=None)
+                json.dump(self._serialize(), f, cls=ComplexEncoder, indent=None)
+
         elif output.endswith('.igclib'):
             path = os.path.dirname(output)
             filename = os.path.basename(output)
@@ -240,9 +240,14 @@ class Race():
             pkl_output = os.path.join(path, f'{canonical}.pkl')
             self.save(output=json_output)
             self.save(output=pkl_output)
+            
         else:
             raise NotImplementedError('Supported output files : .json, .pkl, .igclib')
             
+    def _serialize(self):
+        snaps = {str(_[0]):_[1] for _ in self._snapshots()}
+        obj = dict(task=self.task, snapshots=snaps)
+        return obj
 
     def _load(self, path):
         """

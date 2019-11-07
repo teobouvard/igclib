@@ -1,6 +1,6 @@
 import re
 
-DEBUG = False
+DEBUG = True
 
 ### DISTANCE COMPUTATION ###
 
@@ -22,6 +22,7 @@ OPTIMIZER_PRECISION = 1
 
 IGC_RECORDS = 'fix_records'
 IGC_HEADER = 'header'
+IGC_PILOT_NAME = 'pilot'
 IGC_TIME = 'time'
 IGC_ALTITUDE = 'gps_alt'
 IGC_LAT = 'lat'
