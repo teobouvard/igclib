@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -7,7 +6,7 @@
 
 #define R  6378137.0
 #define TO_RAD (M_PI / 180.0)
-#define TO_DEG (180.0 / 3.14159265358979323846)
+#define TO_DEG (180.0 / M_PI)
 #define MIN(a,b) (((a)<(b))?(a):(b))
 
 
