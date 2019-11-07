@@ -57,6 +57,8 @@ class TaskCrawler():
                             links[event_name].append(link)
                         else:
                             links[event_name] = [link]
+        else:
+            raise ValueError('PWCA did not respond')
         
         return links
     

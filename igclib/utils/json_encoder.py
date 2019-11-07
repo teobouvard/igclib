@@ -10,5 +10,7 @@ class ComplexEncoder(json.JSONEncoder):
             return obj.strftime('%H:%M:%S')
         elif isinstance(obj, np.ndarray):
             return obj.tolist()
+        elif isinstance(obj, set):
+            return list(obj)
         else:
             return json.JSONEncoder.default(self, obj)

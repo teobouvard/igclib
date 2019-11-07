@@ -9,7 +9,6 @@ from datetime import time
 from glob import glob
 
 import numpy as np
-import seaborn as sns
 from igclib.constants import DEBUG
 from igclib.crawlers.flight_crawler import FlightCrawler
 from igclib.model.flight import Flight
@@ -54,6 +53,7 @@ class Race():
             self._load(path)
         else:
             self.task = Task(task_file)
+            print(self.task.to_json())
 
             if tracks_dir is None:
                 try:
@@ -63,6 +63,16 @@ class Race():
 
             self._parse_flights(tracks_dir)
             self._validate_flights(n_jobs)
+        
+
+        self.in_goal = []
+        for pilot_id, flight in self.flights.items():
+            for point in flight.points.values():
+                if point.goal_distance == 0:
+                    self.in_goal.append(pilot_id)
+                    break
+            
+        logging.info(f'{str(len(self.in_goal))} pilots in goal')
 
 
     def __getitem__(self, time_point):
@@ -213,7 +223,10 @@ class Race():
         """
         Saves the race instance to a file specified by output
         """
-        if output.endswith('.pkl'):
+        if output is None:
+            logging.info('Race was not saved because you did not specify an output file')
+
+        elif output.endswith('.pkl'):
             with open(output, 'wb') as f:
                 pickle.dump(self.__dict__, f)
 

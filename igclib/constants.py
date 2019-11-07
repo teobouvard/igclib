@@ -1,6 +1,6 @@
 import re
 
-DEBUG = False
+DEBUG = True
 
 ### DISTANCE COMPUTATION ###
 

@@ -4,12 +4,15 @@ import logging
 import os
 from datetime import datetime, time, timedelta
 
+import numpy as np
 from igclib.constants import DEBUG
 from igclib.constants import distance_computation as distance
 from igclib.model.geo import Opti, Point, Turnpoint
 from igclib.parsers import pwca, xctrack
+from igclib.utils import ellipsoid
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
+
 
 class Task():
     """
@@ -47,7 +50,10 @@ class Task():
         self.sss = task.sss
         self.turnpoints = task.turnpoints
         self.ess = task.ess
-        self.opti = optimize(self.takeoff, self.turnpoints)
+
+        #center_lat = np.array([x.lat for x in *self.takeoff, self.turnpoints]]).mean()
+        self.dist_correction = ellipsoid.corrections(self.takeoff.lat)
+        self.opti = optimize(self.takeoff, self.turnpoints, self.dist_correction)
 
     def _timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
@@ -71,19 +77,19 @@ class Task():
 
             # race has not started yet
             if timestamp < self.start:
-                opti = optimize(point, remaining_turnpoints, optimizer_init_vector)
+                opti = optimize(point, remaining_turnpoints, self.dist_correction, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti.angles
                 continue
 
             if len(remaining_turnpoints) > 0:
-                opti = optimize(point, remaining_turnpoints, optimizer_init_vector)
+                opti = optimize(point, remaining_turnpoints, self.dist_correction, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti.angles
                 
-                if point.close_enough(remaining_turnpoints[0]):
+                if point.close_enough(remaining_turnpoints[0], self.dist_correction):
                     del remaining_turnpoints[0]
-                    logging.info('Turnpoint passed at {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
+                    logging.debug(f'{flight.pilot_id} passed TP at {timestamp}, {len(remaining_turnpoints)} wp remaining')
 
             # in goal, fill with zeros until landing
             else:

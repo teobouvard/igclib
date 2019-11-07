@@ -18,8 +18,9 @@ class Point():
         
         self.goal_distance = None
 
-    def close_enough(self, wpt):
-        return True if abs(distance(self.lat, self.lon, wpt.lat, wpt.lon) - wpt.radius) < wpt.radius*TOLERANCE else False
+    def close_enough(self, wpt, correction):
+        #print(abs(distance(self.lat, self.lon, wpt.lat, wpt.lon, correction[0], correction[1]) - wpt.radius))
+        return True if abs(distance(self.lat, self.lon, wpt.lat, wpt.lon, correction[0], correction[1]) - wpt.radius) < wpt.radius*TOLERANCE else False
     
     def to_json(self):
         return self.__dict__

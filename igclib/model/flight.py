@@ -32,7 +32,7 @@ class Flight():
                 self._build(records)
     
     def _build(self, records):
-        self.pilot_name = records[IGC_HEADER][1][IGC_PILOT_NAME]
+        self.pilot_name = str(records[IGC_HEADER][1][IGC_PILOT_NAME])
         self.points = {point[IGC_TIME]:Point(record=point) for subrecord in records[IGC_RECORDS] for point in subrecord} 
         
     def __getitem__(self, time_point):

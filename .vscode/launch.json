@@ -34,7 +34,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/igclib/bin/igclib",
-            "args": ["race", "--task", "igclib/tests/test_data/tasks/task.xctsk", "--flights", "igclib/tests/test_data/large_tracks"],
+            "args": ["race", "--task", "igclib/tests/test_data/tasks/task.xctsk", "--flights", "igclib/tests/test_data/one_track"],
             "console": "integratedTerminal"
         },
         {

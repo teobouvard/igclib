@@ -4,7 +4,7 @@
 [![build status](https://img.shields.io/circleci/build/github/teobouvard/igclib/master?style=flat-square)](https://circleci.com/gh/teobouvard/igclib)
 [![docs status](https://img.shields.io/readthedocs/igclib?style=flat-square)](https://igclib.readthedocs.io/en/latest/)
 
-``igclib`` is a Python module and a command line tool designed for the analysis of paragliding competitions.
+``igclib`` is a Python module and a command line tool designed for the analysis of paragliding competitions. Its main purpose is to serve as backend to [Task Creator](https://github.com/julien66/meteor-task-creator).
 
 ## Get started
 

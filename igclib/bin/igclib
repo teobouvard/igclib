@@ -4,11 +4,13 @@ import argparse
 import json
 import os
 from datetime import datetime
+import logging
 
 from igclib.constants import DEFAULT_PROVIDER, MIN_YEAR, TASK_PROVIDERS
 from igclib.crawlers.task_crawler import TaskCrawler
 from igclib.model.race import Race
 from igclib.model.task import Task
+logging.basicConfig(level=logging.DEBUG)
 
 
 def check(args):
@@ -43,7 +45,8 @@ def argument_parser():
 
 
     parser_race = commands.add_parser('race', help='Create a race')
-    parser_race.add_argument('--task', type=str, help='Path or string of the task', required=True)
+    parser_race.add_argument('--task', type=str, help='Path or string of the task')
+    parser_race.add_argument('--path', type=str, help='Path to a previously saved race (.pkl)')
     parser_race.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
     parser_race.add_argument('--output', type=str, help='File to which you want to save the output [.pkl, .json, .igclib]')
     parser_race.add_argument('--n_jobs', type=int, default=-1, help='Number of CPU cores used for task validation (-1 to use all cores)')
@@ -71,7 +74,10 @@ if __name__ == '__main__':
     args = argument_parser()
   
     if args.command == 'race':
-        race =  Race(tracks_dir=args.flights, task_file=args.task, n_jobs=args.n_jobs, progress=args.progress)
+        if args.path is not None:
+            race =  Race(path=args.path, n_jobs=args.n_jobs, progress=args.progress)
+        else:
+            race =  Race(tracks_dir=args.flights, task_file=args.task, n_jobs=args.n_jobs, progress=args.progress)
         race.save(output=args.output)
 
     elif args.command == 'optimize':

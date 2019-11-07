@@ -4,7 +4,6 @@
     * add optimization callback
     * https://github.com/mapbox/cheap-ruler-cpp -> fast distance WGS84
     * https://github.com/robchett/igc_parser -> C IGC parser
-    * move close enough from race to point class
 
 * Data collection
 
@@ -12,5 +11,3 @@
     * ADD CHECKS OR RAISE FLIGHT CRAWLER FORMAT
     * superfinal result not on the same index !
     * maybe not rm downloaded tracks zip ? -> implement tracks caching in tmp dir
-
-    write json, compute features
