@@ -48,7 +48,6 @@ class Race():
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
         self.progress = progress
-        self.snapshots = None
 
         # load race from pickle or build it from args
         if path is not None:
@@ -58,17 +57,12 @@ class Race():
 
             if tracks_dir is None:
                 try:
-                    tracks_dir = self.crawl_flights()
+                    tracks_dir = FlightCrawler(self.task, progress=self.progress).directory
                 except ValueError:
                     logging.error('This task format does not support flight crawling yet, provide --flights directory.')
 
-            self._create_flights(tracks_dir)
+            self._parse_flights(tracks_dir)
             self._validate_flights(n_jobs)
-
-
-    def crawl_flights(self):
-        fc = FlightCrawler(self.task, progress=self.progress)
-        return fc.directory
 
 
     def __getitem__(self, time_point):
@@ -80,14 +74,12 @@ class Race():
         """
         return {pilot_id:flight[time_point] for pilot_id, flight in self.flights.items() if flight[time_point] is not None}
 
-            
-    
 
     def __len__(self):
         return len([_ for _ in self._snapshots()])
 
 
-    def _create_flights(self, tracks_dir):
+    def _parse_flights(self, tracks_dir):
         if zipfile.is_zipfile(tracks_dir):
             archive = zipfile.ZipFile(tracks_dir)
             archive.extractall(path='/tmp')
@@ -95,9 +87,10 @@ class Race():
 
         if os.path.isdir(tracks_dir):
             tracks = glob(os.path.join(tracks_dir, '*.igc'));
-
-        if len(tracks) == 0:
-            raise ValueError('Flight directory does not contain any igc files')
+            if len(tracks) == 0:
+                raise ValueError('Flight directory does not contain any igc files')
+        else:
+            raise ValueError(f'{tracks_dir} is not a directory')
 
         self.n_pilots = len(tracks)
         self.flights = {}
@@ -211,13 +204,9 @@ class Race():
         """
         Generates snapshots of the race at each second between start and stop
         """
-        if self.snapshots is not None:
-            for timestamp, snapshot in self.snapshots.items():
-                yield timestamp, snapshot
-        else:
-            for timestamp in self.task._timerange(start, stop):
-                if self[timestamp] != {}:
-                    yield timestamp, self[timestamp]
+        for timestamp in self.task._timerange(start, stop):
+            if self[timestamp] != {}:
+                yield timestamp, self[timestamp]
 
 
     def save(self, output):
@@ -230,7 +219,7 @@ class Race():
 
         elif output.endswith('.json'):
             with open(output, 'w') as f:
-                json.dump(self._serialize(), f, cls=ComplexEncoder, indent=None)
+                json.dump(self._serialize(), f, cls=ComplexEncoder, indent=4 if DEBUG else None)
 
         elif output.endswith('.igclib'):
             path = os.path.dirname(output)
@@ -240,14 +229,14 @@ class Race():
             pkl_output = os.path.join(path, f'{canonical}.pkl')
             self.save(output=json_output)
             self.save(output=pkl_output)
-            
+
         else:
             raise NotImplementedError('Supported output files : .json, .pkl, .igclib')
             
     def _serialize(self):
         snaps = {str(_[0]):_[1] for _ in self._snapshots()}
-        obj = dict(task=self.task, snapshots=snaps)
-        return obj
+        mapping = {x:str(y) for x, y in self.flights.items()}
+        return dict(task=self.task, mapping=mapping, race=snaps)
 
     def _load(self, path):
         """

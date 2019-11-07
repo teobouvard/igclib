@@ -1,30 +1,10 @@
-class Turnpoint():
-    """
-    Turnpoint
-    """
-
-    #__slots__ = ['lat', 'lon', 'radius', 'altitude', 'name', 'desc', 'role', 'direction']
-
-    def __init__(self, lat, lon, radius=None, altitude=None, name=None, desc=None, role=None, direction=None):
-        self.lat = lat
-        self.lon = lon
-        self.radius = radius
-        self.altitude = altitude
-        self.name = name
-        self.desc = desc
-        self.role = role
-        self.direction = direction
-    
-    def to_json(self):
-        return self.__dict__
-        
+from igclib.constants import TOLERANCE
+from igclib.constants import distance_computation as distance
 
 class Point():
     """
     Point
     """
-
-    #__slots__ = ['lat', 'lon', 'altitude', 'goal_distance']
 
     def __init__(self, lat=None, lon=None, altitude=None, record=None):
         if record is not None:
@@ -37,6 +17,26 @@ class Point():
             self.altitude = altitude
         
         self.goal_distance = None
+
+    def close_enough(self, wpt):
+        return True if abs(distance(self.lat, self.lon, wpt.lat, wpt.lon) - wpt.radius) < wpt.radius*TOLERANCE else False
+    
+    def to_json(self):
+        return self.__dict__
+
+
+class Turnpoint(Point):
+    """
+    Turnpoint
+    """
+
+    def __init__(self, lat, lon, radius=None, altitude=None, name=None, desc=None, role=None, direction=None):
+        super().__init__(lat, lon, altitude)
+        self.radius = radius
+        self.name = name
+        self.desc = desc
+        self.role = role
+        self.direction = direction
     
     def to_json(self):
         return self.__dict__
@@ -46,8 +46,6 @@ class Opti():
     """
     Opti
     """
-
-    #__slots__ = ['distance', 'legs', 'points', 'angles']
 
     def __init__(self, distance=0, legs=[], points=[], angles=[]):
         self.distance = distance

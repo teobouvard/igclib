@@ -19,7 +19,7 @@ class Flight():
         self.pilot_id = os.path.splitext(os.path.basename(track_file))[0]
         
         try:
-            with open(track_file, 'r') as f:
+            with open(track_file, 'r', encoding='iso-8859-1') as f:
                 records = igc.Reader().read(f)
                 self._build(records)
 

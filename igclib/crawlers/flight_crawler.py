@@ -13,8 +13,7 @@ class FlightCrawler():
 
     def __init__(self, task, progress=None):
         self._progress = progress
-        self.crawl_pwca(task)
-        self.directory = f'/tmp/{task.date}'
+        self.directory = self.crawl_pwca(task)
 
     def crawl_pwca(self, task):
         date = datetime.strptime(task.date, '%Y-%m-%d')
@@ -41,6 +40,8 @@ class FlightCrawler():
                     else:
                         pbar.update(len(data))
 
+        tracks_dir = f'/tmp/{task.date}'
         z = zipfile.ZipFile(f'/tmp/{task.date}.zip')
-        z.extractall(f'/tmp/{task.date}')
+        z.extractall(tracks_dir)
         os.remove(f'/tmp/{task.date}.zip')
+        return tracks_dir

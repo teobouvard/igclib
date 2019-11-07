@@ -1,7 +1,10 @@
 * Library
 
-    * change task validation method to closeness of next fast waypoint
-    * add pilot name
+    * change task validation method to closeness of next fast waypoint ?
+    * add optimization callback
+    * https://github.com/mapbox/cheap-ruler-cpp -> fast distance WGS84
+    * https://github.com/robchett/igc_parser -> C IGC parser
+    * move close enough from race to point class
 
 * Data collection
 

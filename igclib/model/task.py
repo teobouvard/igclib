@@ -11,9 +11,6 @@ from igclib.parsers import pwca, xctrack
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
 
-# fast distance computations do not validate turnpoints without tolerances
-TOLERANCE = 0.05
-
 class Task():
     """
     Args:
@@ -84,11 +81,11 @@ class Task():
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti.angles
                 
-                if self._close_enough(point, remaining_turnpoints[0]):
+                if point.close_enough(remaining_turnpoints[0]):
                     del remaining_turnpoints[0]
                     logging.info('Turnpoint passed at {}, {} wp remaining'.format(timestamp, len(remaining_turnpoints)))
 
-            # in goal, fill zeros until landing
+            # in goal, fill with zeros until landing
             else:
                 goal_distances[timestamp] = 0
             
@@ -106,7 +103,3 @@ class Task():
 
     def __len__(self):
         return int(self.opti.distance)
-
-    @staticmethod
-    def _close_enough(pos, wpt):
-        return True if abs(distance(pos.lat, pos.lon, wpt.lat, wpt.lon) - wpt.radius) < wpt.radius*TOLERANCE else False

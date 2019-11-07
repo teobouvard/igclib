@@ -1,6 +1,6 @@
 import re
 
-DEBUG = True
+DEBUG = False
 
 ### DISTANCE COMPUTATION ###
 
@@ -13,6 +13,9 @@ distance_computation = haversine
 #distance_computation = distance.great_circle
 #distance_computation = distance.vincenty -> slower
 #distance_computation = distance.distance -> slowest
+
+# fast distance computations do not validate turnpoints without tolerance
+TOLERANCE = 0.05
 
 # threshold of distance minimizer validation in meters
 OPTIMIZER_PRECISION = 1
