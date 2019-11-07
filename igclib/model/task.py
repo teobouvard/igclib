@@ -6,7 +6,6 @@ from datetime import datetime, time, timedelta
 
 import numpy as np
 from igclib.constants import DEBUG
-from igclib.constants import distance_computation as distance
 from igclib.model.geo import Opti, Point, Turnpoint
 from igclib.parsers import pwca, xctrack
 from igclib.utils import ellipsoid
