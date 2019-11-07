@@ -53,7 +53,6 @@ class Race():
             self._load(path)
         else:
             self.task = Task(task_file)
-            print(self.task.to_json())
 
             if tracks_dir is None:
                 try:
