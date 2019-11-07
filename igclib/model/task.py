@@ -99,7 +99,7 @@ class Task():
     
     def optimized(self, output=None):
         if output is not None:
-            with open (output, 'w') as f:
+            with open(output, 'w') as f:
                 json.dump(self.opti, f, cls=ComplexEncoder)
         else:
             print(json.dumps(self.opti, cls=ComplexEncoder))

@@ -48,6 +48,7 @@ class Race():
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
         self.progress = progress
+        self.snapshots = None
 
         # load race from pickle or build it from args
         if path is not None:
@@ -78,6 +79,8 @@ class Race():
             time_point (~datetime.time) : The second at which the snapshot is taken
         """
         return {pilot_id:flight[time_point] for pilot_id, flight in self.flights.items() if flight[time_point] is not None}
+
+            
     
 
     def __len__(self):
@@ -208,31 +211,37 @@ class Race():
         """
         Generates snapshots of the race at each second between start and stop
         """
-        for timestamp in self.task._timerange(start, stop):
-            if self[timestamp] != {}:
-                yield timestamp, self[timestamp]
+        if self.snapshots is not None:
+            for timestamp, snapshot in self.snapshots.items():
+                yield timestamp, snapshot
+        else:
+            for timestamp in self.task._timerange(start, stop):
+                if self[timestamp] != {}:
+                    yield timestamp, self[timestamp]
 
 
-    def save(self, path):
+    def save(self, output=None):
         """
-        Saves the race instance to a file specified by path
+        Saves the race instance to a file specified by output
         """
-        if path is not None:
-            if path.endswith('.pkl'):
-                with open(path, 'wb') as f:
-                    pickle.dump(self.__dict__, f)
-            elif path.endswith('.json'):
-                with open(path, 'w') as f:
-                    snaps = {str(_[0]):_[1] for _ in self._snapshots()}
-                    obj = dict(task=self.task, snapshots=snaps)
-                    json.dump(obj, f, cls=ComplexEncoder, indent=None)
-            else:
-                raise NotImplementedError('Supported output files : .json, .pkl')
+        if output.endswith('.pkl'):
+            with open(output, 'wb') as f:
+                pickle.dump(self.__dict__, f)
+        elif output.endswith('.json'):
+            with open(output, 'w') as f:
+                snaps = {str(_[0]):_[1] for _ in self._snapshots()}
+                obj = dict(task=self.task, snapshots=snaps)
+                json.dump(obj, f, cls=ComplexEncoder, indent=None)
+        else:
+            raise NotImplementedError('Supported output files : .json, .pkl')
             
 
     def _load(self, path):
         """
         Loads the race instance from a pickle file
         """
-        with open(path, 'rb') as f:
-            self.__dict__.update(pickle.load(f)) 
+        if path.endswith('.pkl'):
+            with open(path, 'rb') as f:
+                self.__dict__.update(pickle.load(f))
+        else:
+            raise ValueError('You can only load a race from a .pkl file')
