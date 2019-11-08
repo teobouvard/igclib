@@ -1,11 +1,11 @@
 import re
 
-DEBUG = True
+DEBUG = False
 
 ### DISTANCE COMPUTATION ###
 
 # fast distance computations do not validate turnpoints without tolerance
-TOLERANCE = 0.05
+TOLERANCE = 0.005
 
 # threshold of distance minimizer validation in meters
 OPTIMIZER_PRECISION = 1

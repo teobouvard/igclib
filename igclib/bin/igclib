@@ -10,7 +10,7 @@ from igclib.constants import DEFAULT_PROVIDER, MIN_YEAR, TASK_PROVIDERS
 from igclib.crawlers.task_crawler import TaskCrawler
 from igclib.model.race import Race
 from igclib.model.task import Task
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 
 
 def check(args):

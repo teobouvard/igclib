@@ -6,10 +6,9 @@ from datetime import datetime
 import aiohttp
 import requests
 from bs4 import BeautifulSoup
-from tqdm import tqdm
-
 from igclib.constants import (DEFAULT_PROVIDER, MAX_TASKS_PER_EVENT,
                               TASK_PROVIDERS)
+from tqdm import tqdm
 
 
 class TaskCrawler():
@@ -63,7 +62,6 @@ class TaskCrawler():
         return links
     
     async def download_list(self, links):
-        events = {}
         steps = []
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as client:
             for event_name, links in links.items():
@@ -80,22 +78,29 @@ class TaskCrawler():
 
             responses = [r for r in responses if r is not None]
 
+            events = {}
             for response in responses:
                 event_name = response['event_name']
+                provider = self.provider
+                year = self.year
+                task_num = response['task']['details']['task']
                 task = response['task']
-                link = response['link']
                 if event_name in events:
-                    events[event_name].append({'task_date': task['details']['date'], 'task': task, 'link': link})
+                    events[event_name]['tasks'].append({'num': task_num, 'task': task})
                 else:
-                    events[event_name] = [{'task_date': task['details']['date'], 'task': task, 'link':link}]
+                    events[event_name] = {'event': event_name, 'provider': self.provider['NAME'], 'year': self.year, 'tasks': []}
+                    events[event_name]['tasks'].append({'num': task_num, 'task': task})
 
-            return events
+            for event in events.values():
+                event['tasks'].sort(key=lambda x: x['num'])
+                
+            return list(events.values())
     
     async def fetch(self, client, event_name, link):
         async with client.get(link) as r:
             if r.status == 200:
                 response = await r.text()
-                return dict(event_name=event_name, task=json.loads(self.provider['TASK_PATTERN'].findall(response)[0]), link=link)
+                return dict(event_name=event_name, task=json.loads(self.provider['TASK_PATTERN'].findall(response)[0]))
 
 
 if __name__ == '__main__':
