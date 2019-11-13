@@ -1,6 +1,7 @@
 import json
 import logging
 import multiprocessing
+#multiprocessing.set_start_method('spawn', True)
 import os
 import pickle
 import sys
@@ -65,10 +66,10 @@ class Race():
             self._parse_flights(tracks_dir)
             self._validate_flights(n_jobs)
         
-        # number of pilots in goal
+        # number of pilots in goal TODO TIME THIS
         self.in_goal = []
         for pilot_id, flight in self.flights.items():
-            for point in flight.points.values():
+            for point in list(flight.points.values())[::-1]:
                 if point.goal_distance == 0:
                     self.in_goal.append(pilot_id)
                     break
@@ -126,19 +127,23 @@ class Race():
             n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
             with multiprocessing.Pool(n_jobs) as p:
                 steps = 1
+
                 # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
                 for pilot_id, goal_distances, tag_times in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=self.progress!='gui'):
+                    
                     # update goal distances of flight points
                     for timestamp, point in self.flights[pilot_id].points.items():
                         point.goal_distance = goal_distances[timestamp]
                     
-                    # compute race time for pilot
-
-                    #self.flights[pilot_id].race_time = sub_times(tag_times[-1], self.task.start)
-                    #print(self.flights[pilot_id].race_time)
+                    # compute race time for pilot, read list in reverse because ESS is more likely near the end
+                    for i, turnpoint in enumerate(self.task.turnpoints[::-1]):
+                        if turnpoint.role == 'ESS':
+                            race_time = sub_times(tag_times[-(i+1)], self.task.start)
+                            self.flights[pilot_id].race_time = race_time
+                            logging.error(f'{pilot_id} SS : {race_time}')
 
                     # update tag_times of turnpoints
-                    #for turnpoint, tag_time in zip()
+                    self.task._update_tag_times(tag_times)
                     
                     if self.progress == 'ratio':
                         print(f'{steps}/{self.n_pilots}', file=sys.stderr, flush=True)

@@ -3,6 +3,7 @@ import json
 import logging
 import os
 from datetime import datetime, time, timedelta
+from igclib.utils.timeop import next_second
 
 import numpy as np
 from igclib.constants import DEBUG
@@ -43,7 +44,7 @@ class Task():
         self.date = task.date
         self.open = task.open if 'open' in task.__dict__ else time(task.start.hour - 1, task.start.minute, task.start.second)
         self.start = task.start
-        self.stop = task.stop if task.stop > self.start else time(23, 59, 59)
+        self.stop = task.stop
 
         self.takeoff = task.takeoff
         self.sss = task.sss
@@ -53,15 +54,17 @@ class Task():
         self.opti = optimize(self.takeoff, self.turnpoints)
 
     def _timerange(self, start=None, stop=None):
-        start = start if start is not None else self.open
+        current = start if start is not None else self.open
         stop = stop if stop is not None else self.stop
 
-        current = datetime(1, 1, 1, start.hour, start.minute, start.second)
-        stop = datetime(1, 1, 1, stop.hour, stop.minute, stop.second)
-
         while current < stop:
-            yield current.time()
-            current += timedelta(seconds=1)
+            yield current
+            current = next_second(current)
+    
+    def _update_tag_times(self, times):
+        for turnpoint, contender in zip(self.turnpoints, times):
+            if turnpoint.first_tag is None or contender < turnpoint.first_tag:
+                turnpoint.first_tag = contender
 
 
     def validate(self, flight):

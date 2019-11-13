@@ -29,7 +29,6 @@ class Turnpoint(Point):
     """
     Turnpoint
     """
-
     def __init__(self, lat, lon, radius=None, altitude=None, name=None, desc=None, role=None, direction=None, first_tag=None):
         super().__init__(lat, lon, altitude)
         self.radius = radius
@@ -41,6 +40,7 @@ class Turnpoint(Point):
     
     def to_json(self):
         return self.__dict__
+
 
 
 class Opti():
