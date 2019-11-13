@@ -52,6 +52,7 @@ PWCA_TIME_FORMAT = '%H:%M'
 PWCA_TYPE = 'race'
 PWCA_DETAILS = 'details'
 
+PWCA_OPEN = 'open'
 PWCA_START = 'start'
 PWCA_STOP = 'end'
 

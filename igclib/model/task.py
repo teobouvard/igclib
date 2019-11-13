@@ -41,6 +41,7 @@ class Task():
             raise NotImplementedError('Task format not recognized')
         
         self.date = task.date
+        self.open = task.open if 'open' in task.__dict__ else time(task.start.hour - 1, task.start.minute, task.start.second)
         self.start = task.start
         self.stop = task.stop if task.stop > self.start else time(23, 59, 59)
 
@@ -52,7 +53,7 @@ class Task():
         self.opti = optimize(self.takeoff, self.turnpoints)
 
     def _timerange(self, start=None, stop=None):
-        start = start if start is not None else self.start
+        start = start if start is not None else self.open
         stop = stop if stop is not None else self.stop
 
         # all this mess is necessary because you can't add datetime.time objects, which are used by the aerofiles parser
