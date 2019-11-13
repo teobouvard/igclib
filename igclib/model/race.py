@@ -5,7 +5,7 @@ import os
 import pickle
 import sys
 import zipfile
-from datetime import time
+from datetime import time, datetime
 from glob import glob
 
 import numpy as np
@@ -16,6 +16,7 @@ from igclib.model.flight import Flight
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
 from igclib.utils.json_encoder import ComplexEncoder
+from igclib.utils.timeop import sub_times
 from matplotlib import pyplot as plt
 from scipy.signal import savgol_filter
 from tqdm import tqdm
@@ -64,14 +65,14 @@ class Race():
             self._parse_flights(tracks_dir)
             self._validate_flights(n_jobs)
         
-
+        # number of pilots in goal
         self.in_goal = []
         for pilot_id, flight in self.flights.items():
             for point in flight.points.values():
                 if point.goal_distance == 0:
                     self.in_goal.append(pilot_id)
                     break
-            
+
         logging.info(f'{str(len(self.in_goal))} pilots in goal')
 
 
@@ -118,17 +119,27 @@ class Race():
     def _validate_flights(self, n_jobs):
         """Computes the validation of each flight on the race"""
         if DEBUG == True:
-                for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
-                    self.task.validate(flight)
+            for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
+                self.task.validate(flight)
 
         else:
             n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
             with multiprocessing.Pool(n_jobs) as p:
                 steps = 1
                 # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
-                for pilot_id, goal_distances in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=self.progress!='gui'):
+                for pilot_id, goal_distances, tag_times in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=self.progress!='gui'):
+                    # update goal distances of flight points
                     for timestamp, point in self.flights[pilot_id].points.items():
                         point.goal_distance = goal_distances[timestamp]
+                    
+                    # compute race time for pilot
+
+                    #self.flights[pilot_id].race_time = sub_times(tag_times[-1], self.task.start)
+                    #print(self.flights[pilot_id].race_time)
+
+                    # update tag_times of turnpoints
+                    #for turnpoint, tag_time in zip()
+                    
                     if self.progress == 'ratio':
                         print(f'{steps}/{self.n_pilots}', file=sys.stderr, flush=True)
                         steps +=1

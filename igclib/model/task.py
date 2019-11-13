@@ -15,7 +15,7 @@ from igclib.utils.optimizer import optimize
 class Task():
     """
     Args:
-        task_file (str): Path to a task file or string representation of the task.
+        task_file (str): Path to or base64 representation of a task file.
     Raises:
         NotImplementedError: If the task could not be parsed.
     """
@@ -56,7 +56,6 @@ class Task():
         start = start if start is not None else self.open
         stop = stop if stop is not None else self.stop
 
-        # all this mess is necessary because you can't add datetime.time objects, which are used by the aerofiles parser
         current = datetime(1, 1, 1, start.hour, start.minute, start.second)
         stop = datetime(1, 1, 1, stop.hour, stop.minute, stop.second)
 
@@ -68,6 +67,7 @@ class Task():
     def validate(self, flight):
         remaining_turnpoints = self.turnpoints.copy()
         goal_distances = {}
+        tag_times = []
         optimizer_init_vector = None
         
         for timestamp, point in flight.points.items():
@@ -85,6 +85,7 @@ class Task():
                 optimizer_init_vector = opti.angles
                 
                 if point.close_enough(remaining_turnpoints[0]):
+                    tag_times.append(timestamp)
                     del remaining_turnpoints[0]
                     logging.debug(f'{flight.pilot_id} passed TP at {timestamp}, {len(remaining_turnpoints)} wp remaining')
 
@@ -92,7 +93,7 @@ class Task():
             else:
                 goal_distances[timestamp] = 0
             
-        return flight.pilot_id, goal_distances
+        return flight.pilot_id, goal_distances, tag_times
 
     def to_json(self):
         return self.__dict__
