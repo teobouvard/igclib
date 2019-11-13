@@ -2,10 +2,10 @@
 
     * change task validation method to closeness of next fast waypoint ?
     * add optimization callback
-    * add first tag to turpoints + first and last snap time to race JSON
     * add pilot time+distance to race serialization
-    * doc on task structure : turnpoint list does not contain takeoff
-    * time n pilots in goal
+    * doc task structure : turnpoint list does not contain takeoff
+    * time bench n pilots in goal
+    * dissociate snaps from features ?
 
 * Data collection
 

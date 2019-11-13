@@ -56,7 +56,6 @@ class Task():
     def _timerange(self, start=None, stop=None):
         current = start if start is not None else self.open
         stop = stop if stop is not None else self.stop
-
         while current < stop:
             yield current
             current = next_second(current)

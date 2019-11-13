@@ -6,7 +6,7 @@ import os
 import pickle
 import sys
 import zipfile
-from datetime import time, datetime
+from datetime import datetime, time
 from glob import glob
 
 import numpy as np
@@ -183,7 +183,7 @@ class Race():
 
         features = {}
         
-        for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self), file=sys.stdout):
+        for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self), disable=self.progress!='gui'):
             if pilot_id not in snapshot:
                 logging.debug(f'Pilot {pilot_id} has no track at time {timestamp}')
             else:
@@ -192,14 +192,25 @@ class Race():
         return features
 
 
-    def pilot_schema(self, pilot_id):
+    def pilot_schema_plot(self, pilot_id):
         """In dev !
         
         Args:
             pilot_id (str): ID of the pilot being studied
         """
-        features = self.get_pilot_features(pilot_id)
+        series = self.pilot_schema(pilot_id)
 
+        sns.lineplot(x=series['timestamps'], y=series['smoothed_altitudes'])
+        sns.lineplot(x=series['timestamps'], y=series['smoothed_distances'])
+        plt.show()
+
+    def pilot_schema(self, pilot_id, output=None):
+        """In dev !
+        
+        Args:
+            pilot_id (str): ID of the pilot being watched
+        """
+        features = self.get_pilot_features(pilot_id)
         mean_altitudes = []
         mean_goal = []
         timestamps = list(features.keys())
@@ -211,19 +222,19 @@ class Race():
             mean_altitudes.append(altitudes.mean())
             mean_goal.append(goal_distances.mean())
             
-            
         smoothed_altitudes = savgol_filter(mean_altitudes, 121, 1)
         smoothed_distances = savgol_filter(mean_goal, 121, 1)
-        gradient_altitudes = np.gradient(smoothed_altitudes)
-        gradient_goal = np.gradient(smoothed_distances)
 
-        _, ax = plt.subplots(2, 2, tight_layout=True, sharex=True)
-
-        sns.lineplot(x=timestamps, y=smoothed_altitudes, ax=ax[0][0])
-        sns.lineplot(x=timestamps, y=gradient_altitudes, ax=ax[1][0])
-        sns.lineplot(x=timestamps, y=smoothed_distances, ax=ax[0][1])
-        sns.lineplot(x=timestamps, y=gradient_goal, ax=ax[1][1])
-        plt.show()
+        series = {
+            'timestamps' : timestamps,
+            'delta_altitudes' : smoothed_altitudes,
+            'delta_distances' : smoothed_distances,
+        }
+        
+        if output is None:
+            return series
+        elif output == '-':
+            print(json.dumps(series, cls=ComplexEncoder))
 
 
     def _snapshots(self, start=None, stop=None):

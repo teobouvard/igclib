@@ -90,4 +90,5 @@ if __name__ == '__main__':
 
     elif args.command == 'watch':
         race =  Race(path=args.path, progress=args.progress)
-        race.pilot_schema(args.pilot)
+        series = race.pilot_schema(args.pilot, output='-')
+        
