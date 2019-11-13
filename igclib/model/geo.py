@@ -30,13 +30,14 @@ class Turnpoint(Point):
     Turnpoint
     """
 
-    def __init__(self, lat, lon, radius=None, altitude=None, name=None, desc=None, role=None, direction=None):
+    def __init__(self, lat, lon, radius=None, altitude=None, name=None, desc=None, role=None, direction=None, first_tag=None):
         super().__init__(lat, lon, altitude)
         self.radius = radius
         self.name = name
         self.desc = desc
         self.role = role
         self.direction = direction
+        self.first_tag = first_tag
     
     def to_json(self):
         return self.__dict__

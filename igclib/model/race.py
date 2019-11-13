@@ -232,7 +232,7 @@ class Race():
 
         elif output.endswith('.json'):
             with open(output, 'w') as f:
-                json.dump(self._serialize(), f, cls=ComplexEncoder, indent=4 if DEBUG else None)
+                json.dump(self._serialize(), f, cls=ComplexEncoder, indent=4)
 
         elif output.endswith('.igclib'):
             path = os.path.dirname(output)
