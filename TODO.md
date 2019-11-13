@@ -2,8 +2,7 @@
 
     * change task validation method to closeness of next fast waypoint ?
     * add optimization callback
-    * https://github.com/mapbox/cheap-ruler-cpp -> fast distance WGS84
-    * https://github.com/robchett/igc_parser -> C IGC parser
+    * add first tag to turpoints + first and last snap time to race JSON
 
 * Data collection
 
