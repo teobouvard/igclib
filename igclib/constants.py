@@ -8,7 +8,7 @@ DEBUG = False
 TOLERANCE = 0.005
 
 # threshold of distance minimizer validation in meters
-OPTIMIZER_PRECISION = 1
+OPTIMIZER_PRECISION = 10
 
 
 ### IGC FILE CONSTANTS ###

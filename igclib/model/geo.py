@@ -18,9 +18,8 @@ class Point():
         
         self.goal_distance = None
 
-    def close_enough(self, wpt, correction):
-        #print(abs(distance(self.lat, self.lon, wpt.lat, wpt.lon, correction[0], correction[1]) - wpt.radius))
-        return True if abs(distance(self.lat, self.lon, wpt.lat, wpt.lon, correction[0], correction[1]) - wpt.radius) < 10 + wpt.radius*TOLERANCE else False
+    def close_enough(self, wpt):
+        return True if abs(distance(self.lat, self.lon, wpt.lat, wpt.lon) - wpt.radius) < 10 + wpt.radius*TOLERANCE else False
     
     def to_json(self):
         return self.__dict__
@@ -54,6 +53,5 @@ class Opti():
         self.points = points
         self.angles = angles
 
-    def to_json(self):
-        obj = dict(points=self.points, distance=self.distance, legs=self.legs)
-        return obj
+    def to_json(self): 
+        return dict(points=self.points, distance=self.distance, legs=self.legs)

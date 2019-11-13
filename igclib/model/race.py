@@ -9,6 +9,7 @@ from datetime import time
 from glob import glob
 
 import numpy as np
+import seaborn as sns
 from igclib.constants import DEBUG
 from igclib.crawlers.flight_crawler import FlightCrawler
 from igclib.model.flight import Flight

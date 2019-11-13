@@ -11,7 +11,7 @@ def readme():
     with open('readme.md', 'r') as f:
         return f.read()
 
-geolib = Extension('geolib', ['igclib/c_ext/geolib.c'])
+geolib = Extension('geolib', ['igclib/c_ext/geodesic.c', 'igclib/c_ext/geolib.c'])
 
 setup(name='igclib',
     version=VERSION,

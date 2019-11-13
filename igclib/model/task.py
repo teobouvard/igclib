@@ -8,7 +8,6 @@ import numpy as np
 from igclib.constants import DEBUG
 from igclib.model.geo import Opti, Point, Turnpoint
 from igclib.parsers import pwca, xctrack
-from igclib.utils import ellipsoid
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
 
@@ -50,9 +49,7 @@ class Task():
         self.turnpoints = task.turnpoints
         self.ess = task.ess
 
-        #center_lat = np.array([x.lat for x in *self.takeoff, self.turnpoints]]).mean()
-        self.dist_correction = ellipsoid.corrections(self.takeoff.lat)
-        self.opti = optimize(self.takeoff, self.turnpoints, self.dist_correction)
+        self.opti = optimize(self.takeoff, self.turnpoints)
 
     def _timerange(self, start=None, stop=None):
         start = start if start is not None else self.start
@@ -76,17 +73,17 @@ class Task():
 
             # race has not started yet
             if timestamp < self.start:
-                opti = optimize(point, remaining_turnpoints, self.dist_correction, prev_opti=optimizer_init_vector)
+                opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti.angles
                 continue
 
             if len(remaining_turnpoints) > 0:
-                opti = optimize(point, remaining_turnpoints, self.dist_correction, prev_opti=optimizer_init_vector)
+                opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti.angles
                 
-                if point.close_enough(remaining_turnpoints[0], self.dist_correction):
+                if point.close_enough(remaining_turnpoints[0]):
                     del remaining_turnpoints[0]
                     logging.debug(f'{flight.pilot_id} passed TP at {timestamp}, {len(remaining_turnpoints)} wp remaining')
 

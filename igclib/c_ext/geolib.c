@@ -1,82 +1,76 @@
+#include "geodesic.h"
 #include <stdlib.h>
-#include <math.h>
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#define R  6378137.0
-#define TO_RAD (M_PI / 180.0)
-#define TO_DEG (180.0 / M_PI)
-#define MIN(a,b) (((a)<(b))?(a):(b))
+#define A 6378137         /* WGS84 */
+#define F 1/298.257223563 /* WGS84 */
 
 
 /* TYPES */
 
-typedef struct t_wp{
+typedef struct geopoint{
     double lat;
     double lon;
-    double radius;
-} t_wp;
+} geopoint;
 
 
 /* PURE C FUNCTIONS */
 
 
-double c_distance(double lat1, double lon1, double lat2, double lon2, double kx, double ky){
-	double dx = (lat1 - lat2) * kx;
-	double dy = (lon1 - lon2) * ky;
-    return sqrt(dx * dx + dy * dy);
+double c_distance(double lat1, double lon1, double lat2, double lon2){
+    double distance;
+    struct geod_geodesic g;
+    geod_init(&g, A, F);
+    geod_inverse(&g, lat1, lon1, lat2, lon2, &distance, 0, 0);
+    return distance;
 }
 
-t_wp c_destination(double lat, double lon, double distance, double heading, double kx, double ky){
-	heading *= TO_RAD;
-	double dx = sin(heading) * distance;
-	double dy = cos(heading) * distance;
-    t_wp end_point = {lat + dx / kx, lon + dy / ky, 0};
+geopoint c_destination(double lat, double lon, double distance, double heading){
+    geopoint end_point;
+    struct geod_geodesic g;
+    geod_init(&g, A, F);
+    geod_direct(&g, lat, lon, heading, distance, &end_point.lat, &end_point.lon, 0);
     return end_point;
 }
 
-double c_heading(double lat1, double lon1, double lat2, double lon2, double kx, double ky){
-    lat1 *= TO_RAD, lat2 *= TO_RAD, lon1 *= TO_RAD, lon2 *= TO_RAD;
-    double dx =  (lat2 - lat1) * kx;
-    double dy =  (lon2 - lon1) * ky;
-
-    if (!dx && !dy) return 0.;
-
-    double heading = atan2(dx, dy) * TO_DEG;
-    if (heading > 180) heading -= 360;
-
+double c_heading(double lat1, double lon1, double lat2, double lon2){
+    double heading;
+    struct geod_geodesic g;
+    geod_init(&g, A, F);
+    geod_inverse(&g, lat1, lon1, lat2, lon2, 0, &heading, 0);
     return heading;
 }
 
 /* PYTHON FUNCTION CALL INTERFACE */
 
 static PyObject* distance(PyObject* self, PyObject* args){
-	double lat1, lon1, lat2, lon2, kx, ky;
+	double lat1, lon1, lat2, lon2;
 
-    if(!PyArg_ParseTuple(args, "dddddd", &lat1, &lon1, &lat2, &lon2, &kx, &ky))
+    if(!PyArg_ParseTuple(args, "dddd", &lat1, &lon1, &lat2, &lon2))
         return NULL;
 
-    return Py_BuildValue("d", c_distance(lat1, lon1, lat2, lon2, kx, ky));
+    return Py_BuildValue("d", c_distance(lat1, lon1, lat2, lon2));
 }
 
 static PyObject* destination(PyObject* self, PyObject* args){
-	double lat1, lon1, distance, heading, kx, ky;;
+	double lat1, lon1, distance, heading;
 
-    if(!PyArg_ParseTuple(args, "dddddd", &lat1, &lon1, &distance, &heading, &kx, &ky))
+    if(!PyArg_ParseTuple(args, "dddd", &lat1, &lon1, &distance, &heading))
         return NULL;
 
-    t_wp offset = c_destination(lat1, lon1, distance, heading, kx, ky);
+    geopoint offset = c_destination(lat1, lon1, distance, heading);
     return Py_BuildValue("(dd)", offset.lat, offset.lon);
 }
 
 static PyObject* heading(PyObject* self, PyObject* args){
-	double lat1, lon1, lat2, lon2, kx, ky;
+	double lat1, lon1, lat2, lon2;
 
-    if(!PyArg_ParseTuple(args, "dddddd", &lat1, &lon1, &lat2, &lon2, &kx, &ky))
+    if(!PyArg_ParseTuple(args, "dddd", &lat1, &lon1, &lat2, &lon2))
         return NULL;
 
-    return Py_BuildValue("d", c_heading(lat1, lon1, lat2, lon2, kx, ky));
+    return Py_BuildValue("d", c_heading(lat1, lon1, lat2, lon2));
 }
 
 
