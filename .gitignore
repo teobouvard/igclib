@@ -33,4 +33,4 @@ build
 *.swp
 
 # Temporary excluded files
-test_race.json
+saved_races/
