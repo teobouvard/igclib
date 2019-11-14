@@ -5,7 +5,7 @@ DEBUG = False
 ### DISTANCE COMPUTATION ###
 
 # fast distance computations do not validate turnpoints without tolerance
-TOLERANCE = 0.005
+TOLERANCE = 0.001
 
 # threshold of distance minimizer validation in meters
 OPTIMIZER_PRECISION = 10

@@ -1,7 +1,7 @@
 import json
 import logging
 import multiprocessing
-multiprocessing.set_start_method('spawn', True)
+#multiprocessing.set_start_method('spawn', True)
 import os
 import pickle
 import sys
@@ -291,7 +291,7 @@ class Race():
                 'name' : str(flight),
                 'id': pilot_id,
                 'distance' : flight.race_distance,
-                'time' : str(flight.race_time)
+                'time' : flight.race_time
             }
         ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']))
         return dict(task=self.task, ranking=ranking, race=snaps)

@@ -11,6 +11,7 @@ from igclib.model.geo import Opti, Point, Turnpoint
 from igclib.parsers import pwca, xctrack
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
+from geolib import heading, distance
 
 
 class Task():
@@ -51,6 +52,12 @@ class Task():
         self.turnpoints = task.turnpoints
         self.ess = task.ess
 
+        # to validate goal lines, we need heading differences
+        index_last_turnpoint = -2
+        while distance(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon) < 1:
+            index_last_turnpoint -= 1
+        self._last_leg_heading = heading(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon)
+
         self.opti = optimize(self.takeoff, self.turnpoints)
 
     def _timerange(self, start=None, stop=None):
@@ -80,13 +87,23 @@ class Task():
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti.angles
                 continue
-
+            
+            # race has started, check next turnpoint's closeness and validate it
             if len(remaining_turnpoints) > 0:
                 opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti.angles
                 
-                if point.close_enough(remaining_turnpoints[0]):
+                # if only one turnpoint left, validate it as goal line by heading difference (95° to be sure the goal line is behind)
+                if len(remaining_turnpoints) == 1:
+                        goal_heading = heading(point.lat, point.lon, remaining_turnpoints[-1].lat, remaining_turnpoints[-1].lon)
+                        delta_heading = abs(self._last_leg_heading - goal_heading)
+                        if delta_heading > 95:
+                            tag_times.append(timestamp)
+                            del remaining_turnpoints[0]
+                            logging.debug(f'{flight.pilot_id} passed TP at {timestamp}, {len(remaining_turnpoints)} wp remaining')
+
+                elif point.close_enough(remaining_turnpoints[0]):
                     tag_times.append(timestamp)
                     del remaining_turnpoints[0]
                     logging.debug(f'{flight.pilot_id} passed TP at {timestamp}, {len(remaining_turnpoints)} wp remaining')

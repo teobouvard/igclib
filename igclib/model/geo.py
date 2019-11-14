@@ -20,6 +20,9 @@ class Point():
 
     def close_enough(self, wpt):
         return True if abs(distance(self.lat, self.lon, wpt.lat, wpt.lon) - wpt.radius) < 10 + wpt.radius*TOLERANCE else False
+
+    def inside(self, wpt):
+        return True if distance(self.lat, self.lon, wpt.lat, wpt.lon) < wpt.radius*(1 + TOLERANCE) else False
     
     def to_json(self):
         return self.__dict__
