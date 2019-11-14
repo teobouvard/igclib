@@ -145,7 +145,7 @@ class Race():
                             if turnpoint.role == 'ESS':
                                 race_time = sub_times(tag_times[-(i+1)], self.task.start)
                                 self.flights[pilot_id].race_time = race_time
-                                logging.error(f'{pilot_id} SS : {race_time}')
+                                logging.debug(f'{pilot_id} SS : {race_time}')
 
                     # update tag_times of turnpoints
                     self.task._update_tag_times(tag_times)

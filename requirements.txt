@@ -13,8 +13,8 @@ pytest
 # progress bar
 tqdm
 
-# IGC parsing
-aerofiles
+# IGC parsing (from GitHub because of old release)
+aerofiles @ git+https://github.com/Turbo87/aerofiles.git
 
 # visualization 
 matplotlib
