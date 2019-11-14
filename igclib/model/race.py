@@ -268,8 +268,8 @@ class Race():
                 pickle.dump(self.__dict__, f)
 
         elif output.endswith('.json'):
-            with open(output, 'w') as f:
-                json.dump(self._serialize(), f, cls=ComplexEncoder, indent=4)
+            with open(output, 'w', encoding='utf8') as f:
+                json.dump(self._serialize(), f, cls=ComplexEncoder, ensure_ascii=False, indent=4)
 
         elif output.endswith('.igclib'):
             path = os.path.dirname(output)

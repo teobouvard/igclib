@@ -21,7 +21,7 @@ class Flight():
         self.race_time = None
         
         try:
-            with open(track_file, 'r', encoding='iso-8859-1') as f:
+            with open(track_file, 'r', encoding='utf-8') as f:
                 records = igc.Reader().read(f)
                 self._build(records)
 
@@ -31,9 +31,9 @@ class Flight():
             # we have to try a different file encoding for people having accents in their names
             with open(track_file, 'r', encoding='iso-8859-1') as f:
                 records = igc.Reader().read(f)
-                self._build(records)
+                self._build(records, encoding='iso-8859-1')
     
-    def _build(self, records):
+    def _build(self, records, encoding='utf-8'):
         self.pilot_name = str(records[IGC_HEADER][1][IGC_PILOT_NAME])
         self.points = {point[IGC_TIME]:Point(record=point) for subrecord in records[IGC_RECORDS] for point in subrecord} 
         
