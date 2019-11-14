@@ -6,6 +6,7 @@
     * doc task structure : turnpoint list does not contain takeoff
     * time bench n pilots in goal
     * dissociate snaps from features ?
+    * don't serialize race progress and other changeable attributes
 
 * Data collection
 

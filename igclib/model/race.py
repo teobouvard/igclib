@@ -1,7 +1,7 @@
 import json
 import logging
 import multiprocessing
-#multiprocessing.set_start_method('spawn', True)
+multiprocessing.set_start_method('spawn', True)
 import os
 import pickle
 import sys
@@ -49,12 +49,13 @@ class Race():
     """
 
     def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
-        self.progress = progress
-
         # load race from pickle or build it from args
         if path is not None:
             self._load(path)
+            # have to reupdate progress attribute as it is taken from pickle (TODO don't serialize)
+            self.progress = progress
         else:
+            self.progress = progress
             self.task = Task(task_file)
 
             if tracks_dir is None:
@@ -134,13 +135,17 @@ class Race():
                     # update goal distances of flight points
                     for timestamp, point in self.flights[pilot_id].points.items():
                         point.goal_distance = goal_distances[timestamp]
+
+                    # compute race time for pilot, read list in reverse because ESS is more likely near the end
+                    self.flights[pilot_id].race_distance = len(self.task) - min(goal_distances.values())
                     
                     # compute race time for pilot, read list in reverse because ESS is more likely near the end
-                    for i, turnpoint in enumerate(self.task.turnpoints[::-1]):
-                        if turnpoint.role == 'ESS':
-                            race_time = sub_times(tag_times[-(i+1)], self.task.start)
-                            self.flights[pilot_id].race_time = race_time
-                            logging.error(f'{pilot_id} SS : {race_time}')
+                    if len(tag_times) == len(self.task.turnpoints):
+                        for i, turnpoint in enumerate(self.task.turnpoints[::-1]):
+                            if turnpoint.role == 'ESS':
+                                race_time = sub_times(tag_times[-(i+1)], self.task.start)
+                                self.flights[pilot_id].race_time = race_time
+                                logging.error(f'{pilot_id} SS : {race_time}')
 
                     # update tag_times of turnpoints
                     self.task._update_tag_times(tag_times)
@@ -182,12 +187,17 @@ class Race():
             raise KeyError('Pilot {} is not in the race'.format(pilot_id))
 
         features = {}
-        
+        steps = 1
+        total = len(self)
         for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self), disable=self.progress!='gui'):
             if pilot_id not in snapshot:
                 logging.debug(f'Pilot {pilot_id} has no track at time {timestamp}')
             else:
                 features[timestamp] = PilotFeatures(pilot_id, timestamp, snapshot)
+
+            if self.progress == 'ratio':
+                print(f'{steps}/{total}', file=sys.stderr, flush=True)
+                steps +=1
 
         return features
 
@@ -275,8 +285,16 @@ class Race():
             
     def _serialize(self):
         snaps = {str(_[0]):_[1] for _ in self._snapshots()}
-        mapping = {x:str(y) for x, y in self.flights.items()}
-        return dict(task=self.task, mapping=mapping, race=snaps)
+        ranking = {}
+        for pilot_id, flight in self.flights.items():
+            ranking[pilot_id] = {
+                'name' : str(flight),
+                'id': pilot_id,
+                'distance' : flight.race_distance,
+                'time' : str(flight.race_time)
+            }
+        ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']))
+        return dict(task=self.task, ranking=ranking, race=snaps)
 
     def _load(self, path):
         """

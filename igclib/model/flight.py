@@ -17,6 +17,8 @@ class Flight():
     def __init__(self, track_file):
 
         self.pilot_id = os.path.splitext(os.path.basename(track_file))[0]
+        self.race_distance = None
+        self.race_time = None
         
         try:
             with open(track_file, 'r', encoding='iso-8859-1') as f:
