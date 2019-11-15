@@ -20,19 +20,19 @@ class Flight():
         self.race_distance = None
         self.race_time = None
         
-        try:
-            with open(track_file, 'r', encoding='utf-8') as f:
-                records = igc.Reader().read(f)
-                self._build(records)
+        for encoding in ['utf-8', 'iso-8859-1']:
+            try:
+                with open(track_file, 'r', encoding=encoding) as f:
+                    records = igc.Reader().read(f)
+                    self._build(records)
 
-        except UnicodeDecodeError:
-            logging.debug(f'{track_file} is not utf-8 valid, trying iso encoding')
-            
-            # we have to try a different file encoding for people having accents in their names
-            with open(track_file, 'r', encoding='iso-8859-1') as f:
-                records = igc.Reader().read(f)
-                self._build(records, encoding='iso-8859-1')
-    
+            except UnicodeDecodeError:
+                logging.debug(f'{track_file} is not {encoding} encoded, trying something else')
+
+        if self.points == {}:
+            raise ValueError(f'{track_file} is empty or could not be read')
+
+
     def _build(self, records, encoding='utf-8'):
         self.pilot_name = str(records[IGC_HEADER][1][IGC_PILOT_NAME])
         self.points = {point[IGC_TIME]:Point(record=point) for subrecord in records[IGC_RECORDS] for point in subrecord} 
