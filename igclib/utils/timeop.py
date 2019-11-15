@@ -18,3 +18,8 @@ def next_second(t):
     d = datetime(1, 1, 1, t.hour, t.minute, t.second)
     d += timedelta(seconds=1)
     return d.time()
+
+def add_offset(t, **kwargs):
+    d1 = datetime(1, 1, 1, t.hour, t.minute, t.second)
+    offset = d1 + timedelta(**kwargs)
+    return offset.time()

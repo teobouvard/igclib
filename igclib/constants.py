@@ -15,6 +15,7 @@ OPTIMIZER_PRECISION = 10
 
 IGC_RECORDS = 'fix_records'
 IGC_HEADER = 'header'
+IGC_TZ_OFFSET = 'time_zone_offset'
 IGC_PILOT_NAME = 'pilot'
 IGC_TIME = 'time'
 IGC_ALTITUDE = 'gps_alt'
