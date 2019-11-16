@@ -27,6 +27,10 @@ def check(args):
         #    raise ValueError('Flights directory is empty')
         pass
 
+    elif args.command == 'replay':
+        if args.task is None:
+            raise ValueError('Specify a task and/or flights')
+
     elif args.command == 'optimize':
         pass
     
@@ -42,13 +46,19 @@ def argument_parser():
     commands = parser.add_subparsers(dest='command', help='Mode of operation')
     commands.required = True 
 
+    parser_replay = commands.add_parser('replay', help='Create a replay of the race')
+    parser_replay.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
+    parser_replay.add_argument('--task', type=str, help='Path or string of the task')
+    parser_replay.add_argument('--path', type=str, help='Path to a previously saved race (.pkl)')
+    parser_replay.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
+    parser_replay.add_argument('--output', type=str, help='File to which you want to save the output [.pkl, .json, .igclib]')
+
     parser_race = commands.add_parser('race', help='Create a race')
     parser_race.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
     parser_race.add_argument('--task', type=str, help='Path or string of the task')
     parser_race.add_argument('--path', type=str, help='Path to a previously saved race (.pkl)')
     parser_race.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
     parser_race.add_argument('--output', type=str, help='File to which you want to save the output [.pkl, .json, .igclib]')
-    parser_race.add_argument('--n_jobs', type=int, default=-1, help='Number of CPU cores used for task validation (-1 to use all cores)')
 
     parser_task = commands.add_parser('optimize', help='Optimize a task')
     parser_task.add_argument('--output', type=str, help='File to which you want to save the output')
@@ -77,9 +87,9 @@ if __name__ == '__main__':
   
     if args.command == 'race':
         if args.path is not None:
-            race =  Race(path=args.path, n_jobs=args.n_jobs, progress=args.progress)
+            race = Race(path=args.path, progress=args.progress)
         else:
-            race =  Race(tracks_dir=args.flights, task_file=args.task, n_jobs=args.n_jobs, progress=args.progress)
+            race = Race(tracks_dir=args.flights, task_file=args.task, progress=args.progress)
         race.save(output=args.output)
 
     elif args.command == 'optimize':
@@ -93,4 +103,11 @@ if __name__ == '__main__':
     elif args.command == 'watch':
         race =  Race(path=args.path, progress=args.progress)
         series = race.pilot_schema(args.pilot, output='-')
+    
+    elif args.command == 'replay':
+        if args.path is not None:
+            race =  Race(path=args.path, validate=False, progress=args.progress)
+        else:
+            race = Race(tracks_dir=args.flights, task_file=args.task, validate=False, progress=args.progress)
+        race.save(output=args.output)
         

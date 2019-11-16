@@ -25,7 +25,7 @@ dev:
 	python3 igclib/main.py --race test_data/test.pkl --pilot 0090
 
 race:
-	igclib race --task igclib/tests/test_data/tasks/task.xctsk --flights igclib/tests/test_data/one_track --output saved_races/big_race.igclib
+	igclib race --task igclib/tests/test_data/tasks/task.xctsk --flights igclib/tests/test_data/large_tracks --output saved_races/big_race.igclib
 
 watch:
 	igclib watch --path saved_races/big_race.pkl --pilot 0035

@@ -38,8 +38,6 @@ class Race():
     Keyword Arguments:
         tracks_dir (str): A path to the directory containing IGC tracks.
         task_file (str): A path to the task file.
-        n_jobs (int): The number of processes to use when validating the tracks.
-            The default value (-1) creates as many process as the CPU core count of the machine.
         path (str): The path of a previously saved Race instance.
 
     Attributes:
@@ -48,34 +46,31 @@ class Race():
         task (Task) : The Task instance of the Race.
     """
 
-    def __init__(self, tracks_dir=None, task_file=None, n_jobs=-1, path=None, progress='gui'):
+    def __init__(self, tracks_dir=None, task_file=None, validate=True, path=None, progress='gui'):
+        self._validate = validate
+        self._progress = progress
+        
         # load race from pickle or build it from args
         if path is not None:
             self._load(path)
-            # have to reupdate progress attribute as it is taken from pickle (TODO don't serialize)
-            self.progress = progress
+            if not self.validated and self._validate:
+                self._validate_flights()
         else:
-            self.progress = progress
+            self._progress = progress
             self.task = Task(task_file)
 
             if tracks_dir is None:
                 try:
-                    tracks_dir = FlightCrawler(self.task, progress=self.progress).directory
+                    tracks_dir = FlightCrawler(self.task, progress=self._progress).directory
                 except ValueError:
                     logging.error('This task format does not support flight crawling yet, provide --flights directory.')
 
             self._parse_flights(tracks_dir)
-            self._validate_flights(n_jobs)
-        
-        # number of pilots in goal TODO TIME THIS
-        self.in_goal = []
-        for pilot_id, flight in self.flights.items():
-            for point in list(flight.points.values())[::-1]:
-                if point.goal_distance == 0:
-                    self.in_goal.append(pilot_id)
-                    break
 
-        logging.info(f'{str(len(self.in_goal))} pilots in goal')
+            if self._validate:
+                self._validate_flights()
+            else:
+                self.validated = False
 
 
     def __getitem__(self, time_point):
@@ -85,7 +80,13 @@ class Race():
         Arguments:
             time_point (~datetime.time) : The second at which the snapshot is taken
         """
-        return {pilot_id:flight[time_point] for pilot_id, flight in self.flights.items() if flight[time_point] is not None}
+        snaps = {}
+        for pilot_id, flight in self.flights.items():
+            if flight[time_point] is not None:
+                snaps[pilot_id] = flight[time_point]
+            else:
+                snaps[pilot_id] = flight._last_point
+        return snaps
 
 
     def __len__(self):
@@ -109,28 +110,27 @@ class Race():
         self.flights = {}
 
         steps = 1
-        for x in tqdm(tracks, desc='reading tracks', disable=self.progress!='gui'):
+        for x in tqdm(tracks, desc='reading tracks', disable=self._progress!='gui'):
             pilot_id = os.path.splitext(os.path.basename(x))[0]
             self.flights[pilot_id] = Flight(x)
 
-            if self.progress == 'ratio':
+            if self._progress == 'ratio':
                 print(f'{steps}/{self.n_pilots}', file=sys.stderr, flush=True)
                 steps +=1
 
     
-    def _validate_flights(self, n_jobs):
+    def _validate_flights(self):
         """Computes the validation of each flight on the race"""
         if DEBUG == True:
             for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
                 self.task.validate(flight)
 
         else:
-            n_jobs = multiprocessing.cpu_count() if n_jobs == -1 else n_jobs
-            with multiprocessing.Pool(n_jobs) as p:
+            with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
                 steps = 1
 
                 # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join 
-                for pilot_id, goal_distances, tag_times in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=self.progress!='gui'):
+                for pilot_id, goal_distances, tag_times in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=self._progress!='gui'):
                     
                     # update goal distances of flight points
                     for timestamp, point in self.flights[pilot_id].points.items():
@@ -138,6 +138,7 @@ class Race():
 
                     # compute race time for pilot, read list in reverse because ESS is more likely near the end
                     self.flights[pilot_id].race_distance = len(self.task) - min(goal_distances.values())
+                    self.flights[pilot_id]._last_point.goal_distance =  min(goal_distances.values())
                     
                     # compute race time for pilot, read list in reverse because ESS is more likely near the end
                     if len(tag_times) == len(self.task.turnpoints):
@@ -150,9 +151,19 @@ class Race():
                     # update tag_times of turnpoints
                     self.task._update_tag_times(tag_times)
                     
-                    if self.progress == 'ratio':
+                    if self._progress == 'ratio':
                         print(f'{steps}/{self.n_pilots}', file=sys.stderr, flush=True)
                         steps +=1
+            
+            # number of pilots in goal TODO TIME THIS
+            self.in_goal = []
+            for pilot_id, flight in self.flights.items():
+                for point in list(flight.points.values())[::-1]:
+                    if point.goal_distance == 0:
+                        self.in_goal.append(pilot_id)
+                        break
+
+            logging.info(f'{str(len(self.in_goal))} pilots in goal')
 
 
     def __str__(self):
@@ -189,13 +200,13 @@ class Race():
         features = {}
         steps = 1
         total = len(self)
-        for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self), disable=self.progress!='gui'):
+        for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self), disable=self._progress!='gui'):
             if pilot_id not in snapshot:
                 logging.debug(f'Pilot {pilot_id} has no track at time {timestamp}')
             else:
                 features[timestamp] = PilotFeatures(pilot_id, timestamp, snapshot)
 
-            if self.progress == 'ratio':
+            if self._progress == 'ratio':
                 print(f'{steps}/{total}', file=sys.stderr, flush=True)
                 steps +=1
 
@@ -265,7 +276,8 @@ class Race():
 
         elif output.endswith('.pkl'):
             with open(output, 'wb') as f:
-                pickle.dump(self.__dict__, f)
+                to_save = {x:y for x, y in self.__dict__.items() if not x.startswith('_')}
+                pickle.dump(to_save, f)
 
         elif output.endswith('.json'):
             with open(output, 'w', encoding='utf8') as f:
@@ -286,14 +298,15 @@ class Race():
     def _serialize(self):
         snaps = {str(_[0]):_[1] for _ in self._snapshots()}
         ranking = {}
-        for pilot_id, flight in self.flights.items():
-            ranking[pilot_id] = {
-                'name' : str(flight),
-                'id': pilot_id,
-                'distance' : flight.race_distance,
-                'time' : flight.race_time
-            }
-        ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']))
+        if self._validate:
+            for pilot_id, flight in self.flights.items():
+                ranking[pilot_id] = {
+                    'name' : str(flight),
+                    'id': pilot_id,
+                    'distance' : flight.race_distance,
+                    'time' : flight.race_time
+                }
+            ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']))
         return dict(task=self.task, ranking=ranking, race=snaps)
 
     def _load(self, path):

@@ -42,7 +42,9 @@ class Flight():
         for subrecord in records[IGC_RECORDS]:
             for point in subrecord:
                 adjusted_time = add_offset(point[IGC_TIME], hours=time_offset)
-                self.points[adjusted_time] = Point(record=point)
+                self.points[adjusted_time] = Point(record=point, status='flying')
+                if point == subrecord[-1]:
+                    self._last_point = Point(record=point, status='landed')
 
         
     def __getitem__(self, time_point):

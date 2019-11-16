@@ -6,11 +6,12 @@ class Point():
     Point
     """
 
-    def __init__(self, lat=None, lon=None, altitude=None, record=None):
+    def __init__(self, lat=None, lon=None, altitude=None, record=None, status=None):
         if record is not None:
             self.lat = record['lat']
             self.lon = record['lon']
             self.altitude = record['gps_alt']
+            self.status = status
         else:
             self.lat = lat
             self.lon = lon
