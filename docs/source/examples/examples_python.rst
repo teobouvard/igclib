@@ -32,7 +32,6 @@ Get a task optimization info in json
     from igclib.model.task import Task
 
     t = Task('task.xctsk')
-    print(t.to_json())
 
 
 Get all available tasks from a provider

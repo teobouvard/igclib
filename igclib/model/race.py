@@ -50,11 +50,13 @@ class Race():
         self._validate = validate
         self._progress = progress
         
-        # load race from pickle or build it from args
+        # load race from pickle
         if path is not None:
             self._load(path)
             if not self.validated and self._validate:
                 self._validate_flights()
+
+        # or build it from arguments
         else:
             self._progress = progress
             self.task = Task(task_file)

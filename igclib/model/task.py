@@ -85,14 +85,14 @@ class Task():
             if timestamp < self.start:
                 opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
-                optimizer_init_vector = opti.angles
+                optimizer_init_vector = opti._angles
                 continue
             
             # race has started, check next turnpoint's closeness and validate it
             if len(remaining_turnpoints) > 0:
                 opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
-                optimizer_init_vector = opti.angles
+                optimizer_init_vector = opti._angles
                 
                 # if only one turnpoint left, validate it as goal line by heading difference (95° to be sure the goal line is behind)
                 if len(remaining_turnpoints) == 1:
@@ -113,9 +113,6 @@ class Task():
                 goal_distances[timestamp] = 0
             
         return flight.pilot_id, goal_distances, tag_times
-
-    def to_json(self):
-        return self.__dict__
     
     def optimized(self, output=None):
         if output is not None:

@@ -1,7 +1,7 @@
 from igclib.constants import TOLERANCE
 from geolib import distance
 
-class Point():
+class Point(object):
     """
     Point
     """
@@ -24,27 +24,19 @@ class Point():
 
     def inside(self, wpt):
         return True if distance(self.lat, self.lon, wpt.lat, wpt.lon) < wpt.radius*(1 + TOLERANCE) else False
-    
-    def to_json(self):
-        return self.__dict__
 
 
 class Turnpoint(Point):
     """
     Turnpoint
     """
-    def __init__(self, lat, lon, radius=None, altitude=None, name=None, desc=None, role=None, direction=None, first_tag=None):
+    def __init__(self, lat, lon, radius=None, altitude=None, name=None, desc=None, role=None, first_tag=None):
         super().__init__(lat, lon, altitude)
         self.radius = radius
         self.name = name
         self.desc = desc
         self.role = role
-        self.direction = direction
         self.first_tag = first_tag
-    
-    def to_json(self):
-        return self.__dict__
-
 
 
 class Opti():
@@ -55,7 +47,4 @@ class Opti():
         self.distance = distance
         self.legs = legs
         self.points = points
-        self.angles = angles
-
-    def to_json(self): 
-        return dict(points=self.points, distance=self.distance, legs=self.legs)
+        self._angles = angles

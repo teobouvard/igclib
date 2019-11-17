@@ -3,7 +3,7 @@ from datetime import datetime, time
 import os
 
 from igclib.model.geo import Turnpoint
-from igclib.constants import (XC_GOAL, XC_GOAL_DEADLINE, XC_SSS, XC_SSS_DIRECTION,
+from igclib.constants import (XC_GOAL, XC_GOAL_DEADLINE, XC_SSS,
                        XC_SSS_TIMEGATES, XC_TIME_FORMAT, XC_TURNPOINTS,
                        XC_TURNPOINTS_RADIUS, XC_TYPE, XC_WAYPOINT,
                        XC_WAYPOINT_ALT, XC_WAYPOINT_DESC, XC_WAYPOINT_LAT,
@@ -55,5 +55,4 @@ class XCTask():
             name=wpt[XC_WAYPOINT][XC_WAYPOINT_NAME],
             desc=wpt[XC_WAYPOINT][XC_WAYPOINT_DESC],
             role=wpt.get(XC_TYPE, 'TURNPOINT'),
-            direction=task[XC_SSS][XC_SSS_DIRECTION] if task is not None else None
         )

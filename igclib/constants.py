@@ -32,7 +32,6 @@ XC_GOAL = 'goal'
 XC_GOAL_DEADLINE = 'deadline'
 
 XC_SSS = 'sss'
-XC_SSS_DIRECTION = 'direction'
 XC_SSS_TIMEGATES = 'timeGates'
 
 XC_TURNPOINTS = 'turnpoints'

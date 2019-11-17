@@ -15,23 +15,23 @@ class Flight():
         [type]: [description]
     """
 
-    def __init__(self, track_file):
+    def __init__(self, igc_file):
 
-        self.pilot_id = os.path.splitext(os.path.basename(track_file))[0]
+        self.pilot_id = os.path.splitext(os.path.basename(igc_file))[0]
         self.race_distance = None
         self.race_time = None
         
         for encoding in ['utf-8', 'iso-8859-1']:
             try:
-                with open(track_file, 'r', encoding=encoding) as f:
+                with open(igc_file, 'r', encoding=encoding) as f:
                     records = igc.Reader().read(f)
                     self._build(records)
 
             except UnicodeDecodeError:
-                logging.debug(f'{track_file} is not {encoding} encoded, trying something else')
+                logging.debug(f'{igc_file} is not {encoding} encoded, trying something else')
 
         if not hasattr(self, 'points') or self.points == {}:
-            raise ValueError(f'{track_file} is empty or could not be read')
+            raise ValueError(f'{igc_file} is empty or could not be read')
 
 
     def _build(self, records, encoding='utf-8'):
