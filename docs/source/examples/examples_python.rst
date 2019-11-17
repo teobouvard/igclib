@@ -41,6 +41,5 @@ Get all available tasks from a provider
 
     from igclib.crawlers.task_crawler import TaskCrawler
 
-    tc = TaskCrawler(provider='PWCA', year=2015)
-    tasks = tc.crawl()
-    print(tasks)
+    crawler = TaskCrawler(provider='PWCA', year=2015)
+    crawler.crawl(output='tasks.json')

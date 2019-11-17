@@ -3,7 +3,6 @@ import json
 import logging
 import os
 from datetime import datetime, time, timedelta
-from igclib.utils.timeop import next_second
 
 import numpy as np
 from igclib.constants import DEBUG
@@ -11,7 +10,9 @@ from igclib.model.geo import Opti, Point, Turnpoint
 from igclib.parsers import pwca, xctrack
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
-from geolib import heading, distance
+from igclib.utils.timeop import next_second
+
+from geolib import distance, heading
 
 
 class Task():
@@ -113,6 +114,7 @@ class Task():
                 goal_distances[timestamp] = 0
             
         return flight.pilot_id, goal_distances, tag_times
+
     
     def optimized(self, output=None):
         if output is not None:

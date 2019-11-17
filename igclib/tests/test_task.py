@@ -5,7 +5,7 @@ import pytest
 from igclib.model.task import Task
 from igclib.tests import TEST_DATA
 
-APPROX = 0.005
+APPROX = 0.001
 
 @pytest.fixture(scope='session')
 def xctask():
@@ -38,3 +38,4 @@ def test_task_opti(xctask, xctask_b64, pwca_task):
 	assert xctask.opti.distance == pytest.approx(94300, APPROX)
 	assert xctask_b64.opti.distance == pytest.approx(94300, APPROX)
 	assert pwca_task.opti.distance == pytest.approx(94300, APPROX)
+	assert len(xctask) == pytest.approx(len(xctask_b64), APPROX) == pytest.approx(len(pwca_task), APPROX)

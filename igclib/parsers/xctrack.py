@@ -1,14 +1,14 @@
 import json
-from datetime import datetime, time
 import os
+from datetime import datetime, time
 
-from igclib.model.geo import Turnpoint
 from igclib.constants import (XC_GOAL, XC_GOAL_DEADLINE, XC_SSS,
-                       XC_SSS_TIMEGATES, XC_TIME_FORMAT, XC_TURNPOINTS,
-                       XC_TURNPOINTS_RADIUS, XC_TYPE, XC_WAYPOINT,
-                       XC_WAYPOINT_ALT, XC_WAYPOINT_DESC, XC_WAYPOINT_LAT,
-                       XC_WAYPOINT_LON, XC_WAYPOINT_NAME)
-                       
+                              XC_SSS_TIMEGATES, XC_TIME_FORMAT, XC_TURNPOINTS,
+                              XC_TURNPOINTS_RADIUS, XC_TYPE, XC_WAYPOINT,
+                              XC_WAYPOINT_ALT, XC_WAYPOINT_DESC,
+                              XC_WAYPOINT_LAT, XC_WAYPOINT_LON,
+                              XC_WAYPOINT_NAME)
+from igclib.model.geo import Turnpoint
 
 
 class XCTask():
@@ -25,19 +25,14 @@ class XCTask():
         stop_time = datetime.strptime(task[XC_GOAL][XC_GOAL_DEADLINE], XC_TIME_FORMAT)
 
         turnpoints = []
-
         for waypoint in task[XC_TURNPOINTS]:
-
             if waypoint.get(XC_TYPE, None) == 'TAKEOFF':
                 self.takeoff = self._build_wpt(waypoint)
-                continue
-            
+                continue    
             elif waypoint.get(XC_TYPE, None) == 'SSS':
                 self.sss = self._build_wpt(waypoint, task)
-
             elif waypoint.get(XC_TYPE, None) == 'ESS':
                 self.ess = self._build_wpt(waypoint)
-
             turnpoints.append(self._build_wpt(waypoint))
 
         self.date = 'Unknown'
