@@ -51,7 +51,6 @@ class Opti():
     """
     Opti
     """
-
     def __init__(self, distance=0, legs=[], points=[], angles=[]):
         self.distance = distance
         self.legs = legs

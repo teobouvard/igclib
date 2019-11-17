@@ -11,7 +11,7 @@ docs:
 	cd docs && make clean && make html && python3 -m http.server
 
 tests:
-	pytest -vv
+	pytest --disable-pytest-warnings
 
 dist:
 	python3 setup.py sdist bdist_wheel
