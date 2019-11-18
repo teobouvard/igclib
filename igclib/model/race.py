@@ -87,7 +87,12 @@ class Race():
             if flight[time_point] is not None:
                 snaps[pilot_id] = flight[time_point]
             else:
-                snaps[pilot_id] = flight._last_point
+                if time_point < flight._first_point['timestamp']:
+                    snaps[pilot_id] = flight._first_point['point']
+                elif time_point > flight._last_point['timestamp']:
+                    snaps[pilot_id] = flight._last_point['point']
+                else:
+                    raise ValueError(f'Something terribly wrong happened with the tracklog of pilot {pilot_id}')
         return snaps
 
 
@@ -140,7 +145,7 @@ class Race():
 
                     # compute race time for pilot, read list in reverse because ESS is more likely near the end
                     self.flights[pilot_id].race_distance = len(self.task) - min(goal_distances.values())
-                    self.flights[pilot_id]._last_point.goal_distance =  min(goal_distances.values())
+                    self.flights[pilot_id]._last_point['point'].goal_distance =  min(goal_distances.values())
                     
                     # compute race time for pilot, read list in reverse because ESS is more likely near the end
                     if len(tag_times) == len(self.task.turnpoints):

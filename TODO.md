@@ -1,14 +1,12 @@
 * Library
 
-    * change task validation method to closeness of next fast waypoint ?
-    * add optimization callback
+    * add optimization callback !
     * add pilot time+distance to race serialization
     * doc task structure : turnpoint list does not contain takeoff
     * time bench n pilots in goal
-    * dissociate snaps from features ?
-    * don't serialize race progress and other changeable attributes
     * goal line + cylinder
     * create scoring class
+    * add first point before takeoff rather than last point
 
 * Data collection
 

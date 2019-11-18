@@ -9,10 +9,8 @@ from igclib.utils.timeop import add_offset
 
 
 class Flight():
-    """[summary]
+    """Class representing a Flight
     
-    Returns:
-        [type]: [description]
     """
 
     def __init__(self, igc_file):
@@ -43,8 +41,12 @@ class Flight():
             for point in subrecord:
                 adjusted_time = add_offset(point[IGC_TIME], hours=time_offset)
                 self.points[adjusted_time] = Point(record=point, status='flying')
-                if point == subrecord[-1]:
-                    self._last_point = Point(record=point, status='landed')
+        
+        first_timestamp = min(self.points)
+        last_timestamp = max(self.points)
+        self._first_point = {'timestamp':first_timestamp, 'point':self.points[first_timestamp]}
+        self._last_point = {'timestamp':last_timestamp, 'point':self.points[last_timestamp]}
+        
 
         
     def __getitem__(self, time_point):
