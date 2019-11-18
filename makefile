@@ -30,6 +30,9 @@ race:
 watch:
 	igclib watch --path saved_races/big_race.pkl --pilot 0093 --progress ratio
 
+optimize:
+	igclib optimize --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --progress ratio
+
 task:
 	igclib --mode optimize --task igclib/tests/test_data/tasks/task.xctsk
 

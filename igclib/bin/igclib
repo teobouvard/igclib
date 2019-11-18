@@ -93,7 +93,7 @@ if __name__ == '__main__':
         race.save(output=args.output)
 
     elif args.command == 'optimize':
-        task = Task(args.task)
+        task = Task(args.task, progress=args.progress)
         task.optimized(output=args.output)
 
     elif args.command == 'crawl':
