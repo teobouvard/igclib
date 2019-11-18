@@ -23,7 +23,7 @@ class Task():
         NotImplementedError: If the task could not be parsed.
     """
 
-    def __init__(self, task_file):
+    def __init__(self, task_file, progress='gui'):
 
         task = None
         # try to base64 decode the task
@@ -59,7 +59,7 @@ class Task():
             index_last_turnpoint -= 1
         self._last_leg_heading = heading(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon)
 
-        self.opti = optimize(self.takeoff, self.turnpoints)
+        self.opti = optimize(self.takeoff, self.turnpoints, callback=True if progress != 'gui' else False)
 
     def _timerange(self, start=None, stop=None):
         current = start if start is not None else self.open

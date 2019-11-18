@@ -59,7 +59,7 @@ class Race():
         # or build it from arguments
         else:
             self._progress = progress
-            self.task = Task(task_file)
+            self.task = Task(task_file, progress=self._progress)
 
             if tracks_dir is None:
                 try:
@@ -91,8 +91,6 @@ class Race():
                     snaps[pilot_id] = flight._first_point['point']
                 elif time_point > flight._last_point['timestamp']:
                     snaps[pilot_id] = flight._last_point['point']
-                else:
-                    raise ValueError(f'Something terribly wrong happened with the tracklog of pilot {pilot_id}')
         return snaps
 
 
