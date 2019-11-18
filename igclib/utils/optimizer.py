@@ -43,4 +43,4 @@ def log_opti(angles, waypoints):
         lat, lon = destination(wp.lat, wp.lon, wp.radius, theta)
         route.append(Point(lat, lon))
     json_route = json.dumps(route, cls=ComplexEncoder)
-    print(json_route, file=sys.stderr)
+    print(json_route, file=sys.stderr, flush=True)
