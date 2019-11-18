@@ -71,6 +71,7 @@ class Race():
 
             if self._validate:
                 self._validate_flights()
+                self.validated = True
             else:
                 self.validated = False
 
@@ -120,7 +121,7 @@ class Race():
             self.flights[pilot_id] = Flight(x)
 
             if self._progress == 'ratio':
-                print(f'{steps}/{self.n_pilots}', file=sys.stderr, flush=True)
+                print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                 steps +=1
 
     
@@ -157,7 +158,7 @@ class Race():
                     self.task._update_tag_times(tag_times)
                     
                     if self._progress == 'ratio':
-                        print(f'{steps}/{self.n_pilots}', file=sys.stderr, flush=True)
+                        print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                         steps +=1
             
             # number of pilots in goal TODO TIME THIS
@@ -212,7 +213,7 @@ class Race():
                 features[timestamp] = PilotFeatures(pilot_id, timestamp, snapshot)
 
             if self._progress == 'ratio':
-                print(f'{steps}/{total}', file=sys.stderr, flush=True)
+                print(f'{steps/total:.0%}', file=sys.stderr, flush=True)
                 steps +=1
 
         return features

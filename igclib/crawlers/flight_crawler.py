@@ -36,7 +36,7 @@ class FlightCrawler():
                     f.write(data); 
                     if self._progress == 'ratio':
                         downloaded += len(data)
-                        print(f'{downloaded}/{file_size}', file=sys.stderr, flush=True)
+                        print(f'{downloaded/file_size:.0%}', file=sys.stderr, flush=True)
                     else:
                         pbar.update(len(data))
 

@@ -74,7 +74,7 @@ class TaskCrawler():
                 response = await r
                 responses.append(response)
                 if self._progress == 'ratio':
-                    print(f'{len(responses)}/{len(steps)}', file=sys.stderr, flush=True)
+                    print(f'{len(responses)/len(steps):.0%}', file=sys.stderr, flush=True)
 
             responses = [r for r in responses if r is not None]
 

@@ -25,10 +25,10 @@ dev:
 	python3 igclib/main.py --race test_data/test.pkl --pilot 0090
 
 race:
-	igclib race --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_few_tracks --output saved_races/big_race.igclib
+	igclib race --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_few_tracks --output saved_races/big_race.igclib --progress ratio
 
 watch:
-	igclib watch --path saved_races/big_race.pkl --pilot 0035
+	igclib watch --path saved_races/big_race.pkl --pilot 0093 --progress ratio
 
 task:
 	igclib --mode optimize --task igclib/tests/test_data/tasks/task.xctsk
