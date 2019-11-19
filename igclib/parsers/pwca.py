@@ -10,13 +10,9 @@ from igclib.model.geo import Turnpoint
 
 class PWCATask():
 
-    def __init__(self, task_file):
+    def __init__(self, task):
 
-        if os.path.isfile(task_file):
-            with open(task_file, 'r') as f:
-                task = json.load(f)[PWCA_TASK]
-        else:
-            task = json.loads(task_file)[PWCA_TASK]
+        task = task[PWCA_TASK]
 
         open_time = datetime.strptime(task[PWCA_DETAILS][PWCA_OPEN], PWCA_TIME_FORMAT)
         start_time = datetime.strptime(task[PWCA_DETAILS][PWCA_START], PWCA_TIME_FORMAT)

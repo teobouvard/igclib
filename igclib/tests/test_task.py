@@ -9,18 +9,18 @@ APPROX = 0.001
 
 @pytest.fixture(scope='session')
 def xctask():
-	task_file = os.path.join(TEST_DATA, 'tasks', 'pwca_brazil_2019_7.xctsk')
-	return Task(task_file)
+	task = os.path.join(TEST_DATA, 'tasks', 'pwca_brazil_2019_7.xctsk')
+	return Task(task)
 
 @pytest.fixture(scope='session')
 def pwca_task():
-	task_file = os.path.join(TEST_DATA, 'tasks', 'pwca_brazil_2019_7.json')
-	return Task(task_file)
+	task = os.path.join(TEST_DATA, 'tasks', 'pwca_brazil_2019_7.json')
+	return Task(task)
 
 @pytest.fixture(scope='session')
 def xctask_b64():
-	task_file = os.path.join(TEST_DATA, 'tasks', 'pwca_brazil_2019_7.b64')
-	with open(task_file, 'r') as f:
+	task = os.path.join(TEST_DATA, 'tasks', 'pwca_brazil_2019_7.b64')
+	with open(task, 'r') as f:
 		task_string = f.read()
 	return Task(task_string)
 

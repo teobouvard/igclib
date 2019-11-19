@@ -81,7 +81,6 @@ def argument_parser():
     return args
 
 if __name__ == '__main__':
-
     # parse and check arguments
     args = argument_parser()
   
@@ -89,7 +88,7 @@ if __name__ == '__main__':
         if args.path is not None:
             race = Race(path=args.path, progress=args.progress)
         else:
-            race = Race(tracks_dir=args.flights, task_file=args.task, progress=args.progress)
+            race = Race(tracks=args.flights, task=args.task, progress=args.progress)
         race.save(output=args.output)
 
     elif args.command == 'optimize':
@@ -106,8 +105,8 @@ if __name__ == '__main__':
     
     elif args.command == 'replay':
         if args.path is not None:
-            race =  Race(path=args.path, validate=False, progress=args.progress)
+            race = Race(path=args.path, validate=False, progress=args.progress)
         else:
-            race = Race(tracks_dir=args.flights, task_file=args.task, validate=False, progress=args.progress)
+            race = Race(tracks_dir=args.flights, task=args.task, validate=False, progress=args.progress)
         race.save(output=args.output)
         

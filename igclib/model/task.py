@@ -18,29 +18,34 @@ from geolib import distance, heading
 class Task():
     """
     Args:
-        task_file (str): Path to or base64 representation of a task file.
+        task (str): Path to or base64 representation of a task file.
     Raises:
         NotImplementedError: If the task could not be parsed.
     """
 
-    def __init__(self, task_file, progress='gui'):
+    def __init__(self, task, progress='gui'):
 
-        task = None
         # try to base64 decode the task
-        if not os.path.isfile(task_file):
+        if not os.path.isfile(task):
             try:
-                task_file = base64.b64decode(task_file)
+                task = base64.b64decode(task)
+                task = json.loads(task)
             except TypeError:
                 logging.debug(f'Task is not base64')
+        
+        else:
+            with open(task, 'r') as f:
+                task = json.load(f)
 
         # try to parse with every implemented format, raise if no match
         for task_format in [xctrack.XCTask, pwca.PWCATask]:
             try:
-                task = task_format(task_file)
+                task = task_format(task)
                 break
             except KeyError:
                 logging.debug(f'Task format does not fit into {task_format}')
-        if task is None:
+
+        if not hasattr(task, 'start'):
             raise NotImplementedError('Task format not recognized')
         
         self.date = task.date
@@ -120,8 +125,6 @@ class Task():
         if output is not None:
             with open(output, 'w') as f:
                 json.dump(self.opti, f, cls=ComplexEncoder)
-        else:
-            print(json.dumps(self.opti, cls=ComplexEncoder))
 
     def __len__(self):
         return int(self.opti.distance)

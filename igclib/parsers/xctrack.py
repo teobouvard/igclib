@@ -13,13 +13,7 @@ from igclib.model.geo import Turnpoint
 
 class XCTask():
 
-    def __init__(self, task_file):
-        
-        if os.path.isfile(task_file):
-            with open(task_file, 'r') as f:
-                task = json.load(f)
-        else:
-            task = json.loads(task_file)
+    def __init__(self, task):
 
         start_time = datetime.strptime(task[XC_SSS][XC_SSS_TIMEGATES][0], XC_TIME_FORMAT)
         stop_time = datetime.strptime(task[XC_GOAL][XC_GOAL_DEADLINE], XC_TIME_FORMAT)

@@ -10,7 +10,7 @@ Build a race and save it to disk
 
     from igclib.model.race import Race
 
-    r =  Race(tracks_dir='tracks/', task_file='task.xctsk')
+    r =  Race(tracks='tracks/', task='task.xctsk')
     r.save('race.pkl')
 
 

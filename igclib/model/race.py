@@ -14,6 +14,7 @@ import seaborn as sns
 from igclib.constants import DEBUG
 from igclib.crawlers.flight_crawler import FlightCrawler
 from igclib.model.flight import Flight
+from igclib.model.ranking import  Ranking 
 from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
 from igclib.utils.json_encoder import ComplexEncoder
@@ -27,17 +28,17 @@ class Race():
     """
     You can create a Race instance in two different ways :
 
-    * Passing a tracks_dir and a task_file, which creates a new Race object and computes all pilot features.
+    * Passing a tracks and a task, which creates a new Race object and validates all pilot flights.
 
-        >>> r =  Race(tracks_dir='tracks/', task_file='task.xctsk')
+        >>> r =  Race(tracks='tracks/', task='task.xctsk')
 
-    * Passing a path to a previously saved Race, loading the saved instance (much faster than recomputing features).
+    * Passing a path to a previously saved Race, loading the saved instance (much faster than re-validating flights).
 
         >>> r =  Race(path='race.pkl')
 
     Keyword Arguments:
-        tracks_dir (str): A path to the directory containing IGC tracks.
-        task_file (str): A path to the task file.
+        tracks (str): A path to a directory or a zip file containing IGC tracks.
+        task (str): A path to the task file or a base64 representation of the task.
         path (str): The path of a previously saved Race instance.
 
     Attributes:
@@ -46,7 +47,7 @@ class Race():
         task (Task) : The Task instance of the Race.
     """
 
-    def __init__(self, tracks_dir=None, task_file=None, validate=True, path=None, progress='gui'):
+    def __init__(self, tracks=None, task=None, validate=True, path=None, progress='gui'):
         self._validate = validate
         self._progress = progress
         
@@ -54,23 +55,26 @@ class Race():
         if path is not None:
             self._load(path)
             if not self.validated and self._validate:
-                self._validate_flights()
+                self.validate_flights()
 
         # or build it from arguments
         else:
-            self._progress = progress
-            self.task = Task(task_file, progress=self._progress)
+            # by parsing the task file or b64 to create a Task
+            self.task = Task(task, progress=self._progress)
 
-            if tracks_dir is None:
+            # trying to fetch the tracks if they were not provided by user
+            if tracks is None:
                 try:
-                    tracks_dir = FlightCrawler(self.task, progress=self._progress).directory
+                    tracks = FlightCrawler(self.task, progress=self._progress).directory
                 except ValueError:
-                    logging.error('This task format does not support flight crawling yet, provide --flights directory.')
+                    raise ValueError('This task format does not support flight crawling yet, provide --flights directory.')
+            
+            # reading the tracks and builiding the Flights objects
+            self.parse_flights(tracks)
 
-            self._parse_flights(tracks_dir)
-
+            # validating all Flights if necessary
             if self._validate:
-                self._validate_flights()
+                self.validate_flights()
                 self.validated = True
             else:
                 self.validated = False
@@ -83,34 +87,40 @@ class Race():
         Arguments:
             time_point (~datetime.time) : The second at which the snapshot is taken
         """
-        snaps = {}
+        snap = {}
         for pilot_id, flight in self.flights.items():
             if flight[time_point] is not None:
-                snaps[pilot_id] = flight[time_point]
+                snap[pilot_id] = flight[time_point]
             else:
                 if time_point < flight._first_point['timestamp']:
-                    snaps[pilot_id] = flight._first_point['point']
+                    snap[pilot_id] = flight._first_point['point']
                 elif time_point > flight._last_point['timestamp']:
-                    snaps[pilot_id] = flight._last_point['point']
-        return snaps
+                    snap[pilot_id] = flight._last_point['point']
+        return snap
 
 
     def __len__(self):
+        """Returns the number of snapshots between the earliest and the latest point from all flights."""
         return len([_ for _ in self._snapshots()])
 
 
-    def _parse_flights(self, tracks_dir):
-        if zipfile.is_zipfile(tracks_dir):
-            archive = zipfile.ZipFile(tracks_dir)
-            archive.extractall(path='/tmp')
-            tracks_dir = os.path.join('/tmp', os.path.splitext(os.path.basename(tracks_dir))[0])
+    def parse_flights(self, tracks):
+        """Populates flights attribute by parsing each igc file in tracks.
 
-        if os.path.isdir(tracks_dir):
-            tracks = glob(os.path.join(tracks_dir, '*.igc'));
+        Arguments:
+            tracks (str) : Path to a directory or a zip file containing the igc files
+        """
+        if zipfile.is_zipfile(tracks):
+            archive = zipfile.ZipFile(tracks)
+            archive.extractall(path='/tmp')
+            tracks = os.path.join('/tmp', os.path.splitext(os.path.basename(tracks))[0])
+
+        if os.path.isdir(tracks):
+            tracks = glob(os.path.join(tracks, '*.igc'));
             if len(tracks) == 0:
                 raise ValueError('Flight directory does not contain any igc files')
         else:
-            raise ValueError(f'{tracks_dir} is not a directory')
+            raise ValueError(f'{tracks} is not a directory')
 
         self.n_pilots = len(tracks)
         self.flights = {}
@@ -125,7 +135,7 @@ class Race():
                 steps +=1
 
     
-    def _validate_flights(self):
+    def validate_flights(self):
         """Computes the validation of each flight on the race"""
         if DEBUG == True:
             for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
@@ -161,6 +171,7 @@ class Race():
                         print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                         steps +=1
             
+            self.ranking = Ranking(self)
             # number of pilots in goal TODO TIME THIS
             self.in_goal = []
             for pilot_id, flight in self.flights.items():
@@ -231,6 +242,7 @@ class Race():
         sns.lineplot(x=series['timestamps'], y=series['smoothed_distances'])
         plt.show()
 
+
     def pilot_schema(self, pilot_id, output=None):
         """In dev !
         
@@ -276,6 +288,12 @@ class Race():
     def save(self, output):
         """
         Saves the race instance to a file specified by output
+            * If output is a JSON file (.json), only a human-readable, serialized version of the race is written.
+            * If output is a pickle file (.pkl), only a binary version of the race is written, which can be loaded by this class later.
+            * If output is an igclib file (.igclib), both a JSON and a pickle file will be generated.
+
+        Arguments:
+            output (str) : Path to a file to which you want to write the output.
         """
         if output is None:
             logging.info('Race was not saved because you did not specify an output file')
@@ -287,7 +305,7 @@ class Race():
 
         elif output.endswith('.json'):
             with open(output, 'w', encoding='utf8') as f:
-                json.dump(self._serialize(), f, cls=ComplexEncoder, ensure_ascii=False, indent=4)
+                json.dump(self.serialize(), f, cls=ComplexEncoder, ensure_ascii=False, indent=4)
 
         elif output.endswith('.igclib'):
             path = os.path.dirname(output)
@@ -300,8 +318,10 @@ class Race():
 
         else:
             raise NotImplementedError('Supported output files : .json, .pkl, .igclib')
-            
-    def _serialize(self):
+
+      
+    def serialize(self):
+        """Serializes the race object to be written to a JSON file"""
         snaps = {str(_[0]):_[1] for _ in self._snapshots()}
         ranking = {}
         if self._validate:
@@ -315,10 +335,9 @@ class Race():
             ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']))
         return dict(task=self.task, ranking=ranking, race=snaps)
 
+
     def _load(self, path):
-        """
-        Loads the race instance from a pickle file
-        """
+        """Loads the race instance from a pickle file"""
         if path.endswith('.pkl'):
             with open(path, 'rb') as f:
                 self.__dict__.update(pickle.load(f))
