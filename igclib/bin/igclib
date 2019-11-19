@@ -107,6 +107,6 @@ if __name__ == '__main__':
         if args.path is not None:
             race = Race(path=args.path, validate=False, progress=args.progress)
         else:
-            race = Race(tracks_dir=args.flights, task=args.task, validate=False, progress=args.progress)
+            race = Race(tracks=args.flights, task=args.task, validate=False, progress=args.progress)
         race.save(output=args.output)
         

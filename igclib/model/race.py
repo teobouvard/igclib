@@ -78,6 +78,8 @@ class Race():
                 self.validated = True
             else:
                 self.validated = False
+            
+            self.ranking = Ranking(self)
 
 
     def __getitem__(self, time_point):
@@ -170,17 +172,6 @@ class Race():
                     if self._progress == 'ratio':
                         print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                         steps +=1
-            
-            self.ranking = Ranking(self)
-            # number of pilots in goal TODO TIME THIS
-            self.in_goal = []
-            for pilot_id, flight in self.flights.items():
-                for point in list(flight.points.values())[::-1]:
-                    if point.goal_distance == 0:
-                        self.in_goal.append(pilot_id)
-                        break
-
-            logging.info(f'{str(len(self.in_goal))} pilots in goal')
 
 
     def __str__(self):
@@ -323,17 +314,7 @@ class Race():
     def serialize(self):
         """Serializes the race object to be written to a JSON file"""
         snaps = {str(_[0]):_[1] for _ in self._snapshots()}
-        ranking = {}
-        if self._validate:
-            for pilot_id, flight in self.flights.items():
-                ranking[pilot_id] = {
-                    'name' : str(flight),
-                    'id': pilot_id,
-                    'distance' : flight.race_distance,
-                    'time' : flight.race_time
-                }
-            ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']))
-        return dict(task=self.task, ranking=ranking, race=snaps)
+        return dict(task=self.task, ranking=self.ranking, race=snaps)
 
 
     def _load(self, path):
