@@ -7,7 +7,7 @@ from datetime import datetime, time, timedelta
 import numpy as np
 from igclib.constants import DEBUG
 from igclib.model.geo import Opti, Point, Turnpoint
-from igclib.parsers import pwca, xctrack
+from igclib.parsers import pwca, xctrack, igclib
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
 from igclib.utils.timeop import next_second
@@ -17,6 +17,10 @@ from geolib import distance, heading
 
 class Task():
     """
+    Creates a Task object. The way this is done is really bad, and any help would be appreciated. As of now, this class checks if the input task (file or b64) "fits" in each parser implemented.
+    When a parser does not raise a KeyError, the task is assumed to be of this format and its attributes are copied back to the Task object. I feel that there is a smarter way to do this, probably with inheritance.
+    However, task format is not known in advance so trying each format seems like the easiest thing to do.
+
     Args:
         task (str): Path to or base64 representation of a task file.
     Raises:
@@ -38,7 +42,7 @@ class Task():
                 task = json.load(f)
 
         # try to parse with every implemented format, raise if no match
-        for task_format in [xctrack.XCTask, pwca.PWCATask]:
+        for task_format in [xctrack.XCTask, pwca.PWCATask, igclib.IGCLIBTask]:
             try:
                 task = task_format(task)
                 break
@@ -48,15 +52,7 @@ class Task():
         if not hasattr(task, 'start'):
             raise NotImplementedError('Task format not recognized')
         
-        self.date = task.date
-        self.open = task.open if 'open' in task.__dict__ else time(task.start.hour - 1, task.start.minute, task.start.second)
-        self.start = task.start
-        self.stop = task.stop
-
-        self.takeoff = task.takeoff
-        self.sss = task.sss
-        self.turnpoints = task.turnpoints
-        self.ess = task.ess
+        self.__dict__.update(task.__dict__)
 
         # to validate goal lines, we need heading differences
         index_last_turnpoint = -2

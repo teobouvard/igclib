@@ -5,7 +5,7 @@ import pytest
 from igclib.model.task import Task
 from igclib.tests import TEST_DATA
 
-APPROX = 0.001
+APPROX = 0.005
 
 @pytest.fixture(scope='session')
 def xctask():

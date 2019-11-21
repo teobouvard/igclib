@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime, time
+from igclib.utils.timeop import add_offset
 
 from igclib.constants import (XC_GOAL, XC_GOAL_DEADLINE, XC_SSS,
                               XC_SSS_TIMEGATES, XC_TIME_FORMAT, XC_TURNPOINTS,
@@ -30,6 +31,7 @@ class XCTask():
             turnpoints.append(self._build_wpt(waypoint))
 
         self.date = 'Unknown'
+        self.open = add_offset(time(start_time.hour, start_time.minute, start_time.second), hours=-1)
         self.start = time(start_time.hour, start_time.minute, start_time.second)
         self.stop = time(stop_time.hour, stop_time.minute, stop_time.second)
         self.turnpoints = turnpoints

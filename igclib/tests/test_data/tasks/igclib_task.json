@@ -1,0 +1,85 @@
+{
+
+    "turnpoints": [
+        {
+            "radius": 200,
+            "role": "TAKEOFF",
+            "description": "TO",
+            "name": "D02",
+            "lat": "45.553000",
+            "lon": "6.104660",
+            "altitude": 0
+        },
+        {
+            "radius": 6000,
+            "role": "START",
+            "description": "1",
+            "name": "B15",
+            "lat": "45.489160",
+            "lon": "6.123160",
+            "altitude": 0
+        },
+        {
+            "radius": 1000,
+            "description": "2",
+            "name": "B15",
+            "lat": "45.489160",
+            "lon": "6.123160",
+            "altitude": 0
+        },
+        {
+            "radius": 9000,
+            "role": "TURNPOINT",
+            "description": "3",
+            "name": "B34",
+            "lat": "45.644500",
+            "lon": "6.119500",
+            "altitude": 0
+        },
+        {
+            "radius": 4000,
+            "role": "TURNPOINT",
+            "description": "4",
+            "name": "A05",
+            "lat": "45.451330",
+            "lon": "6.105330",
+            "altitude": 0
+        },
+        {
+            "radius": 5000,
+            "role": "TURNPOINT",
+            "description": "5",
+            "name": "B21",
+            "lat": "45.566330",
+            "lon": "6.364660",
+            "altitude": 0
+        },
+        {
+            "radius": 1000,
+            "role": "TURNPOINT",
+            "description": "6",
+            "name": "B15",
+            "lat": "45.489160",
+            "lon": "6.123160",
+            "altitude": 0
+        },
+        {
+            "radius": 2000,
+            "role": "ESS",
+            "description": "7",
+            "name": "D01",
+            "lat": "45.529660",
+            "lon": "6.252830",
+            "altitude": 0
+        },
+        {
+            "radius": 100,
+            "role": "GOAL",
+            "description": "GOAL",
+            "name": "APC",
+            "lat": "45.561160",
+            "lon": "6.224330",
+            "altitude": 0
+        }
+    ]
+}

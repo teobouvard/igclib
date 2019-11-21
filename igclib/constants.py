@@ -8,7 +8,7 @@ DEBUG = False
 TOLERANCE = 0.001
 
 # threshold of distance minimizer validation in meters
-OPTIMIZER_PRECISION = 1
+OPTIMIZER_PRECISION = 10
 
 
 ### IGC FILE CONSTANTS ###
@@ -63,6 +63,30 @@ PWCA_TURNPOINTS = 'points'
 PWCA_TURNPOINT_RADIUS = 'radius'
 PWCA_TURNPOINT = 'center' # or 'fix', who knows ?
 PWCA_TURNPOINT_NAME = 'name'
+
+
+### IGCLIB FILE CONSTANTS ### (No standard)
+
+IGCLIB_DATE = 'date'
+IGCLIB_TIME_FORMAT = '%H:%M'
+IGCLIB_TAKEOFF = 'takeoff'
+IGCLIB_SSS = 'start'
+IGCLIB_ESS = 'ess'
+IGCLIB_GOAL = 'goal'
+
+IGCLIB_OPEN = 'open'
+
+PWCA_TYPE = 'ss'
+PWCA_ID = 'id'
+
+IGCLIB_TURNPOINTS = 'turnpoints'
+IGCLIB_TURNPOINT_RADIUS = 'radius'
+IGCLIB_TURNPOINT_LAT = 'lat' 
+IGCLIB_TURNPOINT_LAT = 'lon'
+IGCLIB_TURNPOINT_NAME = 'name'
+IGCLIB_TURNPOINT_ALT = 'altitude'
+IGCLIB_TURNPOINT_ROLE = 'role'
+IGCLIB_TURNPOINT_DESC = 'description'
 
 
 ### CRAWLERS ###
