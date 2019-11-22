@@ -51,7 +51,7 @@ class Race():
         self._validate = validate
         self._progress = progress
         
-        # load race from pickle
+        # load race from pickle if path is given
         if path is not None:
             self._load(path)
             if not self.validated and self._validate:
@@ -122,7 +122,7 @@ class Race():
             if len(tracks) == 0:
                 raise ValueError('Flight directory does not contain any igc files')
         else:
-            raise ValueError(f'{tracks} is not a directory')
+            raise ValueError(f'{tracks} is not a directory or a zip file')
 
         self.n_pilots = len(tracks)
         self.flights = {}

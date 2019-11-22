@@ -11,9 +11,9 @@ from scipy.optimize import minimize
 from geolib import destination, distance, heading
 
 
-def optimize(position, waypoints, prev_opti=None, callback=False):
+def optimize(position, waypoints, prev_opti=None):
     x0 = np.zeros(len(waypoints)) if prev_opti is None else prev_opti
-    result = minimize(tasklen, x0, args=(position, waypoints), tol=OPTIMIZER_PRECISION, callback=lambda x:log_opti(x, waypoints) if callback else None)
+    result = minimize(tasklen, x0, args=(position, waypoints), tol=OPTIMIZER_PRECISION)
 
     distances = []
     fast_waypoints = [Turnpoint(position.lat, position.lon)]
@@ -36,11 +36,3 @@ def tasklen(angles, position, waypoints):
         last_lat, last_lon = lat_dest, lon_dest
 
     return dist
-
-def log_opti(angles, waypoints):
-    route = []
-    for theta, wp in zip(angles, waypoints):
-        lat, lon = destination(wp.lat, wp.lon, wp.radius, theta)
-        route.append(Point(lat, lon))
-    json_route = json.dumps(route, cls=ComplexEncoder)
-    print(json_route, file=sys.stderr, flush=True)

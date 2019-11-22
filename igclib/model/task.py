@@ -7,7 +7,7 @@ from datetime import datetime, time, timedelta
 import numpy as np
 from igclib.constants import DEBUG
 from igclib.model.geo import Opti, Point, Turnpoint
-from igclib.parsers import pwca, xctrack, igclib, raw
+from igclib.parsers import taskparse
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
 from igclib.utils.timeop import next_second
@@ -42,7 +42,7 @@ class Task():
                 task = json.load(f)
 
         # try to parse with every implemented format, raise if no match
-        for task_format in [xctrack.XCTask, pwca.PWCATask, raw.RawTask, igclib.IGCLIBTask,]:
+        for task_format in [taskparse.XCTask, taskparse.PWCATask, taskparse.RawTask, taskparse.IGCLIBTask]:
             try:
                 task = task_format(task)
                 break
@@ -61,7 +61,7 @@ class Task():
                 index_last_turnpoint -= 1
             self._last_leg_heading = heading(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon)
 
-        self.opti = optimize(self.takeoff, self.turnpoints, callback=True if progress != 'gui' else False)
+        self.opti = optimize(self.takeoff, self.turnpoints)
 
     def _timerange(self, start=None, stop=None):
         current = start if start is not None else self.open
