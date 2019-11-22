@@ -51,6 +51,7 @@ class PWCATask():
         self.start = time(start_time.hour, start_time.minute, start_time.second)
         self.stop = time(stop_time.hour, stop_time.minute, stop_time.second)
         self.turnpoints = turnpoints
+        self.goal_style = 'LINE'
 
     @staticmethod
     def _build_wpt(wpt, role='TURNPOINT'):
@@ -88,6 +89,7 @@ class XCTask():
         self.start = time(start_time.hour, start_time.minute, start_time.second)
         self.stop = time(stop_time.hour, stop_time.minute, stop_time.second)
         self.turnpoints = turnpoints
+        self.goal_style = task[XC_GOAL][XC_TYPE]
 
     @staticmethod
     def _build_wpt(wpt, task=None):
@@ -122,6 +124,7 @@ class IGCLIBTask():
         self.open = time(open_time.hour, open_time.minute, open_time.second)
         self.start = time(start_time.hour, start_time.minute, start_time.second)
         self.stop = time(stop_time.hour, stop_time.minute, stop_time.second)
+        self.goal_style = 'LINE'
 
 
     @staticmethod
@@ -145,6 +148,7 @@ class RawTask():
             self.turnpoints.append(self.build_wpt(waypoint))
 
         self.takeoff = self.turnpoints.pop(0)
+        self.goal_style = 'LINE'
 
     @staticmethod
     def build_wpt(wpt):

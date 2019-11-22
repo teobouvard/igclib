@@ -25,7 +25,11 @@ setup(name='igclib',
     ext_modules = [geolib],
     install_requires=requirements(),
     scripts=['igclib/bin/igclib'],
-    python_requires='>=3.6',
+    entry_points='''
+        [console_scripts]
+        click_igclib=igclib.bin.click_igclib:main
+    ''',
+    python_requires='>=3.5',
     classifiers=[
         'Intended Audience :: Developers',
         'Operating System :: Unix',

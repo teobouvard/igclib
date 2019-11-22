@@ -1,11 +1,6 @@
-import json
-import math
-import sys
-
 import numpy as np
 from igclib.constants import OPTIMIZER_PRECISION
 from igclib.model.geo import Opti, Point, Turnpoint
-from igclib.utils.json_encoder import ComplexEncoder
 from scipy.optimize import minimize
 
 from geolib import destination, distance, heading
@@ -24,6 +19,7 @@ def optimize(position, waypoints, prev_opti=None):
         fast_waypoints.append(Turnpoint(fp_lat, fp_lon))
 
     return Opti(sum(distances), distances, fast_waypoints, result.x)
+
 
 def tasklen(angles, position, waypoints):
     dist = 0

@@ -5,7 +5,6 @@ asyncio
 # HTML parsing for crawlers
 lxml
 beautifulsoup4
-validators
 
 # tests
 pytest
@@ -18,11 +17,6 @@ aerofiles @ git+https://github.com/Turbo87/aerofiles.git
 
 # visualization 
 matplotlib
-seaborn
-pptk
-
-# memory profiling
-pympler
 
 # documentation
 sphinx
@@ -32,3 +26,6 @@ sphinx_rtd_theme
 # scientific computing
 numpy
 scipy
+
+# command line interface
+Click

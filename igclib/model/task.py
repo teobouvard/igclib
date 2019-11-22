@@ -54,22 +54,28 @@ class Task():
         
         self.__dict__.update(task.__dict__)
 
-        # to validate goal lines, we need heading differences
-        if  hasattr(self, 'ess'): # and goal type is line TODO
+        # if the goal is a line, we need a to compute its validation with the following technique
+        # we compute the heading between the goal and the first previous turnpoint which has a different center
+        # during validation, we compute the heading between the pilot and the goal center
+        # when the absolute difference between these two headings is greater than 90~ish° (and is inside the goal radius), the goal is validated
+        # not only does this allow us to validate goal line, but it also helps drawing goal lines in TaskCreator by directly having the line normal direction
+        if  self.goal_style == 'LINE':
             index_last_turnpoint = -2
             while distance(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon) < 1:
                 index_last_turnpoint -= 1
-            self._last_leg_heading = heading(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon)
+            self.last_leg_heading = heading(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon)
 
         self.opti = optimize(self.takeoff, self.turnpoints)
 
+
     def _timerange(self, start=None, stop=None):
-        current = start if start is not None else self.open
-        stop = stop if stop is not None else self.stop
+        current = start or self.open
+        stop = stop or self.stop
         while current < stop:
             yield current
             current = next_second(current)
-    
+
+
     def _update_tag_times(self, times):
         for turnpoint, contender in zip(self.turnpoints, times):
             if turnpoint.first_tag is None or contender < turnpoint.first_tag:
@@ -89,7 +95,7 @@ class Task():
                 opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti._angles
-                continue
+                continue # TODO not neccesary, test elif
             
             # race has started, check next turnpoint's closeness and validate it
             if len(remaining_turnpoints) > 0:
@@ -99,12 +105,12 @@ class Task():
                 
                 # if only one turnpoint left, validate it as goal line by heading difference (95° to be sure the goal line is behind)
                 if len(remaining_turnpoints) == 1:
-                        goal_heading = heading(point.lat, point.lon, remaining_turnpoints[-1].lat, remaining_turnpoints[-1].lon)
-                        delta_heading = abs(self._last_leg_heading - goal_heading)
-                        if delta_heading > 95:
-                            tag_times.append(timestamp)
-                            del remaining_turnpoints[0]
-                            logging.debug(f'{flight.pilot_id} passed TP at {timestamp}, {len(remaining_turnpoints)} wp remaining')
+                    goal_heading = heading(point.lat, point.lon, remaining_turnpoints[-1].lat, remaining_turnpoints[-1].lon)
+                    delta_heading = abs(self.last_leg_heading - goal_heading)
+                    if delta_heading > 95:
+                        tag_times.append(timestamp)
+                        del remaining_turnpoints[0]
+                        logging.debug(f'{flight.pilot_id} passed TP at {timestamp}, {len(remaining_turnpoints)} wp remaining')
 
                 elif point.close_enough(remaining_turnpoints[0]):
                     tag_times.append(timestamp)
@@ -121,9 +127,10 @@ class Task():
     def optimized(self, output=None):
         if output is not None:
             with open(output, 'w') as f:
-                json.dump(self.opti, f, cls=ComplexEncoder)
+                json.dump(self.__dict__, f, cls=ComplexEncoder)
         else:
-            print(json.dumps(self.opti, cls=ComplexEncoder))
+            print(json.dumps(self.__dict__, cls=ComplexEncoder))
+
 
     def __len__(self):
         return int(self.opti.distance)
