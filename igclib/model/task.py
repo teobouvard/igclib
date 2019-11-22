@@ -7,7 +7,7 @@ from datetime import datetime, time, timedelta
 import numpy as np
 from igclib.constants import DEBUG
 from igclib.model.geo import Opti, Point, Turnpoint
-from igclib.parsers import pwca, xctrack, igclib
+from igclib.parsers import pwca, xctrack, igclib, raw
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.optimizer import optimize
 from igclib.utils.timeop import next_second
@@ -42,23 +42,24 @@ class Task():
                 task = json.load(f)
 
         # try to parse with every implemented format, raise if no match
-        for task_format in [xctrack.XCTask, pwca.PWCATask, igclib.IGCLIBTask]:
+        for task_format in [xctrack.XCTask, pwca.PWCATask, raw.RawTask, igclib.IGCLIBTask,]:
             try:
                 task = task_format(task)
                 break
-            except KeyError:
+            except (KeyError, TypeError):
                 logging.debug(f'Task format does not fit into {task_format}')
 
-        if not hasattr(task, 'start'):
+        if not hasattr(task, 'takeoff'):
             raise NotImplementedError('Task format not recognized')
         
         self.__dict__.update(task.__dict__)
 
         # to validate goal lines, we need heading differences
-        index_last_turnpoint = -2
-        while distance(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon) < 1:
-            index_last_turnpoint -= 1
-        self._last_leg_heading = heading(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon)
+        if  hasattr(self, 'goal'): # and goal type is line TODO
+            index_last_turnpoint = -2
+            while distance(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon) < 1:
+                index_last_turnpoint -= 1
+            self._last_leg_heading = heading(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon)
 
         self.opti = optimize(self.takeoff, self.turnpoints, callback=True if progress != 'gui' else False)
 
@@ -121,6 +122,8 @@ class Task():
         if output is not None:
             with open(output, 'w') as f:
                 json.dump(self.opti, f, cls=ComplexEncoder)
+        else:
+            print(json.dumps(self.opti, cls=ComplexEncoder))
 
     def __len__(self):
         return int(self.opti.distance)
