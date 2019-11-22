@@ -55,7 +55,7 @@ class Task():
         self.__dict__.update(task.__dict__)
 
         # to validate goal lines, we need heading differences
-        if  hasattr(self, 'goal'): # and goal type is line TODO
+        if  hasattr(self, 'ess'): # and goal type is line TODO
             index_last_turnpoint = -2
             while distance(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon) < 1:
                 index_last_turnpoint -= 1
