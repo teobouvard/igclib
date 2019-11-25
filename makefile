@@ -1,11 +1,11 @@
-.PHONY: docs tests
+.PHONY: docs tests release
 
 # ================ #
 #  USEFUL TARGETS  #
 # ================ #
 
 install:
-	pip install --user -e .
+	pip3 install --user -e .
 
 docs:
 	cd docs && make clean && make html && python3 -m http.server
@@ -13,7 +13,8 @@ docs:
 tests:
 	pytest --disable-pytest-warnings
 
-dist:
+release:
+	rm -f dist/*
 	python3 setup.py sdist bdist_wheel
 	twine upload dist/*
 

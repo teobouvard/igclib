@@ -46,7 +46,7 @@ class PWCATask():
 
             turnpoints.append(self._build_wpt(waypoint))
 
-        self.date = task[PWCA_DETAILS][PWCA_TASK_DATE]
+        self.date = task[PWCA_DETAILS][PWCA_TASK_DATE].strip()
         self.open = time(open_time.hour, open_time.minute, open_time.second)
         self.start = time(start_time.hour, start_time.minute, start_time.second)
         self.stop = time(stop_time.hour, stop_time.minute, stop_time.second)
@@ -120,7 +120,7 @@ class IGCLIBTask():
         for waypoint in task[IGCLIB_TURNPOINTS]:
             self.turnpoints.append(self.build_wpt(waypoint))
 
-        self.date = task.get(IGCLIB_DATE, None)
+        self.date = task.get(IGCLIB_DATE, None).strip()
         self.open = time(open_time.hour, open_time.minute, open_time.second)
         self.start = time(start_time.hour, start_time.minute, start_time.second)
         self.stop = time(stop_time.hour, stop_time.minute, stop_time.second)
