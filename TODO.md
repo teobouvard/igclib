@@ -5,8 +5,7 @@
     * doc task structure : turnpoint list does not contain takeoff
     * time bench n pilots in goal
     * goal line + cylinder
-    * create scoring class
-    * add first point before takeoff rather than last point
+    * add race properties (n snaps)
 
 * Data collection
 

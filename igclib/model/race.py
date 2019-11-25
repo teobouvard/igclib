@@ -314,7 +314,8 @@ class Race():
     def serialize(self):
         """Serializes the race object to be written to a JSON file"""
         snaps = {str(_[0]):_[1] for _ in self._snapshots()}
-        return dict(task=self.task, ranking=self.ranking, race=snaps)
+        props = {'n_snaps':len(snaps)}
+        return dict(properties=props, task=self.task, ranking=self.ranking, race=snaps)
 
 
     def _load(self, path):
