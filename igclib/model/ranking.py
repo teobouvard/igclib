@@ -14,8 +14,8 @@ class Ranking():
                 'distance' : flight.race_distance,
                 'time' : flight.race_time
             }
-        if race.validated:
-            ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']))
+
+        ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']))
         return ranking
 
 

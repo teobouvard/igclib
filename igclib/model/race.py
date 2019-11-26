@@ -79,7 +79,7 @@ class Race():
             else:
                 self.validated = False
             
-            self.ranking = Ranking(self)
+        self.ranking = Ranking(self)
 
 
     def __getitem__(self, time_point):
