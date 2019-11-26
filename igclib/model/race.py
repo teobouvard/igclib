@@ -10,7 +10,7 @@ from datetime import datetime, time
 from glob import glob
 
 import numpy as np
-import seaborn as sns
+#import seaborn as sns
 from igclib.constants import DEBUG
 from igclib.crawlers.flight_crawler import FlightCrawler
 from igclib.model.flight import Flight
@@ -19,7 +19,6 @@ from igclib.model.pilot_features import PilotFeatures
 from igclib.model.task import Task
 from igclib.utils.json_encoder import ComplexEncoder
 from igclib.utils.timeop import sub_times
-from matplotlib import pyplot as plt
 from scipy.signal import savgol_filter
 from tqdm import tqdm
 

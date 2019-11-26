@@ -11,7 +11,7 @@ docs:
 	cd docs && make clean && make html && python3 -m http.server
 
 tests:
-	pytest --disable-pytest-warnings
+	pytest 
 
 release:
 	rm -f dist/*

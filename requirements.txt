@@ -16,7 +16,6 @@ tqdm
 aerofiles @ git+https://github.com/Turbo87/aerofiles.git
 
 # visualization 
-matplotlib
 seaborn
 
 # documentation
