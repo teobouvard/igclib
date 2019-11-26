@@ -9,7 +9,7 @@ Build a race and save it to disk
 
 ::
 
-    igclib race --task task.xctsk --flights tracks_dir/ --output race.pkl
+    igclib race --task task.xctsk --flights tracks_dir/ --output race.igclib
 
 
 Get a task optimization info in json
@@ -17,7 +17,7 @@ Get a task optimization info in json
 
 ::
 
-    igclib optimize --task task.xctsk
+    igclib optimize --task task.xctsk --progress ratio
 
 
 Get all available tasks from a provider

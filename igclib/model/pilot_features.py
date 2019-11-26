@@ -33,8 +33,6 @@ class GroupRelation():
         delta_distance (list [float]) : The goal distances differences.
     """
 
-    __slots__ = ['other_pilot_id', 'delta_altitude', 'delta_distance']
-
     def __init__(self, pilot_id, snapshot):
         self.other_pilot_id = []
         self.delta_altitude = []

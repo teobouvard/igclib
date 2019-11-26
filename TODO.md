@@ -1,11 +1,8 @@
 * Library
 
-    * add optimization callback !
-    * add pilot time+distance to race serialization
     * doc task structure : turnpoint list does not contain takeoff
     * time bench n pilots in goal
     * goal line + cylinder
-    * add race properties (n snaps)
 
 * Data collection
 

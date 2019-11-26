@@ -22,7 +22,7 @@ copyright = str(datetime.now().year) + ', Téo Bouvard'
 author = 'Téo Bouvard'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1-alpha'
+release = '0.1.1'
 
 
 # -- General configuration ---------------------------------------------------

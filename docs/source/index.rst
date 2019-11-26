@@ -12,3 +12,4 @@ Welcome to igclib's documentation
    architecture.rst
    python_api.rst
    command_line_manual.rst
+   files_specifications.rst
