@@ -1,4 +1,4 @@
 Pilot Features
 -----------------
-.. automodule:: igclib.model.pilot_features
+.. automodule:: igclib.core.pilot_features
     :members:

@@ -2,7 +2,7 @@ import os
 from datetime import time
 
 import pytest
-from igclib.model.task import Task
+from igclib.core.task import Task
 from igclib.tests import TEST_DATA
 
 APPROX = 0.005

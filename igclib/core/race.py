@@ -13,12 +13,12 @@ import numpy as np
 #import seaborn as sns
 from igclib.constants import DEBUG
 from igclib.crawlers.flight_crawler import FlightCrawler
-from igclib.model.flight import Flight
-from igclib.model.ranking import  Ranking 
-from igclib.model.pilot_features import PilotFeatures
-from igclib.model.task import Task
-from igclib.utils.json_encoder import ComplexEncoder
-from igclib.utils.timeop import sub_times
+from igclib.core.flight import Flight
+from igclib.core.ranking import  Ranking 
+from igclib.core.pilot_features import PilotFeatures
+from igclib.core.task import Task
+from igclib.serialization.json_encoder import ComplexEncoder
+from igclib.time.timeop import sub_times
 from scipy.signal import savgol_filter
 from tqdm import tqdm
 

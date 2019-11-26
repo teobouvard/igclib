@@ -1,4 +1,4 @@
 Flight
 -----------------
-.. automodule:: igclib.model.flight
+.. automodule:: igclib.core.flight
     :members:

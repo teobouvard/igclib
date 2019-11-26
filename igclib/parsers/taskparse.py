@@ -17,8 +17,8 @@ from igclib.constants import (IGCLIB_ESS, IGCLIB_GOAL, IGCLIB_SSS,
                               XC_WAYPOINT_ALT, XC_WAYPOINT_DESC,
                               XC_WAYPOINT_LAT, XC_WAYPOINT_LON,
                               XC_WAYPOINT_NAME)
-from igclib.model.geo import Turnpoint
-from igclib.utils.timeop import add_offset
+from igclib.geography.geo import Turnpoint
+from igclib.time.timeop import add_offset
 
 
 class PWCATask():

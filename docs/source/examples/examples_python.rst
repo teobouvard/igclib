@@ -8,7 +8,7 @@ Build a race and save it to disk
 
 ::
 
-    from igclib.model.race import Race
+    from igclib.core.race import Race
 
     r =  Race(tracks='tracks/', task='task.xctsk')
     r.save('race.pkl')
@@ -19,7 +19,7 @@ Load a race
 
 ::
 
-    from igclib.model.race import Race
+    from igclib.core.race import Race
 
     r =  Race(path='race.pkl')
 
@@ -29,7 +29,7 @@ Get a task optimization info in json
 
 ::
 
-    from igclib.model.task import Task
+    from igclib.core.task import Task
 
     t = Task('task.xctsk')
 

@@ -107,5 +107,5 @@
         "type": "LINE",
         "deadline": "17:00:00Z"
     },
-    "earthModel": "WGS84"
+    "earthcore": "WGS84"
 }

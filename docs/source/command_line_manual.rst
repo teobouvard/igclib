@@ -9,7 +9,7 @@ Usage
 
 ::
 
-    igclib [OPTIONS] COMMAND ARGS
+    igclib COMMAND [OPTIONS] ARGS
 
 
 Commands

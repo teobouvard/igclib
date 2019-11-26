@@ -4,8 +4,8 @@ import os
 from aerofiles import igc
 
 from igclib.constants import IGC_HEADER, IGC_RECORDS, IGC_TIME, IGC_PILOT_NAME, IGC_TZ_OFFSET
-from igclib.model.geo import Point
-from igclib.utils.timeop import add_offset
+from igclib.geography.geo import Point
+from igclib.time.timeop import add_offset
 
 
 class Flight():

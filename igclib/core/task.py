@@ -6,11 +6,11 @@ from datetime import datetime, time, timedelta
 
 import numpy as np
 from igclib.constants import DEBUG
-from igclib.model.geo import Opti, Point, Turnpoint
+from igclib.geography.geo import Opti, Point, Turnpoint
 from igclib.parsers import taskparse
-from igclib.utils.json_encoder import ComplexEncoder
-from igclib.utils.optimizer import optimize
-from igclib.utils.timeop import next_second
+from igclib.serialization.json_encoder import ComplexEncoder
+from igclib.geography.optimizer import optimize
+from igclib.time.timeop import next_second
 
 from geolib import distance, heading
 

@@ -1,6 +1,6 @@
 import numpy as np
 from igclib.constants import OPTIMIZER_PRECISION
-from igclib.model.geo import Opti, Point, Turnpoint
+from igclib.geography.geo import Opti, Point, Turnpoint
 from scipy.optimize import minimize
 
 from geolib import destination, distance, heading

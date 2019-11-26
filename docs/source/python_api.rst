@@ -3,9 +3,9 @@ Python API
 ###########
 
 .. toctree::
-    api/model/race.rst
-    api/model/flight.rst
-    api/model/task.rst
-    api/model/pilot_features.rst
-    api/model/geo.rst
+    api/core/race.rst
+    api/core/flight.rst
+    api/core/task.rst
+    api/core/pilot_features.rst
+    api/core/geo.rst
     api/crawlers/task_crawler.rst

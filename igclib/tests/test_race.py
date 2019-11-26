@@ -2,7 +2,7 @@ import os
 from datetime import time
 
 import pytest
-from igclib.model.race import Race
+from igclib.core.race import Race
 from igclib.tests import TEST_DATA
 
 

@@ -1,4 +1,4 @@
 Race
 -----------------
-.. automodule:: igclib.model.race
+.. automodule:: igclib.core.race
     :members:

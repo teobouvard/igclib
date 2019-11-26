@@ -1,4 +1,4 @@
 Task
 -----------------
-.. automodule:: igclib.model.task
+.. automodule:: igclib.core.task
     :members:
