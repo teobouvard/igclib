@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import sys
 from datetime import datetime
 import logging
 
@@ -35,9 +36,12 @@ def check(args):
         pass
     
     elif args.command == 'crawl':
-        if args.year is None or not MIN_YEAR < args.year <= datetime.now().year:
-            raise ValueError(f'Year must be in range [{2010}, {datetime.now().year}]')
-
+        if args.year < MIN_YEAR:
+            print(f'{args.year} is clipped to {MIN_YEAR}', file=sys.stderr)
+            args.year = MIN_YEAR
+        elif args.year > datetime.now().year:
+            print(f'{args.year} is clipped to {datetime.now().year}', file=sys.stderr)
+            args.year = datetime.now().year
 
 
 def argument_parser():
@@ -49,7 +53,6 @@ def argument_parser():
     parser_replay = commands.add_parser('replay', help='Create a replay of the race')
     parser_replay.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
     parser_replay.add_argument('--task', type=str, help='Path or string of the task')
-    parser_replay.add_argument('--path', type=str, help='Path to a previously saved race (.pkl)')
     parser_replay.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
     parser_replay.add_argument('--output', type=str, help='File to which you want to save the output [.pkl, .json, .igclib]')
 
