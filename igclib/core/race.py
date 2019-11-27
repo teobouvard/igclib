@@ -123,14 +123,14 @@ class Race():
         self.n_pilots = len(tracks)
         self.flights = {}
 
-        steps = 1
-        for x in tqdm(tracks, desc='reading tracks', disable=self._progress != 'gui'):
-            pilot_id = os.path.splitext(os.path.basename(x))[0]
-            self.flights[pilot_id] = Flight(x)
+        with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
+            steps = 1
+            for x in tqdm(p.imap_unordered(Flight, tracks), desc='reading tracks', total=self.n_pilots, disable=self._progress != 'gui'):
+                self.flights[x.pilot_id] = x
 
-            if self._progress == 'ratio':
-                print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
-                steps += 1
+                if self._progress == 'ratio':
+                    print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
+                    steps += 1
 
     def validate_flights(self):
         """Computes the validation of each flight on the race"""
