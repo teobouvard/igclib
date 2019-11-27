@@ -30,8 +30,9 @@ def check(args):
         elif args.year > datetime.now().year:
             print(f'{args.year} is clipped to {datetime.now().year}', file=sys.stderr)
             args.year = datetime.now().year
-    
+
     return args
+
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='igclib command line tool')

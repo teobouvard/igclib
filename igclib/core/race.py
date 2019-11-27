@@ -134,46 +134,37 @@ class Race():
 
     def validate_flights(self):
         """Computes the validation of each flight on the race"""
-        if DEBUG == True:
-            for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
-                self.task.validate(flight)
+        with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
+            steps = 1
 
-        else:
-            with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
-                steps = 1
+            # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join
+            for pilot_id, goal_distances, tag_times in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=self._progress != 'gui'):
 
-                # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join
-                for pilot_id, goal_distances, tag_times in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=self._progress != 'gui'):
+                # update goal distances of flight points
+                for timestamp, point in self.flights[pilot_id].points.items():
+                    point.goal_distance = goal_distances[timestamp]
 
-                    # update goal distances of flight points
-                    for timestamp, point in self.flights[pilot_id].points.items():
-                        point.goal_distance = goal_distances[timestamp]
+                # compute race time for pilot, read list in reverse because ESS is more likely near the end
+                self.flights[pilot_id].race_distance = len(self.task) - min(goal_distances.values())
+                self.flights[pilot_id]._last_point['point'].goal_distance = min(goal_distances.values())
 
-                    # compute race time for pilot, read list in reverse because ESS is more likely near the end
-                    self.flights[pilot_id].race_distance = len(self.task) - min(goal_distances.values())
-                    self.flights[pilot_id]._last_point['point'].goal_distance = min(goal_distances.values())
+                # compute race time for pilot, read list in reverse because ESS is more likely near the end
+                if len(tag_times) == len(self.task.turnpoints):
+                    for i, turnpoint in enumerate(self.task.turnpoints[::-1]):
+                        if turnpoint.role == 'ESS':
+                            race_time = sub_times(tag_times[-(i + 1)], self.task.start)
+                            self.flights[pilot_id].race_time = race_time
+                            logging.debug(f'{pilot_id} SS : {race_time}')
 
-                    # compute race time for pilot, read list in reverse because ESS is more likely near the end
-                    if len(tag_times) == len(self.task.turnpoints):
-                        for i, turnpoint in enumerate(self.task.turnpoints[::-1]):
-                            if turnpoint.role == 'ESS':
-                                race_time = sub_times(tag_times[-(i + 1)], self.task.start)
-                                self.flights[pilot_id].race_time = race_time
-                                logging.debug(f'{pilot_id} SS : {race_time}')
+                # update tag_times of turnpoints
+                self.task._update_tag_times(tag_times)
 
-                    # update tag_times of turnpoints
-                    self.task._update_tag_times(tag_times)
-
-                    if self._progress == 'ratio':
-                        print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
-                        steps += 1
+                if self._progress == 'ratio':
+                    print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
+                    steps += 1
 
     def __str__(self):
-        s = '{} pilots - '.format(self.n_pilots)
-        s += '{}m task - '.format(len(self.task))
-        s += 'start at {} - '.format(self.task.start)
-        s += 'deadline at {}'.format(self.task.stop)
-        return s
+        return f'{self.n_pilots} pilots - {len(self.task)}m task - start at {self.task.start} - deadline at {self.task.stop}'
 
     def __repr__(self):
         return str(self)
