@@ -15,7 +15,8 @@ class Ranking():
                 'time' : flight.race_time
             }
 
-        ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']))
+        
+        ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']) if hasattr(x, 'distance') else x['name'])
         return ranking
 
 
