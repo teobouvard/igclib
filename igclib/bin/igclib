@@ -53,6 +53,7 @@ def argument_parser():
     parser_replay = commands.add_parser('replay', help='Create a replay of the race')
     parser_replay.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
     parser_replay.add_argument('--task', type=str, help='Path or string of the task')
+    parser_replay.add_argument('--path', type=str, help='Path to a previously saved race (.pkl)')
     parser_replay.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
     parser_replay.add_argument('--output', type=str, help='File to which you want to save the output [.pkl, .json, .igclib]')
 
