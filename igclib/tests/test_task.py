@@ -35,8 +35,7 @@ def test_task_open(xctask, xctask_b64, pwca_task):
 
 
 def test_task_open(xctask, xctask_b64, pwca_task):
-    assert xctask.open == time(11, 40,
-                               00)  # open time not in file, use default
+    assert xctask.open == time(11, 40, 00)  # open time not in file, use default
     assert xctask_b64.open == time(11, 20, 00)
     assert pwca_task.open == time(11, 20, 00)
 
@@ -45,5 +44,4 @@ def test_task_opti(xctask, xctask_b64, pwca_task):
     assert xctask.opti.distance == pytest.approx(94300, APPROX)
     assert xctask_b64.opti.distance == pytest.approx(94300, APPROX)
     assert pwca_task.opti.distance == pytest.approx(94300, APPROX)
-    assert len(xctask) == pytest.approx(
-        len(xctask_b64), APPROX) == pytest.approx(len(pwca_task), APPROX)
+    assert len(xctask) == pytest.approx(len(xctask_b64), APPROX) == pytest.approx(len(pwca_task), APPROX)

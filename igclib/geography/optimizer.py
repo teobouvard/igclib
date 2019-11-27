@@ -8,19 +8,14 @@ from geolib import destination, distance, heading
 
 def optimize(position, waypoints, prev_opti=None):
     x0 = np.zeros(len(waypoints)) if prev_opti is None else prev_opti
-    result = minimize(tasklen,
-                      x0,
-                      args=(position, waypoints),
-                      tol=OPTIMIZER_PRECISION)
+    result = minimize(tasklen, x0, args=(position, waypoints), tol=OPTIMIZER_PRECISION)
 
     distances = []
     fast_waypoints = [Turnpoint(position.lat, position.lon)]
 
     for theta, wp in zip(result.x, waypoints):
         fp_lat, fp_lon = destination(wp.lat, wp.lon, wp.radius, theta)
-        distances.append(
-            distance(fp_lat, fp_lon, fast_waypoints[-1].lat,
-                     fast_waypoints[-1].lon))
+        distances.append(distance(fp_lat, fp_lon, fast_waypoints[-1].lat, fast_waypoints[-1].lon))
         fast_waypoints.append(Turnpoint(fp_lat, fp_lon))
 
     return Opti(sum(distances), distances, fast_waypoints, result.x)

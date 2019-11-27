@@ -3,6 +3,7 @@
     * doc task structure : turnpoint list does not contain takeoff
     * time bench n pilots in goal
     * goal line + cylinder
+    * pickle dump custom serializer
 
 * Data collection
 

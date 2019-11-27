@@ -12,10 +12,7 @@ PWCA_URL = 'http://pwca.org/results/results'
 
 
 def generate_urls():
-    urls = [
-        ''.join([PWCA_URL, '_', str(x), '/results.htm'])
-        for x in range(2017, 2020)
-    ]
+    urls = [''.join([PWCA_URL, '_', str(x), '/results.htm']) for x in range(2017, 2020)]
     urls.append(PWCA_URL + '/results.htm')
     return urls
 
@@ -38,10 +35,8 @@ def generate_igc_links(url_list):
 
                     for tag in anchor.previous_siblings:
                         if tag.name == 'b':
-                            date = datetime.strptime(
-                                tag.text.split('.')[-1], ' %a %d %b %y')
-                            filenames.append(
-                                datetime.strftime(date, '%Y-%m-%d'))
+                            date = datetime.strptime(tag.text.split('.')[-1], ' %a %d %b %y')
+                            filenames.append(datetime.strftime(date, '%Y-%m-%d'))
                             break
 
     return filenames, links
@@ -68,8 +63,7 @@ def unzip_files(folder):
             if filename.endswith('.zip'):
                 with zipfile.ZipFile(os.path.join(root, filename), 'r') as f:
                     try:
-                        f.extractall(path=os.path.join(root,
-                                                       filename.split('.')[0]))
+                        f.extractall(path=os.path.join(root, filename.split('.')[0]))
                     except zipfile.BadZipFile as e:
                         print(e)
 

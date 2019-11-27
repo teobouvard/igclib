@@ -27,10 +27,7 @@ def fetch_events(urls):
             for anchor in year_tour.find_all('a', href=True):
                 if 'cup' in anchor.text.lower() and 'node' in anchor['href']:
                     taskboard = anchor['href'].split('/')[-1]
-                    event_links.extend([
-                        PWCA__TASKS_URL + taskboard + '-' + str(x) + '.html'
-                        for x in range(11)
-                    ])
+                    event_links.extend([PWCA__TASKS_URL + taskboard + '-' + str(x) + '.html' for x in range(11)])
 
     return event_links
 
@@ -50,8 +47,7 @@ def fetch_tasks(events):
 def save_tasks(tasks):
     os.makedirs(TASK_DIR, exist_ok=True)
     for task in tasks:
-        with open(os.path.join(TASK_DIR, task['details']['date'] + '.json'),
-                  'w') as f:
+        with open(os.path.join(TASK_DIR, task['details']['date'] + '.json'), 'w') as f:
             json.dump(task, f)
 
 

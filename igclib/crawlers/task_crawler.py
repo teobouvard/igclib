@@ -6,16 +6,13 @@ from datetime import datetime
 import aiohttp
 import requests
 from bs4 import BeautifulSoup
-from igclib.constants import (DEFAULT_PROVIDER, MAX_TASKS_PER_EVENT,
-                              TASK_PROVIDERS)
+from igclib.constants import (DEFAULT_PROVIDER, MAX_TASKS_PER_EVENT, TASK_PROVIDERS)
 from tqdm import tqdm
 
 
 class TaskCrawler():
-    def __init__(self,
-                 provider=DEFAULT_PROVIDER,
-                 year=datetime.now().year,
-                 progress='gui'):
+
+    def __init__(self, provider=DEFAULT_PROVIDER, year=datetime.now().year, progress='gui'):
         self._progress = progress
         self.provider = TASK_PROVIDERS[provider]
         self.year = str(year)
@@ -24,8 +21,7 @@ class TaskCrawler():
         if self.provider['NAME'] == 'PWCA':
             tasks = self.crawl_pwca()
         else:
-            raise NotImplementedError(
-                f'Provider {self.provider["NAME"]} not yet implemented')
+            raise NotImplementedError(f'Provider {self.provider["NAME"]} not yet implemented')
 
         if output is not None:
             with open(output, 'w') as f:
@@ -51,11 +47,7 @@ class TaskCrawler():
                 if 'cup' in anchor.text.lower() and 'node' in anchor['href']:
                     event_name = anchor.string
                     taskboard = anchor['href'].split('/')[-1]
-                    for link in [
-                            self.provider['TASKS_URL'] + taskboard + '-' +
-                            str(x) + '.html'
-                            for x in range(MAX_TASKS_PER_EVENT)
-                    ]:
+                    for link in [self.provider['TASKS_URL'] + taskboard + '-' + str(x) + '.html' for x in range(MAX_TASKS_PER_EVENT)]:
                         if event_name in links:
                             links[event_name].append(link)
                         else:
@@ -67,24 +59,18 @@ class TaskCrawler():
 
     async def download_list(self, links):
         steps = []
-        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(
-                limit=100)) as client:
+        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as client:
             for event_name, links in links.items():
                 for link in links:
-                    step = asyncio.ensure_future(
-                        self.fetch(client, event_name, link))
+                    step = asyncio.ensure_future(self.fetch(client, event_name, link))
                     steps.append(step)
 
             responses = []
-            for r in tqdm(asyncio.as_completed(steps),
-                          total=len(steps),
-                          disable=self._progress != 'gui'):
+            for r in tqdm(asyncio.as_completed(steps), total=len(steps), disable=self._progress != 'gui'):
                 response = await r
                 responses.append(response)
                 if self._progress == 'ratio':
-                    print(f'{len(responses)/len(steps):.0%}',
-                          file=sys.stderr,
-                          flush=True)
+                    print(f'{len(responses)/len(steps):.0%}', file=sys.stderr, flush=True)
 
             responses = [r for r in responses if r is not None]
 
@@ -96,21 +82,10 @@ class TaskCrawler():
                 task_num = response['task']['details']['task']
                 task = response['task']
                 if event_name in events:
-                    events[event_name]['tasks'].append({
-                        'num': task_num,
-                        'task': task
-                    })
+                    events[event_name]['tasks'].append({'num': task_num, 'task': task})
                 else:
-                    events[event_name] = {
-                        'event': event_name,
-                        'provider': self.provider['NAME'],
-                        'year': self.year,
-                        'tasks': []
-                    }
-                    events[event_name]['tasks'].append({
-                        'num': task_num,
-                        'task': task
-                    })
+                    events[event_name] = {'event': event_name, 'provider': self.provider['NAME'], 'year': self.year, 'tasks': []}
+                    events[event_name]['tasks'].append({'num': task_num, 'task': task})
 
             for event in events.values():
                 event['tasks'].sort(key=lambda x: x['num'])
@@ -121,10 +96,7 @@ class TaskCrawler():
         async with client.get(link) as r:
             if r.status == 200:
                 response = await r.text()
-                return dict(
-                    event_name=event_name,
-                    task=json.loads(
-                        self.provider['TASK_PATTERN'].findall(response)[0]))
+                return dict(event_name=event_name, task=json.loads(self.provider['TASK_PATTERN'].findall(response)[0]))
 
 
 if __name__ == '__main__':

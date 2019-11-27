@@ -45,12 +45,8 @@ class Race():
         flights (dict [str, Flight]) : A collection of Flights indexed by pilot ID.
         task (Task) : The Task instance of the Race.
     """
-    def __init__(self,
-                 tracks=None,
-                 task=None,
-                 validate=True,
-                 path=None,
-                 progress='gui'):
+
+    def __init__(self, tracks=None, task=None, validate=True, path=None, progress='gui'):
         self._validate = validate
         self._progress = progress
 
@@ -68,12 +64,9 @@ class Race():
             # trying to fetch the tracks if they were not provided by user
             if tracks is None:
                 try:
-                    tracks = FlightCrawler(self.task,
-                                           progress=self._progress).directory
+                    tracks = FlightCrawler(self.task, progress=self._progress).directory
                 except ValueError:
-                    raise ValueError(
-                        'This task format does not support flight crawling yet, provide --flights directory.'
-                    )
+                    raise ValueError('This task format does not support flight crawling yet, provide --flights directory.')
 
             # reading the tracks and builiding the Flights objects
             self.parse_flights(tracks)
@@ -118,15 +111,12 @@ class Race():
         if zipfile.is_zipfile(tracks):
             archive = zipfile.ZipFile(tracks)
             archive.extractall(path='/tmp')
-            tracks = os.path.join(
-                '/tmp',
-                os.path.splitext(os.path.basename(tracks))[0])
+            tracks = os.path.join('/tmp', os.path.splitext(os.path.basename(tracks))[0])
 
         if os.path.isdir(tracks):
             tracks = glob(os.path.join(tracks, '*.igc'))
             if len(tracks) == 0:
-                raise ValueError(
-                    'Flight directory does not contain any igc files')
+                raise ValueError('Flight directory does not contain any igc files')
         else:
             raise ValueError(f'{tracks} is not a directory or a zip file')
 
@@ -134,24 +124,18 @@ class Race():
         self.flights = {}
 
         steps = 1
-        for x in tqdm(tracks,
-                      desc='reading tracks',
-                      disable=self._progress != 'gui'):
+        for x in tqdm(tracks, desc='reading tracks', disable=self._progress != 'gui'):
             pilot_id = os.path.splitext(os.path.basename(x))[0]
             self.flights[pilot_id] = Flight(x)
 
             if self._progress == 'ratio':
-                print(f'{steps/self.n_pilots:.0%}',
-                      file=sys.stderr,
-                      flush=True)
+                print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                 steps += 1
 
     def validate_flights(self):
         """Computes the validation of each flight on the race"""
         if DEBUG == True:
-            for pilot_id, flight in tqdm(self.flights.items(),
-                                         desc='validating flights',
-                                         total=self.n_pilots):
+            for pilot_id, flight in tqdm(self.flights.items(), desc='validating flights', total=self.n_pilots):
                 self.task.validate(flight)
 
         else:
@@ -159,31 +143,21 @@ class Race():
                 steps = 1
 
                 # we can't just map(self.task.validate, self.flights) because instance attributes updated in subprocesses are not copied back on join
-                for pilot_id, goal_distances, tag_times in tqdm(
-                        p.imap_unordered(self.task.validate,
-                                         self.flights.values()),
-                        desc='validating flights',
-                        total=self.n_pilots,
-                        disable=self._progress != 'gui'):
+                for pilot_id, goal_distances, tag_times in tqdm(p.imap_unordered(self.task.validate, self.flights.values()), desc='validating flights', total=self.n_pilots, disable=self._progress != 'gui'):
 
                     # update goal distances of flight points
-                    for timestamp, point in self.flights[
-                            pilot_id].points.items():
+                    for timestamp, point in self.flights[pilot_id].points.items():
                         point.goal_distance = goal_distances[timestamp]
 
                     # compute race time for pilot, read list in reverse because ESS is more likely near the end
-                    self.flights[pilot_id].race_distance = len(
-                        self.task) - min(goal_distances.values())
-                    self.flights[pilot_id]._last_point[
-                        'point'].goal_distance = min(goal_distances.values())
+                    self.flights[pilot_id].race_distance = len(self.task) - min(goal_distances.values())
+                    self.flights[pilot_id]._last_point['point'].goal_distance = min(goal_distances.values())
 
                     # compute race time for pilot, read list in reverse because ESS is more likely near the end
                     if len(tag_times) == len(self.task.turnpoints):
-                        for i, turnpoint in enumerate(
-                                self.task.turnpoints[::-1]):
+                        for i, turnpoint in enumerate(self.task.turnpoints[::-1]):
                             if turnpoint.role == 'ESS':
-                                race_time = sub_times(tag_times[-(i + 1)],
-                                                      self.task.start)
+                                race_time = sub_times(tag_times[-(i + 1)], self.task.start)
                                 self.flights[pilot_id].race_time = race_time
                                 logging.debug(f'{pilot_id} SS : {race_time}')
 
@@ -191,9 +165,7 @@ class Race():
                     self.task._update_tag_times(tag_times)
 
                     if self._progress == 'ratio':
-                        print(f'{steps/self.n_pilots:.0%}',
-                              file=sys.stderr,
-                              flush=True)
+                        print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                         steps += 1
 
     def __str__(self):
@@ -228,16 +200,11 @@ class Race():
         features = {}
         steps = 1
         total = len(self)
-        for timestamp, snapshot in tqdm(self._snapshots(start, stop),
-                                        desc='extracting features',
-                                        total=len(self),
-                                        disable=self._progress != 'gui'):
+        for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self), disable=self._progress != 'gui'):
             if pilot_id not in snapshot:
-                logging.debug(
-                    f'Pilot {pilot_id} has no track at time {timestamp}')
+                logging.debug(f'Pilot {pilot_id} has no track at time {timestamp}')
             else:
-                features[timestamp] = PilotFeatures(pilot_id, timestamp,
-                                                    snapshot)
+                features[timestamp] = PilotFeatures(pilot_id, timestamp, snapshot)
 
             if self._progress == 'ratio':
                 print(f'{steps/total:.0%}', file=sys.stderr, flush=True)
@@ -308,25 +275,16 @@ class Race():
             output (str) : Path to a file to which you want to write the output.
         """
         if output is None:
-            logging.info(
-                'Race was not saved because you did not specify an output file'
-            )
+            logging.info('Race was not saved because you did not specify an output file')
 
         elif output.endswith('.pkl'):
             with open(output, 'wb') as f:
-                to_save = {
-                    x: y
-                    for x, y in self.__dict__.items() if not x.startswith('_')
-                }
+                to_save = {x: y for x, y in self.__dict__.items() if not x.startswith('_')}
                 pickle.dump(to_save, f)
 
         elif output.endswith('.json'):
             with open(output, 'w', encoding='utf8') as f:
-                json.dump(self.serialize(),
-                          f,
-                          cls=ComplexEncoder,
-                          ensure_ascii=False,
-                          indent=4)
+                json.dump(self.serialize(), f, cls=ComplexEncoder, ensure_ascii=False)
 
         elif output.endswith('.igclib'):
             path = os.path.dirname(output)
@@ -338,17 +296,13 @@ class Race():
             self.save(output=pkl_output)
 
         else:
-            raise NotImplementedError(
-                'Supported output files : .json, .pkl, .igclib')
+            raise NotImplementedError('Supported output files : .json, .pkl, .igclib')
 
     def serialize(self):
         """Serializes the race object to be written to a JSON file"""
         snaps = {str(_[0]): _[1] for _ in self._snapshots()}
         props = {'n_snaps': len(snaps)}
-        return dict(properties=props,
-                    task=self.task,
-                    ranking=self.ranking,
-                    race=snaps)
+        return dict(properties=props, task=self.task, ranking=self.ranking, race=snaps)
 
     def _load(self, path):
         """Loads the race instance from a pickle file"""
