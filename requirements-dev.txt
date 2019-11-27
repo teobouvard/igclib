@@ -1,0 +1,10 @@
+# formatter
+yapf
+
+# documentation
+sphinx
+autodoc
+sphinx_rtd_theme
+
+# tests
+pytest

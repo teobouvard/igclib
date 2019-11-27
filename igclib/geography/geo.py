@@ -1,5 +1,7 @@
 from igclib.constants import TOLERANCE
+
 from geolib import distance
+
 
 class Point(object):
     """

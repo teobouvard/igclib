@@ -6,9 +6,6 @@ asyncio
 lxml
 beautifulsoup4
 
-# tests
-pytest
-
 # progress bar
 tqdm
 
@@ -18,14 +15,7 @@ aerofiles @ git+https://github.com/Turbo87/aerofiles.git
 # visualization 
 seaborn
 
-# documentation
-sphinx
-autodoc
-sphinx_rtd_theme
 
 # scientific computing
 numpy
 scipy
-
-# command line interface
-Click

@@ -2,7 +2,6 @@ import base64
 import json
 import logging
 import os
-from datetime import datetime, time, timedelta
 
 import numpy as np
 from igclib.constants import DEBUG

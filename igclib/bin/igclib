@@ -2,35 +2,22 @@
 
 import argparse
 import json
+import logging
 import os
 import sys
 from datetime import datetime
-import logging
 
 from igclib.constants import DEFAULT_PROVIDER, MIN_YEAR, TASK_PROVIDERS
-from igclib.crawlers.task_crawler import TaskCrawler
 from igclib.core.race import Race
 from igclib.core.task import Task
+from igclib.crawlers.task_crawler import TaskCrawler
+
 logging.basicConfig(level=logging.WARNING)
 
-
 def check(args):
-    if args.command == 'race':
-        #if os.path.isfile(args.task):
-        #    task_type = 'file'
-        #else:
-        #    task_type = 'json'
-        #if args.flights is None and task_type =='file':
-        #    raise ValueError(f'If --task is a file, you must specify flights directory with --flights argument')
-        #if task_type == 'file' and not os.path.isdir(args.flights):
-        #    raise ValueError(f'Flights path "{args.flights}" is not a directory')
-        #if task_type == 'file' and len(os.listdir(args.flights)) == 0:
-        #    raise ValueError('Flights directory is empty')
-        pass
-
-    elif args.command == 'replay':
-        if args.task is None:
-            raise ValueError('Specify a task and/or flights')
+    if args.command == 'replay' or args.command == 'race':
+        if (args.task is None and args.flights is None) and args.path is None:
+            raise ValueError('Specify --task and --flights or --path')
 
     elif args.command == 'optimize':
         pass
@@ -48,7 +35,7 @@ def argument_parser():
     parser = argparse.ArgumentParser(description='igclib command line tool')
 
     commands = parser.add_subparsers(dest='command', help='Mode of operation')
-    commands.required = True 
+    commands.required = True
 
     parser_replay = commands.add_parser('replay', help='Create a replay of the race')
     parser_replay.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
@@ -81,8 +68,7 @@ def argument_parser():
     parser_watch.add_argument('--pilot', type=str, help='ID of the pilot to watch', required=True)
 
     args = parser.parse_args()
-    check(args)
-    return args
+    return check(args)
 
 if __name__ == '__main__':
     # parse and check arguments
@@ -113,4 +99,3 @@ if __name__ == '__main__':
         else:
             race = Race(tracks=args.flights, task=args.task, validate=False, progress=args.progress)
         race.save(output=args.output)
-        

@@ -22,6 +22,9 @@ release:
 #   DEV TARGETS    #
 # ================ #
 
+install-dev: install
+	pip3 install --user -r requirements-dev.txt
+
 replay:
 	igclib replay --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_few_tracks --output saved_races/big_race.igclib
 
