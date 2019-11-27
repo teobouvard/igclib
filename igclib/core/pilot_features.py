@@ -8,7 +8,6 @@ class PilotFeatures():
         position (Point) : The current position of the pilot.
         group_relation (GroupRelation) : The current position of the pilot.
     """
-
     def __init__(self, pilot_id, timestamp, snapshot):
         self.pilot_id = pilot_id
         self.timestamp = timestamp
@@ -32,17 +31,16 @@ class GroupRelation():
         delta_altitude (list [float]) : The altitude differences.
         delta_distance (list [float]) : The goal distances differences.
     """
-
     def __init__(self, pilot_id, snapshot):
         self.other_pilot_id = []
         self.delta_altitude = []
         self.delta_distance = []
 
-
         for other_pilot_id, flight in snapshot.items():
 
             delta_altitude = snapshot[pilot_id].altitude - flight.altitude
-            delta_distance = flight.goal_distance - snapshot[pilot_id].goal_distance
+            delta_distance = flight.goal_distance - snapshot[
+                pilot_id].goal_distance
 
             self.other_pilot_id.append(other_pilot_id)
             self.delta_altitude.append(delta_altitude)

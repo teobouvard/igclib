@@ -10,7 +10,6 @@ TOLERANCE = 0.001
 # threshold of distance minimizer validation in meters
 OPTIMIZER_PRECISION = 5
 
-
 ### IGC FILE CONSTANTS ###
 
 IGC_RECORDS = 'fix_records'
@@ -21,7 +20,6 @@ IGC_TIME = 'time'
 IGC_ALTITUDE = 'gps_alt'
 IGC_LAT = 'lat'
 IGC_LON = 'lon'
-
 
 ### XCTRACK FILE CONSTANTS ### (https://xctrack.org/Competition_Interfaces.html)
 
@@ -43,7 +41,6 @@ XC_WAYPOINT_LAT = 'lat'
 XC_WAYPOINT_LON = 'lon'
 XC_WAYPOINT_NAME = 'name'
 
-
 ### PWCA FILE CONSTANTS ### (No standard)
 
 PWCA_TASK_DATE = 'date'
@@ -61,9 +58,8 @@ PWCA_ID = 'id'
 
 PWCA_TURNPOINTS = 'points'
 PWCA_TURNPOINT_RADIUS = 'radius'
-PWCA_TURNPOINT = 'center' # or 'fix', who knows ?
+PWCA_TURNPOINT = 'center'  # or 'fix', who knows ?
 PWCA_TURNPOINT_NAME = 'name'
-
 
 ### IGCLIB FILE CONSTANTS ### (No standard)
 
@@ -81,13 +77,12 @@ PWCA_ID = 'id'
 
 IGCLIB_TURNPOINTS = 'turnpoints'
 IGCLIB_TURNPOINT_RADIUS = 'radius'
-IGCLIB_TURNPOINT_LAT = 'lat' 
+IGCLIB_TURNPOINT_LAT = 'lat'
 IGCLIB_TURNPOINT_LON = 'lon'
 IGCLIB_TURNPOINT_NAME = 'name'
 IGCLIB_TURNPOINT_ALT = 'altitude'
 IGCLIB_TURNPOINT_ROLE = 'role'
 IGCLIB_TURNPOINT_DESC = 'description'
-
 
 ### CRAWLERS ###
 
@@ -96,16 +91,16 @@ DEFAULT_PROVIDER = 'PWCA'
 MAX_TASKS_PER_EVENT = 11
 TASK_PROVIDERS = {
     'PWCA': {
-        'NAME' : 'PWCA',
-        'BASE_URL' : 'http://pwca.org/view/tour/',
-        'TASKS_URL' : 'http://pwca.org/sites/default/files/taskboards/pwctb',
-        'TASK_PATTERN' : re.compile('xctask.map.taskjsn = (.*?);')
+        'NAME': 'PWCA',
+        'BASE_URL': 'http://pwca.org/view/tour/',
+        'TASKS_URL': 'http://pwca.org/sites/default/files/taskboards/pwctb',
+        'TASK_PATTERN': re.compile('xctask.map.taskjsn = (.*?);')
     },
 }
 
 FLIGHT_PROVIDERS = {
     'PWCA': {
-        'NAME' : 'PWCA',
-        'BASE_URL' : 'http://pwca.org/results/',
+        'NAME': 'PWCA',
+        'BASE_URL': 'http://pwca.org/results/',
     },
 }

@@ -14,6 +14,7 @@ from igclib.crawlers.task_crawler import TaskCrawler
 
 logging.basicConfig(level=logging.WARNING)
 
+
 def check(args):
     if args.command == 'replay' or args.command == 'race':
         if (args.task is None and args.flights is None) and args.path is None:
@@ -21,13 +22,14 @@ def check(args):
 
     elif args.command == 'optimize':
         pass
-    
+
     elif args.command == 'crawl':
         if args.year < MIN_YEAR:
             print(f'{args.year} is clipped to {MIN_YEAR}', file=sys.stderr)
             args.year = MIN_YEAR
         elif args.year > datetime.now().year:
-            print(f'{args.year} is clipped to {datetime.now().year}', file=sys.stderr)
+            print(f'{args.year} is clipped to {datetime.now().year}',
+                  file=sys.stderr)
             args.year = datetime.now().year
 
 
@@ -37,48 +39,113 @@ def argument_parser():
     commands = parser.add_subparsers(dest='command', help='Mode of operation')
     commands.required = True
 
-    parser_replay = commands.add_parser('replay', help='Create a replay of the race')
-    parser_replay.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
-    parser_replay.add_argument('--task', type=str, help='Path or string of the task')
-    parser_replay.add_argument('--path', type=str, help='Path to a previously saved race (.pkl)')
-    parser_replay.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
-    parser_replay.add_argument('--output', type=str, help='File to which you want to save the output [.pkl, .json, .igclib]')
+    parser_replay = commands.add_parser('replay',
+                                        help='Create a replay of the race')
+    parser_replay.add_argument(
+        '--progress',
+        choices=['gui', 'ratio', 'silent'],
+        default='gui',
+        help='Display progress bar, print progress ratio or run silently.')
+    parser_replay.add_argument('--task',
+                               type=str,
+                               help='Path or string of the task')
+    parser_replay.add_argument('--path',
+                               type=str,
+                               help='Path to a previously saved race (.pkl)')
+    parser_replay.add_argument('--flights',
+                               type=str,
+                               help='Path to the IGC tracks directory')
+    parser_replay.add_argument(
+        '--output',
+        type=str,
+        help='File to which you want to save the output [.pkl, .json, .igclib]'
+    )
 
     parser_race = commands.add_parser('race', help='Create a race')
-    parser_race.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
-    parser_race.add_argument('--task', type=str, help='Path or string of the task')
-    parser_race.add_argument('--path', type=str, help='Path to a previously saved race (.pkl)')
-    parser_race.add_argument('--flights', type=str, help='Path to the IGC tracks directory')
-    parser_race.add_argument('--output', type=str, help='File to which you want to save the output [.pkl, .json, .igclib]')
+    parser_race.add_argument(
+        '--progress',
+        choices=['gui', 'ratio', 'silent'],
+        default='gui',
+        help='Display progress bar, print progress ratio or run silently.')
+    parser_race.add_argument('--task',
+                             type=str,
+                             help='Path or string of the task')
+    parser_race.add_argument('--path',
+                             type=str,
+                             help='Path to a previously saved race (.pkl)')
+    parser_race.add_argument('--flights',
+                             type=str,
+                             help='Path to the IGC tracks directory')
+    parser_race.add_argument(
+        '--output',
+        type=str,
+        help='File to which you want to save the output [.pkl, .json, .igclib]'
+    )
 
     parser_task = commands.add_parser('optimize', help='Optimize a task')
-    parser_task.add_argument('--output', type=str, help='File to which you want to save the output')
-    parser_task.add_argument('--task', type=str, help='Path or string of the task', required=True)
-    parser_task.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
+    parser_task.add_argument('--output',
+                             type=str,
+                             help='File to which you want to save the output')
+    parser_task.add_argument('--task',
+                             type=str,
+                             help='Path or string of the task',
+                             required=True)
+    parser_task.add_argument(
+        '--progress',
+        choices=['gui', 'ratio', 'silent'],
+        default='gui',
+        help='Display progress bar, print progress ratio or run silently.')
 
-    parser_crawl = commands.add_parser('crawl', help='Crawl providers for data')
-    parser_crawl.add_argument('--output', type=str, help='File to which you want to save the output')
-    parser_crawl.add_argument('--year', type=int, default=datetime.now().year, help='Fetch task from this year')
-    parser_crawl.add_argument('--provider', choices=TASK_PROVIDERS.keys(), default=DEFAULT_PROVIDER, help='Tasks provider') 
-    parser_crawl.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
-    
-    parser_watch = commands.add_parser('watch', help='Watch a pilot during the race')
-    parser_watch.add_argument('--path', type=str, help='Path to a previously saved race (.pkl)', required=True)
-    parser_watch.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
-    parser_watch.add_argument('--pilot', type=str, help='ID of the pilot to watch', required=True)
+    parser_crawl = commands.add_parser('crawl',
+                                       help='Crawl providers for data')
+    parser_crawl.add_argument('--output',
+                              type=str,
+                              help='File to which you want to save the output')
+    parser_crawl.add_argument('--year',
+                              type=int,
+                              default=datetime.now().year,
+                              help='Fetch task from this year')
+    parser_crawl.add_argument('--provider',
+                              choices=TASK_PROVIDERS.keys(),
+                              default=DEFAULT_PROVIDER,
+                              help='Tasks provider')
+    parser_crawl.add_argument(
+        '--progress',
+        choices=['gui', 'ratio', 'silent'],
+        default='gui',
+        help='Display progress bar, print progress ratio or run silently.')
+
+    parser_watch = commands.add_parser('watch',
+                                       help='Watch a pilot during the race')
+    parser_watch.add_argument('--path',
+                              type=str,
+                              help='Path to a previously saved race (.pkl)',
+                              required=True)
+    parser_watch.add_argument(
+        '--progress',
+        choices=['gui', 'ratio', 'silent'],
+        default='gui',
+        help='Display progress bar, print progress ratio or run silently.')
+    parser_watch.add_argument('--pilot',
+                              type=str,
+                              help='ID of the pilot to watch',
+                              required=True)
 
     args = parser.parse_args()
     return check(args)
 
+
 if __name__ == '__main__':
     # parse and check arguments
     args = argument_parser()
-  
+
     if args.command == 'race':
         if args.path is not None:
             race = Race(path=args.path, progress=args.progress)
         else:
-            race = Race(tracks=args.flights, task=args.task, progress=args.progress)
+            race = Race(tracks=args.flights,
+                        task=args.task,
+                        progress=args.progress)
         race.save(output=args.output)
 
     elif args.command == 'optimize':
@@ -90,12 +157,15 @@ if __name__ == '__main__':
         crawler.crawl(output=args.output)
 
     elif args.command == 'watch':
-        race =  Race(path=args.path, progress=args.progress)
+        race = Race(path=args.path, progress=args.progress)
         series = race.pilot_schema(args.pilot, output='-')
-    
+
     elif args.command == 'replay':
         if args.path is not None:
             race = Race(path=args.path, validate=False, progress=args.progress)
         else:
-            race = Race(tracks=args.flights, task=args.task, validate=False, progress=args.progress)
+            race = Race(tracks=args.flights,
+                        task=args.task,
+                        validate=False,
+                        progress=args.progress)
         race.save(output=args.output)
