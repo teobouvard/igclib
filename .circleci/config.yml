@@ -11,7 +11,7 @@ jobs:
           command: pip install --user --upgrade pip
       - run:
           name: Install packages
-          command: pip install --user .
+          command: make install-dev
       - run:
           name: Run tests
           command: pytest
