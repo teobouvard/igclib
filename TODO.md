@@ -4,6 +4,7 @@
     * time bench n pilots in goal
     * goal line + cylinder
     * pickle dump custom serializer
+    * task parser inheritance ++
 
 * Data collection
 

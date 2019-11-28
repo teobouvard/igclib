@@ -1,7 +1,7 @@
 import json
 import logging
 import multiprocessing
-#multiprocessing.set_start_method('spawn', True)
+#multiprocessing.set_start_method('spawn', True) -> DEBUG MULTIPROCESS
 import os
 import pickle
 import sys

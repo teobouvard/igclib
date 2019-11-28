@@ -34,3 +34,4 @@ build
 
 # Temporary excluded files
 saved_races/
+tasks.json

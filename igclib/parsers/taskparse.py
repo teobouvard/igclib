@@ -27,12 +27,14 @@ class PWCATask():
                 continue
 
             elif waypoint.get(PWCA_TYPE, None) == 'SS':
-                self.sss = self._build_wpt(waypoint, role='SSS')
+                wp = self._build_wpt(waypoint, role='SSS')
+                self.sss = wp
 
             elif waypoint.get(PWCA_TYPE, None) == 'ES':
-                self.ess = self._build_wpt(waypoint, role='ESS')
+                wp = self._build_wpt(waypoint, role='ESS')
+                self.ess = wp
 
-            turnpoints.append(self._build_wpt(waypoint))
+            turnpoints.append(wp)
 
         self.date = task[PWCA_DETAILS][PWCA_TASK_DATE].strip()
         self.open = time(open_time.hour, open_time.minute, open_time.second)
