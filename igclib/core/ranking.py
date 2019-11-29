@@ -8,7 +8,6 @@ class Ranking():
         ranking = {}
         for pilot_id, flight in race.flights.items():
             ranking[pilot_id] = {'name': str(flight), 'id': pilot_id, 'distance': flight.race_distance, 'time': flight.race_time}
-
         ranking = sorted(ranking.values(), key=lambda x: (-x['distance'], x['time']) if hasattr(x, 'distance') else x['name'])
         return ranking
 

@@ -7,6 +7,7 @@
     * task parser inheritance ++
     * ujson for faster parsing and dumping
     * better unzip management
+    * flight race time/distance in race flights attribute ?
 
 * Data collection
 

@@ -47,6 +47,14 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "xc",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/igclib/bin/igclib",
+            "args": ["xc", "--flights", "igclib/tests/test_data/tracks/xc_col_agnel.igc"],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "json race",
             "type": "python",
             "request": "launch",

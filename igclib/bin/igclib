@@ -111,5 +111,5 @@ if __name__ == '__main__':
         race.save(output=args.output)
 
     elif args.command == 'xc':
-        xc = XC(track=args.flights, airspace=args.airspace, progress=args.progress)
+        xc = XC(tracks=args.flights, airspace=args.airspace, progress=args.progress)
         xc.save(output=args.output)

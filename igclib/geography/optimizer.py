@@ -2,6 +2,7 @@ import numpy as np
 from igclib.constants import OPTIMIZER_PRECISION
 from igclib.geography.geo import Opti, Point, Turnpoint
 from scipy.optimize import minimize
+from datetime import time
 
 from geolib import destination, distance, heading
 
@@ -32,3 +33,4 @@ def tasklen(angles, position, waypoints):
         last_lat, last_lon = lat_dest, lon_dest
 
     return dist
+    

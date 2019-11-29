@@ -272,6 +272,7 @@ class Race():
         """
         if output is None:
             logging.info('Race was not saved because you did not specify an output file')
+        output
 
         elif output.endswith('.pkl'):
             with open(output, 'wb') as f:
@@ -282,13 +283,17 @@ class Race():
             with open(output, 'w', encoding='utf8') as f:
                 json.dump(self.serialize(), f, cls=ComplexEncoder, ensure_ascii=False)
 
+        elif output == '-':
+                print(json.dumps(self.serialize(), cls=ComplexEncoder, ensure_ascii=False))
+
         elif output.endswith('.igclib'):
             path = os.path.dirname(output)
             filename = os.path.basename(output)
             canonical = os.path.splitext(filename)[0]
             json_output = os.path.join(path, f'{canonical}.json')
             pkl_output = os.path.join(path, f'{canonical}.pkl')
-            self.save(output=json_output)
+            self.save(output='-')
+            #self.save(output=json_output)
             self.save(output=pkl_output)
 
         else:

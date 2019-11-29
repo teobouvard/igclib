@@ -1,9 +1,11 @@
 import logging
 import os
+from datetime import time
 
+import numpy
 from aerofiles import igc
-
-from igclib.constants import IGC_HEADER, IGC_RECORDS, IGC_TIME, IGC_PILOT_NAME, IGC_TZ_OFFSET
+from igclib.constants import (IGC_HEADER, IGC_PILOT_NAME, IGC_RECORDS,
+                              IGC_TIME, IGC_TZ_OFFSET)
 from igclib.geography.geo import Point
 from igclib.time.timeop import add_offset
 
@@ -24,6 +26,7 @@ class Flight():
                 with open(igc_file, 'r', encoding=encoding) as f:
                     records = igc.Reader().read(f)
                     self._build(records)
+                    break
 
             except UnicodeDecodeError:
                 logging.debug(f'{igc_file} is not {encoding} encoded, trying something else')
@@ -46,8 +49,14 @@ class Flight():
         self._first_point = {'timestamp': first_timestamp, 'point': self.points[first_timestamp]}
         self._last_point = {'timestamp': last_timestamp, 'point': self.points[last_timestamp]}
 
-    def __getitem__(self, time_point):
-        return self.points.get(time_point, None)
+    def __getitem__(self, key):
+        if type(key) == time:
+            return self.points.get(key, None)
+        elif type(key) == int:
+            return list(self.points.values())[key]
+        else:
+            raise ValueError(f'key must be of type int or time but is {type(key)}')
+            
 
     def __str__(self):
         return self.pilot_name
