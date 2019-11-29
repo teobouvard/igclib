@@ -1,7 +1,7 @@
 import json
 import logging
 import multiprocessing
-multiprocessing.set_start_method('spawn', True) #-> DEBUG MULTIPROCESS
+#multiprocessing.set_start_method('spawn', True) #-> DEBUG MULTIPROCESS
 import os
 import pickle
 import shutil
@@ -56,6 +56,7 @@ class Race():
             self._load(path)
             if not self.validated and self._validate:
                 self.validate_flights()
+                self.validated = True
 
         # or build it from arguments
         else:
