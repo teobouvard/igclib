@@ -273,8 +273,8 @@ class Race():
         if output is None:
             logging.info('Race was not saved because you did not specify an output file')
         elif type(output) == list:
-            for outpout in output:
-                self.save(output)
+            for out in output:
+                self.save(out)
 
         if output.endswith('.pkl'):
             with open(output, 'wb') as f:
