@@ -127,7 +127,6 @@ class Race():
             steps = 1
             for x in tqdm(p.imap_unordered(Flight, tracks), desc='reading tracks', total=self.n_pilots, disable=self._progress != 'gui'):
                 self.flights[x.pilot_id] = x
-
                 if self._progress == 'ratio':
                     print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                     steps += 1

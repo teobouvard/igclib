@@ -5,5 +5,5 @@ import pytest
 from igclib.tests import TEST_DATA
 
 
-def test_race_task():
+def test_replay():
     pass
