@@ -5,6 +5,7 @@
     * goal line + cylinder
     * pickle dump custom serializer
     * task parser inheritance ++
+    * ujson for faster parsing
 
 * Data collection
 

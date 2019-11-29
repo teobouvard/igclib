@@ -42,8 +42,9 @@ class FlightCrawler():
                         pbar.update(len(data))
 
         tracks_dir = f'/tmp/{task.date}'
-        z = zipfile.ZipFile(f'/tmp/{task.date}.zip')
-        z.extractall(tracks_dir)
-        os.chmod(tracks_dir, 0o777)
+        if not os.path.isdir(tracks_dir):
+            z = zipfile.ZipFile(f'/tmp/{task.date}.zip')
+            z.extractall(tracks_dir)
+            os.chmod(tracks_dir, 0o777)
         os.remove(f'/tmp/{task.date}.zip')
         return tracks_dir
