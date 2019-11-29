@@ -56,7 +56,6 @@ class Race():
             self._load(path)
             if not self.validated and self._validate:
                 self.validate_flights()
-                self.validated = True
 
         # or build it from arguments
         else:
@@ -76,7 +75,6 @@ class Race():
             # validating all Flights if necessary
             if self._validate:
                 self.validate_flights()
-                self.validated = True
             else:
                 self.validated = False
 
@@ -133,7 +131,7 @@ class Race():
                 if self._progress == 'ratio':
                     print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                     steps += 1
-        
+
         if tmp_file is not None:
             shutil.rmtree(tmp_file)
 
@@ -167,6 +165,8 @@ class Race():
                 if self._progress == 'ratio':
                     print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                     steps += 1
+
+        self.validated = True
 
     def __str__(self):
         return f'{self.n_pilots} pilots - {len(self.task)}m task - start at {self.task.start} - deadline at {self.task.stop}'

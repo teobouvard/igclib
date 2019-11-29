@@ -31,7 +31,7 @@ def check(args):
         elif args.year > datetime.now().year:
             print(f'{args.year} is clipped to {datetime.now().year}', file=sys.stderr)
             args.year = datetime.now().year
-    
+
     elif args.command == 'xc':
         pass
 
@@ -109,7 +109,7 @@ if __name__ == '__main__':
     elif args.command == 'replay':
         race = Race(path=args.path, tracks=args.flights, task=args.task, validate=False, progress=args.progress)
         race.save(output=args.output)
-    
+
     elif args.command == 'xc':
         xc = XC(track=args.flights, airspace=args.airspace, progress=args.progress)
         xc.save(output=args.output)

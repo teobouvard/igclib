@@ -20,3 +20,9 @@ class Ranking():
                     in_goal.append(pilot_id)
                     break
         return in_goal
+
+    def __getitem__(self, pilot_id):
+        for result in self.pilots:
+            if result['id'] == pilot_id:
+                return result
+        raise KeyError(f'{pilot_id} not in ranking')
