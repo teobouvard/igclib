@@ -1,9 +1,10 @@
 import json
 import logging
 import multiprocessing
-#multiprocessing.set_start_method('spawn', True) -> DEBUG MULTIPROCESS
+multiprocessing.set_start_method('spawn', True) #-> DEBUG MULTIPROCESS
 import os
 import pickle
+import shutil
 import sys
 import zipfile
 from datetime import datetime, time
@@ -108,19 +109,20 @@ class Race():
         Arguments:
             tracks (str) : Path to a directory or a zip file containing the igc files
         """
+        tmp_file = None
         if zipfile.is_zipfile(tracks):
+            tmp_file = os.path.join('/tmp', os.path.splitext(os.path.basename(tracks))[0])
             archive = zipfile.ZipFile(tracks)
             archive.extractall(path='/tmp')
-            tracks = os.path.join('/tmp', os.path.splitext(os.path.basename(tracks))[0])
-
+            tracks = tmp_file
         if os.path.isdir(tracks):
             tracks = glob(os.path.join(tracks, '*.igc'))
-            if len(tracks) == 0:
-                raise ValueError('Flight directory does not contain any igc files')
         else:
             raise ValueError(f'{tracks} is not a directory or a zip file')
 
         self.n_pilots = len(tracks)
+        if self.n_pilots == 0:
+            raise ValueError('Flight directory does not contain any igc files')
         self.flights = {}
 
         with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
@@ -130,6 +132,9 @@ class Race():
                 if self._progress == 'ratio':
                     print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
                     steps += 1
+        
+        if tmp_file is not None:
+            shutil.rmtree(tmp_file)
 
     def validate_flights(self):
         """Computes the validation of each flight on the race"""
