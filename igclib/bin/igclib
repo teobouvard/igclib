@@ -49,7 +49,7 @@ def argument_parser():
     parser_replay.add_argument('--task', type=str, help='Task file or b64 encoding')
     parser_replay.add_argument('--path', type=str, help='Previously saved race (.pkl)')
     parser_replay.add_argument('--flights', type=str, help='IGC tracks directory or zip file')
-    parser_replay.add_argument('--output', type=str, help='Save the output [.pkl, .json, .igclib]')
+    parser_replay.add_argument('--output', type=str, nargs='+', help='Save the output [.pkl, .json, .igclib]')
 
     parser_race = commands.add_parser('race', help='Create a race')
     parser_race.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
@@ -59,7 +59,7 @@ def argument_parser():
     parser_race.add_argument('--output', type=str, help='Save the output [.pkl, .json, .igclib]')
 
     parser_task = commands.add_parser('optimize', help='Optimize a task')
-    parser_task.add_argument('--output', type=str, help='Save the output [.json]')
+    parser_task.add_argument('--output', type=str, nargs='+', help='Save the output [.json]')
     parser_task.add_argument('--task', type=str, help='Task file or b64 encoding', required=True)
     parser_task.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
 

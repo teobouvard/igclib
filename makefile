@@ -29,10 +29,10 @@ format:
 	yapf -ipr --verbose igclib/ 
 
 replay:
-	igclib replay --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_few_tracks --output saved_races/big_race.igclib
+	igclib replay --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_few_tracks --output saved_races/big_race.pkl
 
 race:
-	igclib race --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_all_tracks --output saved_races/big_race2.igclib
+	igclib race --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_all_tracks --output saved_races/big_race2.pkl
 
 xc:
 	igclib xc --flights igclib/tests/test_data/tracks/xc_col_agnel.igc --output saved_races/test.json

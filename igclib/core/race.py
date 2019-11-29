@@ -272,32 +272,21 @@ class Race():
         """
         if output is None:
             logging.info('Race was not saved because you did not specify an output file')
+        elif type(output) == list:
+            for outpout in outputs:
+                self.save(output)
 
-
-        elif output.endswith('.pkl'):
+        if output.endswith('.pkl'):
             with open(output, 'wb') as f:
                 to_save = {x: y for x, y in self.__dict__.items() if not x.startswith('_')}
                 pickle.dump(to_save, f)
-
         elif output.endswith('.json'):
             with open(output, 'w', encoding='utf8') as f:
                 json.dump(self.serialize(), f, cls=ComplexEncoder, ensure_ascii=False)
-
         elif output == '-':
                 print(json.dumps(self.serialize(), cls=ComplexEncoder, ensure_ascii=False))
-
-        elif output.endswith('.igclib'):
-            path = os.path.dirname(output)
-            filename = os.path.basename(output)
-            canonical = os.path.splitext(filename)[0]
-            json_output = os.path.join(path, f'{canonical}.json')
-            pkl_output = os.path.join(path, f'{canonical}.pkl')
-            self.save(output='-')
-            #self.save(output=json_output)
-            self.save(output=pkl_output)
-
         else:
-            raise NotImplementedError('Supported output files : .json, .pkl, .igclib')
+            raise NotImplementedError('Supported outputs : .json, .pkl, -')
 
     def serialize(self):
         """Serializes the race object to be written to a JSON file"""
