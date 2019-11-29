@@ -272,7 +272,7 @@ class Race():
         """
         if output is None:
             logging.info('Race was not saved because you did not specify an output file')
-        output
+
 
         elif output.endswith('.pkl'):
             with open(output, 'wb') as f:
