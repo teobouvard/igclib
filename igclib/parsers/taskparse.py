@@ -33,6 +33,8 @@ class PWCATask():
             elif waypoint.get(PWCA_TYPE, None) == 'ES':
                 wp = self._build_wpt(waypoint, role='ESS')
                 self.ess = wp
+            else:
+                wp = self._build_wpt(waypoint)
 
             turnpoints.append(wp)
 
