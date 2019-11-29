@@ -270,13 +270,10 @@ class Race():
         Arguments:
             output (str) : Path to a file to which you want to write the output.
         """
-        if output is None:
-            logging.info('Race was not saved because you did not specify an output file')
-        elif type(output) == list:
+        if type(output) == list:
             for out in output:
                 self.save(out)
-
-        if output.endswith('.pkl'):
+        elif output.endswith('.pkl'):
             with open(output, 'wb') as f:
                 to_save = {x: y for x, y in self.__dict__.items() if not x.startswith('_')}
                 pickle.dump(to_save, f)

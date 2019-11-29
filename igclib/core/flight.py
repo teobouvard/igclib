@@ -8,6 +8,7 @@ from igclib.constants import (IGC_HEADER, IGC_PILOT_NAME, IGC_RECORDS,
                               IGC_TIME, IGC_TZ_OFFSET)
 from igclib.geography.geo import Point
 from igclib.time.timeop import add_offset
+from functools import lru_cache
 
 
 class Flight():
@@ -31,6 +32,7 @@ class Flight():
             except UnicodeDecodeError:
                 logging.debug(f'{igc_file} is not {encoding} encoded, trying something else')
 
+        # if file could not be decoded, it does not have a point attribute
         if not hasattr(self, 'points') or self.points == {}:
             raise ValueError(f'{igc_file} is empty or could not be read')
 
@@ -53,10 +55,14 @@ class Flight():
         if type(key) == time:
             return self.points.get(key, None)
         elif type(key) == int:
-            return list(self.points.values())[key]
+            return self.to_list()[key]
         else:
             raise ValueError(f'key must be of type int or time but is {type(key)}')
-            
 
+    # we should probably used @cached_property but it only exists in python >= 3.8
+    @lru_cache()
+    def to_list(self):
+        return list(self.points.values())
+            
     def __str__(self):
         return self.pilot_name
