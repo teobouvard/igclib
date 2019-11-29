@@ -34,3 +34,8 @@ def tasklen(angles, position, waypoints):
 
     return dist
     
+def maximize_distance():
+    pass
+
+def triangle_length():
+    pass

@@ -265,7 +265,7 @@ class Race():
         Saves the race instance to a file specified by output
             * If output is a JSON file (.json), only a human-readable, serialized version of the race is written.
             * If output is a pickle file (.pkl), only a binary version of the race is written, which can be loaded by this class later.
-            * If output is an igclib file (.igclib), both a JSON and a pickle file will be generated.
+            * If output is -, the JSON serialization is written to the standard output.
 
         Arguments:
             output (str) : Path to a file to which you want to write the output.
@@ -273,7 +273,7 @@ class Race():
         if output is None:
             logging.info('Race was not saved because you did not specify an output file')
         elif type(output) == list:
-            for outpout in outputs:
+            for outpout in output:
                 self.save(output)
 
         if output.endswith('.pkl'):

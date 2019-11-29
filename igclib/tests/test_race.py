@@ -12,7 +12,7 @@ def xctrack_replay(tmpdir_factory):
     task = os.path.join(TEST_DATA, 'tasks', 'pwca_brazil_2019_7.xctsk')
     replay = Race(tracks=tracks, task=task, progress='gui', validate=False)
     fn = tmpdir_factory.mktemp('generated_data')
-    replay.save(os.path.join(str(fn), 'replay.igclib'))
+    replay.save(os.path.join(str(fn), 'replay.pkl'))
     return fn
 
 
