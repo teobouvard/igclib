@@ -8,6 +8,7 @@
     * ujson for faster parsing and dumping
     * better unzip management
     * flight race time/distance in race flights attribute ?
+    * create airspace class
 
 * Data collection
 
