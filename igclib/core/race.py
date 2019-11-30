@@ -220,7 +220,7 @@ class Race():
         sns.lineplot(x=series['timestamps'], y=series['smoothed_distances'])
         plt.show()
 
-    def pilot_schema(self, pilot_id, output=None):
+    def pilot_schema(self, pilot_id, output):
         """In dev !
         
         Args:
@@ -247,10 +247,13 @@ class Race():
             'delta_distances': smoothed_distances,
         }
 
-        if output is None:
-            return series
-        elif output == '-':
-            print(json.dumps(series, cls=ComplexEncoder))
+        if type(output) == list:
+            for out in output:
+                if out == '-':
+                    print(json.dumps(series, cls=ComplexEncoder))
+                elif out.endswith('.json'):
+                    with open(out, 'w', encoding='utf8') as f:
+                        json.dump(series, f, cls=ComplexEncoder, ensure_ascii=False)
 
     def _snapshots(self, start=None, stop=None):
         """
