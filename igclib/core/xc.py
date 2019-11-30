@@ -20,6 +20,7 @@ class XC(BaseObject):
         self.flight = Flight(tracks)
         #self.triangle_distance = maximize_distance(self.flight)
         self.airspace = self.parse_airspace(airspace)
+        print(len(self.airspace))
 
     def parse_airspace(self, airspace):
         if airspace is None:

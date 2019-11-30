@@ -13,18 +13,19 @@ def feets_to_meters(altitude):
     return int(0.3048*altitude)
 
 def parse_altitude(record):
-    if record == 'SFC':
+    if record == 'SFC' or record == 'GND':
         return 0
     elif record == 'UNL':
         return sys.maxsize
-    elif 'FL' in record:
+    elif record.startswith('FL'):
         level = int_from_string(record)
         return level_to_meters(level)
-    elif 'FT' and 'AMSL' in record:
+    elif record.endswith('AMSL'):
         altitude = int_from_string(record)
         return feets_to_meters(altitude)
-    elif 'FT' and 'AGL' in record:
+    elif record.endswith('AGL') or record.endswith('ASFC'):
         # TODO get ground level for this point
+        #logging.warn('no ground altitude')
         altitude = int_from_string(record)
         return feets_to_meters(altitude)
     else:
