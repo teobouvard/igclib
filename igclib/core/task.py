@@ -119,12 +119,21 @@ class Task():
 
         return flight.pilot_id, goal_distances, tag_times
 
-    def optimized(self, output=None):
-        if output is not None:
+    def save(self, output):
+        if type(output) == list:
+            for out in output:
+                self.save(out)
+        elif output.endswith('.pkl'):
+            with open(output, 'wb') as f:
+                to_save = {x: y for x, y in self.__dict__.items() if not x.startswith('_')}
+                pickle.dump(to_save, f)
+        elif output.endswith('.json'):
             with open(output, 'w') as f:
                 json.dump(self.__dict__, f, cls=ComplexEncoder)
+        elif output == '-':
+                print(json.dumps(self.__dict__, cls=ComplexEncoder))
         else:
-            print(json.dumps(self.__dict__, cls=ComplexEncoder))
+            raise NotImplementedError('Supported outputs : .json, .pkl, -')
 
     def __len__(self):
         return int(self.opti.distance)

@@ -22,7 +22,6 @@ Commands
         Get the optimized version of a task.
         Required arguments :
             --task
-        Optional arguments :
             --output
 
 ::
@@ -33,7 +32,6 @@ Commands
         Required arguments :
             --task
             --flights
-        Optional arguments :
             --output
 
 ::
@@ -42,9 +40,7 @@ Commands
 
         Creates a race with validated flights.
         Required arguments :
-            --task and --flights
-            --path
-        Optional arguments :
+            --task and --flights or --path
             --output
 
 ::
@@ -64,6 +60,7 @@ Commands
         Required arguments :
             --path
             --pilot
+            --output
 
 Options
 ========
