@@ -1,0 +1,21 @@
+from igclib.geography.converters import parse_altitude
+
+class Airspace:
+
+    def __init__(self, record):
+        self.name = record.get('name')
+        self.floor = parse_altitude(record.get('floor'))
+        self.ceiling = parse_altitude(record.get('ceiling'))
+        self.elements = record.get('elements')
+        self.airspace_class = record.get('class')
+        self.box = self.get_bounding_box()
+
+    def get_bounding_box(self):
+        pass
+        
+
+    def contains(self, point):
+        if point.altitude > self.ceiling or point.altitude < self.floor:
+            return False
+        if point.lat:
+            pass

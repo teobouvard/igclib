@@ -1,14 +1,14 @@
 * Library
 
     * doc task structure : turnpoint list does not contain takeoff
-    * time bench n pilots in goal
-    * goal line + cylinder
-    * pickle dump custom serializer
-    * task parser inheritance ++
-    * ujson for faster parsing and dumping
-    * better unzip management
-    * flight race time/distance in race flights attribute ?
     * create airspace class
+    * create series class for watch command
+    * goal line + cylinder
+    * flight race time/distance in race flights attribute ?
+    * task parser inheritance ++
+    * better unzip management
+    * time bench n pilots in goal
+    * ujson for faster parsing and dumping 
 
 * Data collection
 

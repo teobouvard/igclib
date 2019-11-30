@@ -114,4 +114,4 @@ if __name__ == '__main__':
 
     elif args.command == 'xc':
         xc = XC(tracks=args.flights, airspace=args.airspace, progress=args.progress)
-        xc.save(output=args.output)
+        #xc.save(output=args.output)
