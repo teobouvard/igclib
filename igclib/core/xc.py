@@ -1,8 +1,12 @@
+import logging
+import os
+
+from aerofiles import openair
 from igclib.core.flight import Flight
-from geolib import distance
-from tqdm import tqdm
 from igclib.geography.optimizer import maximize_distance
-from aerofiles import openair 
+from tqdm import tqdm
+
+from geolib import distance
 
 
 class XC():
@@ -18,21 +22,19 @@ class XC():
         else: 
             self.airspace = None
 
-        print(self.airspace)
-
     
     def parse_airspace(self, airspace):
         records = []
-        errors = []
         with open(airspace, 'r') as f:
             reader = openair.Reader(f)
             for record, error in reader:
                 if error:
-                    errors.append(error)
+                    logging.warning(f'line {error.lineno} of {os.path.basename(airspace)} - {error}')
                 records.append(record)
 
-        return records, errors
+        return records
 
 
     def save(self, output):
-        print(self.triangle_distance)
+        #print(self.triangle_distance)
+        pass

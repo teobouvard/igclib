@@ -13,7 +13,8 @@ from igclib.core.task import Task
 from igclib.core.xc import XC
 from igclib.crawlers.task_crawler import TaskCrawler
 
-logging.basicConfig(level=logging.WARNING)
+FORMAT = "%(levelname)s : %(message)s"  
+logging.basicConfig(level=logging.INFO, format=FORMAT)
 
 
 def check(args):
@@ -26,10 +27,10 @@ def check(args):
 
     elif args.command == 'crawl':
         if args.year < MIN_YEAR:
-            print(f'{args.year} is clipped to {MIN_YEAR}', file=sys.stderr)
+            logging.info(f'{args.year} is clipped to {MIN_YEAR}')
             args.year = MIN_YEAR
         elif args.year > datetime.now().year:
-            print(f'{args.year} is clipped to {datetime.now().year}', file=sys.stderr)
+            logging.info(f'{args.year} is clipped to {datetime.now().year}')
             args.year = datetime.now().year
 
     elif args.command == 'xc':
@@ -101,7 +102,7 @@ if __name__ == '__main__':
 
     elif args.command == 'crawl':
         crawler = TaskCrawler(args.provider, args.year, args.progress)
-        crawler.crawl(output=args.output)
+        crawler.save(output=args.output)
 
     elif args.command == 'watch':
         race = Race(path=args.path, progress=args.progress)

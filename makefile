@@ -35,7 +35,7 @@ race:
 	igclib race --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_all_tracks --output saved_races/big_race2.pkl
 
 xc:
-	igclib xc --flights igclib/tests/test_data/tracks/xc_col_agnel.igc --output saved_races/test.json
+	igclib xc --flights igclib/tests/test_data/tracks/xc_col_agnel.igc --airspace igclib/tests/test_data/airspace/france_airspace.txt --output saved_races/test.json
 
 watch:
 	igclib watch --path saved_races/big_race.pkl --pilot 0093 --progress ratio

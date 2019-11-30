@@ -16,18 +16,23 @@ class TaskCrawler():
         self._progress = progress
         self.provider = TASK_PROVIDERS[provider]
         self.year = str(year)
+        self.crawl()
 
     def crawl(self, output=None):
         if self.provider['NAME'] == 'PWCA':
-            tasks = self.crawl_pwca()
+            self.tasks = self.crawl_pwca()
         else:
             raise NotImplementedError(f'Provider {self.provider["NAME"]} not yet implemented')
 
-        if output is not None:
+    def save(self, output):
+        if type(output) == list:
+            for out in output:
+                self.save(out)
+        elif output.endswith('json'):
             with open(output, 'w') as f:
-                json.dump(tasks, f)
-        else:
-            print(json.dumps(tasks))
+                json.dump(self.tasks, f)
+        elif output == '-':
+            print(json.dumps(self.tasks))
 
     def crawl_pwca(self):
         url = self.provider['BASE_URL'] + self.year
