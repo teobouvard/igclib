@@ -1,4 +1,4 @@
 Geographic Utilities
 ---------------------
-.. automodule:: igclib.core.geo
+.. automodule:: igclib.geography
     :members:

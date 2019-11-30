@@ -12,19 +12,19 @@ from glob import glob
 
 import numpy as np
 #import seaborn as sns
-from igclib.constants import DEBUG
-from igclib.crawlers.flight_crawler import FlightCrawler
-from igclib.core.flight import Flight
-from igclib.core.ranking import Ranking
-from igclib.core.pilot_features import PilotFeatures
-from igclib.core.task import Task
+from igclib.core.base import BaseObject
 from igclib.serialization.json_encoder import ComplexEncoder
+from igclib.core.flight import Flight
+from igclib.core.pilot_features import PilotFeatures
+from igclib.core.ranking import Ranking
+from igclib.core.task import Task
+from igclib.crawlers.flight_crawler import FlightCrawler
 from igclib.time.timeop import sub_times
 from scipy.signal import savgol_filter
 from tqdm import tqdm
 
 
-class Race():
+class Race(BaseObject):
     """
     You can create a Race instance in two different ways :
 
@@ -53,7 +53,7 @@ class Race():
 
         # load race from pickle if path is given
         if path is not None:
-            self._load(path)
+            self.load(path)
             if not self.validated and self._validate:
                 self.validate_flights()
 
@@ -263,41 +263,8 @@ class Race():
             if self[timestamp] != {}:
                 yield timestamp, self[timestamp]
 
-    def save(self, output):
-        """
-        Saves the race instance to a file specified by output
-            * If output is a JSON file (.json), only a human-readable, serialized version of the race is written.
-            * If output is a pickle file (.pkl), only a binary version of the race is written, which can be loaded by this class later.
-            * If output is -, the JSON serialization is written to the standard output.
-
-        Arguments:
-            output (str) : Path to a file to which you want to write the output.
-        """
-        if type(output) == list:
-            for out in output:
-                self.save(out)
-        elif output.endswith('.pkl'):
-            with open(output, 'wb') as f:
-                to_save = {x: y for x, y in self.__dict__.items() if not x.startswith('_')}
-                pickle.dump(to_save, f)
-        elif output.endswith('.json'):
-            with open(output, 'w', encoding='utf8') as f:
-                json.dump(self.serialize(), f, cls=ComplexEncoder, ensure_ascii=False)
-        elif output == '-':
-                print(json.dumps(self.serialize(), cls=ComplexEncoder, ensure_ascii=False))
-        else:
-            raise NotImplementedError('Supported outputs : .json, .pkl, -')
-
     def serialize(self):
         """Serializes the race object to be written to a JSON file"""
         snaps = {str(_[0]): _[1] for _ in self._snapshots()}
         props = {'n_snaps': len(snaps)}
         return dict(properties=props, task=self.task, ranking=self.ranking, race=snaps)
-
-    def _load(self, path):
-        """Loads the race instance from a pickle file"""
-        if path.endswith('.pkl'):
-            with open(path, 'rb') as f:
-                self.__dict__.update(pickle.load(f))
-        else:
-            raise ValueError('You can only load a race from a .pkl file')

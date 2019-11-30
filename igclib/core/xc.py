@@ -5,11 +5,12 @@ from aerofiles import openair
 from igclib.core.flight import Flight
 from igclib.geography.optimizer import maximize_distance
 from tqdm import tqdm
+from igclib.core.base import BaseObject
 
 from geolib import distance
 
 
-class XC():
+class XC(BaseObject):
     """
     XC flight
     """
@@ -19,10 +20,9 @@ class XC():
         #self.triangle_distance = maximize_distance(self.flight)
         if airspace is not None:
             self.airspace = self.parse_airspace(airspace)
-        else: 
+        else:
             self.airspace = None
 
-    
     def parse_airspace(self, airspace):
         records = []
         with open(airspace, 'r') as f:
@@ -33,8 +33,3 @@ class XC():
                 records.append(record)
 
         return records
-
-
-    def save(self, output):
-        #print(self.triangle_distance)
-        pass

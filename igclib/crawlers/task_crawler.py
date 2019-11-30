@@ -8,9 +8,10 @@ import requests
 from bs4 import BeautifulSoup
 from igclib.constants import (DEFAULT_PROVIDER, MAX_TASKS_PER_EVENT, TASK_PROVIDERS)
 from tqdm import tqdm
+from igclib.core.base import BaseObject
 
 
-class TaskCrawler():
+class TaskCrawler(BaseObject):
 
     def __init__(self, provider=DEFAULT_PROVIDER, year=datetime.now().year, progress='gui'):
         self._progress = progress
@@ -24,15 +25,8 @@ class TaskCrawler():
         else:
             raise NotImplementedError(f'Provider {self.provider["NAME"]} not yet implemented')
 
-    def save(self, output):
-        if type(output) == list:
-            for out in output:
-                self.save(out)
-        elif output.endswith('json'):
-            with open(output, 'w') as f:
-                json.dump(self.tasks, f)
-        elif output == '-':
-            print(json.dumps(self.tasks))
+    def serialize(self):
+        return self.tasks
 
     def crawl_pwca(self):
         url = self.provider['BASE_URL'] + self.year

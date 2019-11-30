@@ -4,8 +4,7 @@ from datetime import time
 
 import numpy
 from aerofiles import igc
-from igclib.constants import (IGC_HEADER, IGC_PILOT_NAME, IGC_RECORDS,
-                              IGC_TIME, IGC_TZ_OFFSET)
+from igclib.constants import (IGC_HEADER, IGC_PILOT_NAME, IGC_RECORDS, IGC_TIME, IGC_TZ_OFFSET)
 from igclib.geography.geo import Point
 from igclib.time.timeop import add_offset
 from functools import lru_cache
@@ -57,7 +56,7 @@ class Flight():
         elif type(key) == int:
             return self.to_list()[key]
         elif type(key) == numpy.float64:
-            return self.to_list()[int(key*len(self))]
+            return self.to_list()[int(key * len(self))]
         else:
             raise ValueError(f'key must be of type int or time but is {type(key)}')
 
@@ -65,9 +64,9 @@ class Flight():
     @lru_cache()
     def to_list(self):
         return list(self.points.values())
-            
+
     def __str__(self):
         return self.pilot_name
-    
+
     def __len__(self):
         return len(self.to_list())

@@ -29,26 +29,19 @@ format:
 	yapf -ipr --verbose igclib/ 
 
 replay:
-	igclib replay --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_few_tracks --output saved_races/big_race.pkl
+	igclib replay --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_few_tracks --output saved_races/replay.pkl saved_races/replay.json
 
 race:
-	igclib race --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_all_tracks --output saved_races/big_race2.pkl
+	igclib race --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --flights igclib/tests/test_data/tracks/pwca_brazil_2019_7_few_tracks --output saved_races/race.pkl saved_races/race.json
 
 xc:
-	igclib xc --flights igclib/tests/test_data/tracks/xc_col_agnel.igc --airspace igclib/tests/test_data/airspace/france_airspace.txt --output saved_races/test.json
+	igclib xc --flights igclib/tests/test_data/tracks/xc_col_agnel.igc --airspace igclib/tests/test_data/airspace/france_airspace.txt --output saved_races/xc_flight.json
 
 watch:
-	igclib watch --path saved_races/big_race.pkl --pilot 0093 --progress ratio
+	igclib watch --path saved_races/race.pkl --pilot 0093 --output saved_races/watchxav.json
 
 optimize:
-	igclib optimize --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --progress ratio
-
-task:
-	igclib --mode optimize --task igclib/tests/test_data/tasks/task.xctsk
+	igclib optimize --task igclib/tests/test_data/tasks/pwca_brazil_2019_7.xctsk --output saved_races/optimized.json
 
 crawl:
-	igclib --mode crawl --provider PWCA --year 2015 --progress ratio
-
-fix-lib:
-	mv $(HOME)/.local/lib/python3.6/site-packages/pptk/libs/libz.so.1 $(HOME)/.local/lib/python3.6/site-packages/pptk/libs/libz.so.1.old
-	sudo ln -s /lib/x86_64-linux-gnu/libz.so.1 $(HOME)/.local/lib/python3.6/site-packages/pptk/libs/
+	igclib crawl --provider PWCA --year 2015 --output -

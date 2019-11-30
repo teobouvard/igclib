@@ -14,32 +14,34 @@ Build a race and save it to disk
     r.save('race.pkl')
 
 
-Load a race
-===========
+Load a race and save it as json
+===============================
 
 ::
 
     from igclib.core.race import Race
 
     r =  Race(path='race.pkl')
+    r.save('race.json')
 
 
-Get a task optimization info in json
-====================================
+Get a task optimization info and save it as json
+=================================================
 
 ::
 
     from igclib.core.task import Task
 
     t = Task('task.xctsk')
+    t.save('optimized.json')
 
 
-Get all available tasks from a provider
-=======================================
+Get all available tasks from a provider on standard output
+==========================================================
 
 ::
 
     from igclib.crawlers.task_crawler import TaskCrawler
 
     crawler = TaskCrawler(provider='PWCA', year=2015)
-    crawler.crawl(output='tasks.json')
+    crawler.save('-')

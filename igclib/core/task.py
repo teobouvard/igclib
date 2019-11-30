@@ -10,11 +10,12 @@ from igclib.parsers import taskparse
 from igclib.serialization.json_encoder import ComplexEncoder
 from igclib.geography.optimizer import optimize
 from igclib.time.timeop import next_second
+from igclib.core.base import BaseObject
 
 from geolib import distance, heading
 
 
-class Task():
+class Task(BaseObject):
     """
     Creates a Task object. The way this is done is really bad, and any help would be appreciated. As of now, this class checks if the input task (file or b64) "fits" in each parser implemented.
     When a parser does not raise a KeyError, the task is assumed to be of this format and its attributes are copied back to the Task object. I feel that there is a smarter way to do this, probably with inheritance.
@@ -118,22 +119,6 @@ class Task():
                 goal_distances[timestamp] = 0
 
         return flight.pilot_id, goal_distances, tag_times
-
-    def save(self, output):
-        if type(output) == list:
-            for out in output:
-                self.save(out)
-        elif output.endswith('.pkl'):
-            with open(output, 'wb') as f:
-                to_save = {x: y for x, y in self.__dict__.items() if not x.startswith('_')}
-                pickle.dump(to_save, f)
-        elif output.endswith('.json'):
-            with open(output, 'w') as f:
-                json.dump(self.__dict__, f, cls=ComplexEncoder)
-        elif output == '-':
-                print(json.dumps(self.__dict__, cls=ComplexEncoder))
-        else:
-            raise NotImplementedError('Supported outputs : .json, .pkl, -')
 
     def __len__(self):
         return int(self.opti.distance)

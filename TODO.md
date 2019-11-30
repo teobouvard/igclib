@@ -9,7 +9,6 @@
     * better unzip management
     * flight race time/distance in race flights attribute ?
     * create airspace class
-    * inheritance save/serialize
 
 * Data collection
 

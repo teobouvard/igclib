@@ -13,7 +13,7 @@ from igclib.core.task import Task
 from igclib.core.xc import XC
 from igclib.crawlers.task_crawler import TaskCrawler
 
-FORMAT = "%(levelname)s : %(message)s"  
+FORMAT = "%(levelname)s : %(message)s"
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 
 

@@ -33,7 +33,8 @@ def tasklen(angles, position, waypoints):
         last_lat, last_lon = lat_dest, lon_dest
 
     return dist
-    
+
+
 def maximize_distance(flight):
     n_points = len(flight)
     x0 = np.array([0, 0.5, 0.9])
@@ -41,8 +42,9 @@ def maximize_distance(flight):
 
     return -result
 
+
 def triangle_length(points, flight):
-    total_distance = distance(flight[points[0]].lat, flight[points[0]].lon, flight[points[1]].lat, flight[points[1]].lon)  
-    total_distance += distance(flight[points[1]].lat, flight[points[1]].lon, flight[points[2]].lat, flight[points[2]].lon)  
+    total_distance = distance(flight[points[0]].lat, flight[points[0]].lon, flight[points[1]].lat, flight[points[1]].lon)
+    total_distance += distance(flight[points[1]].lat, flight[points[1]].lon, flight[points[2]].lat, flight[points[2]].lon)
     total_distance += distance(flight[points[2]].lat, flight[points[2]].lon, flight[points[0]].lat, flight[points[0]].lon)
-    return -total_distance  
+    return -total_distance
