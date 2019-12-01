@@ -1,6 +1,7 @@
 from igclib.geography.converters import parse_altitude
 from shapely import Point, Polygon
 
+
 class Airspace:
 
     def __init__(self, record):
@@ -13,10 +14,9 @@ class Airspace:
 
     def get_bounding_box(self):
         pass
-        
 
     def __contains__(self, point):
         if point.altitude > self.ceiling or point.altitude < self.floor:
             return False
-        
+
         return True

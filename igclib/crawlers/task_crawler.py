@@ -7,8 +7,8 @@ import aiohttp
 import requests
 from bs4 import BeautifulSoup
 from igclib.constants import (DEFAULT_PROVIDER, MAX_TASKS_PER_EVENT, TASK_PROVIDERS)
+from igclib.core import BaseObject
 from tqdm import tqdm
-from igclib.core.base import BaseObject
 
 
 class TaskCrawler(BaseObject):

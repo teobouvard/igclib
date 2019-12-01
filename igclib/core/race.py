@@ -12,7 +12,7 @@ from glob import glob
 
 import numpy as np
 #import seaborn as sns
-from igclib.core.base import BaseObject
+from igclib.core import BaseObject
 from igclib.serialization.json_encoder import ComplexEncoder
 from igclib.core.flight import Flight
 from igclib.core.pilot_features import PilotFeatures

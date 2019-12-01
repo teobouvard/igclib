@@ -2,14 +2,12 @@ import logging
 import os
 
 from aerofiles import openair
+from igclib.core.airspace import Airspace
+from igclib.core import BaseObject
 from igclib.core.flight import Flight
+from igclib.geography import distance
 from igclib.geography.optimizer import maximize_distance
 from tqdm import tqdm
-from igclib.core.base import BaseObject
-from igclib.core.airspace import Airspace
-from tqdm import tqdm
-
-from geolib import distance
 
 
 class XC(BaseObject):

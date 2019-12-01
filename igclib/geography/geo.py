@@ -1,6 +1,5 @@
 from igclib.constants import TOLERANCE
-
-from geolib import distance
+from igclib.geography import distance
 
 
 class Point(object):
@@ -22,7 +21,7 @@ class Point(object):
         self.goal_distance = None
 
     def close_enough(self, wpt):
-        return True if abs(distance(self.lat, self.lon, wpt.lat, wpt.lon) - wpt.radius) < 10 + wpt.radius * TOLERANCE else False
+        return True if abs(distance(self, wpt) - wpt.radius) < 10 + wpt.radius * TOLERANCE else False
 
 
 class Turnpoint(Point):
@@ -39,8 +38,7 @@ class Turnpoint(Point):
         self.first_tag = first_tag
 
     def __contains__(self, point):
-        pass #TODO wrap distance call n args
-        #return True if distance(self.center, point) < self.radius else False
+        return True if distance(self.center, point) < self.radius else False
 
 
 class Opti():

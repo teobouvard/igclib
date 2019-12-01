@@ -10,9 +10,9 @@ from igclib.parsers import taskparse
 from igclib.serialization.json_encoder import ComplexEncoder
 from igclib.geography.optimizer import optimize
 from igclib.time.timeop import next_second
-from igclib.core.base import BaseObject
+from igclib.core import BaseObject
 
-from geolib import distance, heading
+from igclib.geography import distance, heading
 
 
 class Task(BaseObject):
@@ -61,9 +61,9 @@ class Task(BaseObject):
         # not only does this allow us to validate goal line, but it also helps drawing goal lines in TaskCreator by directly having the line normal direction
         if self.goal_style == 'LINE':
             index_last_turnpoint = -2
-            while distance(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon) < 1:
+            while distance(self.turnpoints[index_last_turnpoint], self.turnpoints[-1]) < 1:
                 index_last_turnpoint -= 1
-            self.last_leg_heading = heading(self.turnpoints[index_last_turnpoint].lat, self.turnpoints[index_last_turnpoint].lon, self.turnpoints[-1].lat, self.turnpoints[-1].lon)
+            self.last_leg_heading = heading(self.turnpoints[index_last_turnpoint], self.turnpoints[-1])
 
         self.opti = optimize(self.takeoff, self.turnpoints)
 
@@ -92,17 +92,16 @@ class Task(BaseObject):
                 opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti._angles
-                continue  # TODO not neccesary, test elif
 
             # race has started, check next turnpoint's closeness and validate it
-            if len(remaining_turnpoints) > 0:
+            elif len(remaining_turnpoints) > 0:
                 opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti._angles
 
                 # if only one turnpoint left, validate it as goal line by heading difference (95° to be sure the goal line is behind)
                 if len(remaining_turnpoints) == 1:
-                    goal_heading = heading(point.lat, point.lon, remaining_turnpoints[-1].lat, remaining_turnpoints[-1].lon)
+                    goal_heading = heading(point, remaining_turnpoints[-1])
                     delta_heading = abs(self.last_leg_heading - goal_heading)
                     if delta_heading > 95:
                         tag_times.append(timestamp)

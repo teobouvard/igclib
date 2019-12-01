@@ -2,15 +2,19 @@ import string
 import logging
 import sys
 
+
 def int_from_string(chars):
     return int(''.join(x for x in chars if x in string.digits))
 
+
 def level_to_meters(level):
-    return feets_to_meters(100*level)
+    return feets_to_meters(100 * level)
+
 
 def feets_to_meters(altitude):
     # http://www.sfei.org/it/gis/map-interpretation/conversion-constants
-    return int(0.3048*altitude)
+    return int(0.3048 * altitude)
+
 
 def parse_altitude(record):
     if record == 'SFC' or record == 'GND':
