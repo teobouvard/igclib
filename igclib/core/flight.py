@@ -1,18 +1,18 @@
 import logging
 import os
 from datetime import time
+from functools import lru_cache
 
-import numpy
 from aerofiles import igc
-from igclib.constants import (IGC_HEADER, IGC_PILOT_NAME, IGC_RECORDS, IGC_TIME, IGC_TZ_OFFSET)
+from igclib.constants import (IGC_HEADER, IGC_PILOT_NAME, IGC_RECORDS,
+                              IGC_TIME, IGC_TZ_OFFSET)
 from igclib.geography.geo import Point
 from igclib.time.timeop import add_offset
-from functools import lru_cache
 
 
 class Flight():
     """Class representing a Flight
-    
+
     """
 
     def __init__(self, igc_file):
@@ -35,7 +35,7 @@ class Flight():
         if not hasattr(self, 'points') or self.points == {}:
             raise ValueError(f'{igc_file} is empty or could not be read')
 
-    def _build(self, records, encoding='utf-8'):
+    def _build(self, records):
         self.pilot_name = str(records[IGC_HEADER][1][IGC_PILOT_NAME])
         self.points = {}
 
@@ -51,9 +51,9 @@ class Flight():
         self._last_point = {'timestamp': last_timestamp, 'point': self.points[last_timestamp]}
 
     def __getitem__(self, key):
-        if type(key) == time:
+        if isinstance(key, time):
             return self.points.get(key, None)
-        elif type(key) == int:
+        elif isinstance(key, int):
             return self.to_list()[key]
         else:
             raise ValueError(f'key must be of type int or time but is {type(key)}')

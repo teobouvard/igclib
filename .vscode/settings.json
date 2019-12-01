@@ -7,5 +7,7 @@
         "complex": "c",
         "ratio": "c"
     },
-    "C_Cpp.intelliSenseEngineFallback": "Enabled"
+    "C_Cpp.intelliSenseEngineFallback": "Enabled",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }

@@ -3,11 +3,9 @@ import logging
 import multiprocessing
 #multiprocessing.set_start_method('spawn', True) #-> DEBUG MULTIPROCESS
 import os
-import pickle
 import shutil
 import sys
 import zipfile
-from datetime import datetime, time
 from glob import glob
 
 import numpy as np
@@ -60,7 +58,7 @@ class Race(BaseObject):
         # or build it from arguments
         else:
             # by parsing the task file or b64 to create a Task
-            self.task = Task(task, progress=self._progress)
+            self.task = Task(task)
 
             # trying to fetch the tracks if they were not provided by user
             if tracks is None:
@@ -160,7 +158,7 @@ class Race(BaseObject):
                             logging.debug(f'{pilot_id} SS : {race_time}')
 
                 # update tag_times of turnpoints
-                self.task._update_tag_times(tag_times)
+                self.task.update_tag_times(tag_times)
 
                 if self._progress == 'ratio':
                     print(f'{steps/self.n_pilots:.0%}', file=sys.stderr, flush=True)
@@ -207,18 +205,6 @@ class Race(BaseObject):
                 steps += 1
 
         return features
-
-    def pilot_schema_plot(self, pilot_id):
-        """In dev !
-        
-        Args:
-            pilot_id (str): ID of the pilot being studied
-        """
-        series = self.pilot_schema(pilot_id)
-
-        sns.lineplot(x=series['timestamps'], y=series['smoothed_altitudes'])
-        sns.lineplot(x=series['timestamps'], y=series['smoothed_distances'])
-        plt.show()
 
     def pilot_schema(self, pilot_id, output):
         """In dev !

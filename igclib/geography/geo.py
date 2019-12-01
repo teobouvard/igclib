@@ -21,7 +21,17 @@ class Point(object):
         self.goal_distance = None
 
     def close_enough(self, wpt):
-        return True if abs(distance(self, wpt) - wpt.radius) < 10 + wpt.radius * TOLERANCE else False
+        return abs(distance(self, wpt) - wpt.radius) < 10 + wpt.radius * TOLERANCE
+
+    def __getitem__(self, x):
+        if x == 0:
+            return self.lat
+        elif x == 1:
+            return self.lon
+        elif x == 2:
+            return self.altitude
+        else:
+            raise KeyError(f'x must be 0 (lat), 1 (lon) or 2 (alt) but was {x}')
 
 
 class Turnpoint(Point):
@@ -38,7 +48,7 @@ class Turnpoint(Point):
         self.first_tag = first_tag
 
     def __contains__(self, point):
-        return True if distance(self.center, point) < self.radius else False
+        return True if distance(self, point) < self.radius else False
 
 
 class Opti():
@@ -46,8 +56,8 @@ class Opti():
     Opti
     """
 
-    def __init__(self, distance=0, legs=[], points=[], angles=[]):
-        self.distance = distance
+    def __init__(self, dist, legs, points, angles):
+        self.distance = dist
         self.legs = legs
         self.points = points
         self._angles = angles

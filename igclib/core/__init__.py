@@ -21,7 +21,7 @@ class BaseObject:
         Arguments:
             output (str) : File to which the output is written.
         """
-        if type(output) == list:
+        if isinstance(output, list):
             for out in output:
                 self.save(out)
         elif output.endswith('.pkl'):

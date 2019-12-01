@@ -3,16 +3,11 @@ import json
 import logging
 import os
 
-import numpy as np
-from igclib.constants import DEBUG
-from igclib.geography.geo import Opti, Point, Turnpoint
-from igclib.parsers import taskparse
-from igclib.serialization.json_encoder import ComplexEncoder
-from igclib.geography.optimizer import optimize
-from igclib.time.timeop import next_second
 from igclib.core import BaseObject
-
 from igclib.geography import distance, heading
+from igclib.geography.optimizer import optimize
+from igclib.parsers import taskparse
+from igclib.time.timeop import next_second
 
 
 class Task(BaseObject):
@@ -27,7 +22,7 @@ class Task(BaseObject):
         NotImplementedError: If the task could not be parsed.
     """
 
-    def __init__(self, task, progress='gui'):
+    def __init__(self, task):
 
         # try to base64 decode the task
         if not os.path.isfile(task):
@@ -74,7 +69,7 @@ class Task(BaseObject):
             yield current
             current = next_second(current)
 
-    def _update_tag_times(self, times):
+    def update_tag_times(self, times):
         for turnpoint, contender in zip(self.turnpoints, times):
             if turnpoint.first_tag is None or contender < turnpoint.first_tag:
                 turnpoint.first_tag = contender
@@ -94,7 +89,7 @@ class Task(BaseObject):
                 optimizer_init_vector = opti._angles
 
             # race has started, check next turnpoint's closeness and validate it
-            elif len(remaining_turnpoints) > 0:
+            elif not remaining_turnpoints:
                 opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti._angles
