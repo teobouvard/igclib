@@ -13,3 +13,5 @@
 * ADD CHECKS OR RAISE FLIGHT CRAWLER FORMAT
 * superfinal result not on the same index !
 * maybe not rm downloaded tracks zip ? -> implement tracks caching in tmp dir
+
+* maybe we do not need to compute distances to get xc triangles, but only lat lng comparisons ?

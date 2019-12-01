@@ -32,7 +32,7 @@ class Flight():
                 logging.debug(f'{igc_file} is not {encoding} encoded, trying something else')
 
         # if file could not be decoded, it does not have a point attribute
-        if not hasattr(self, 'points') or self.points == {}:
+        if not hasattr(self, 'points') or not self.points:
             raise ValueError(f'{igc_file} is empty or could not be read')
 
     def _build(self, records):
