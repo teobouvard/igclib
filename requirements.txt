@@ -12,10 +12,9 @@ tqdm
 # IGC parsing (from GitHub because of old release)
 aerofiles @ git+https://github.com/Turbo87/aerofiles.git
 
-# visualization 
-seaborn
-
-
 # scientific computing
 numpy
 scipy
+
+# airspace intersection 
+shapely

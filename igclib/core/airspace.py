@@ -1,4 +1,5 @@
 from igclib.geography.converters import parse_altitude
+from shapely import Point, Polygon
 
 class Airspace:
 
@@ -14,8 +15,8 @@ class Airspace:
         pass
         
 
-    def contains(self, point):
+    def __contains__(self, point):
         if point.altitude > self.ceiling or point.altitude < self.floor:
             return False
-        if point.lat:
-            pass
+        
+        return True

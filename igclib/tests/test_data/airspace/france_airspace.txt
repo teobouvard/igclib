@@ -46,58 +46,58 @@
 **************************
 *
 ** Avoidance during activity (R Areas and Class A) **
-AC A
-SP 0,2,255,0,0
-SB -1,-1,-1
-V X=51:30:00 N 3:00:00 E
-DC 0.05
-*
-** Clearance requested (Class C and D) **
-AC C
-SP 0,2,0,0,255
-SB -1,-1,-1
-DC 0.05
-*
-AC D
-SP 0,2,0,0,255
-SB -1,-1,-1
-DC 0.05
-*
-** No Clearance requested when VMC (Class E) **
-AC E
-SP 0,2,200,200,255
-SB -1,-1,-1
-DC 0.05
-*
-** Comply with Restrictions (Restricted Areas)
-AC R
-SP 0,2,0,0,0
-SB -1,-1,-1
-DC 0.05
-*
-** Danger Areas **
-AC Q
-SP 0,1,255,0,0
-SB -1,-1,-1
-DC 0.05
-*
-** Permanent Avoidance (Prohibited or Restricted Areas) **
-AC P
-SP 0,1,255,0,0
-SB 255,0,0
-DC 0.05
-*
-** Dispensatory Glider Activity **
-AC W
-SP 0,2,0,255,0
-SB -1,-1,-1
-DC 0.05
-*
-** Natural Parcs and Reserves, Parachute Activity **
-AC GP
-SP 1,1,255,0,0
-SB -1,-1,-1
-DC 0.05
+*AC A
+*SP 0,2,255,0,0
+*SB -1,-1,-1
+*V X=51:30:00 N 3:00:00 E
+*DC 0.05
+**
+*** Clearance requested (Class C and D) **
+*AC C
+*SP 0,2,0,0,255
+*SB -1,-1,-1
+*DC 0.05
+**
+*AC D
+*SP 0,2,0,0,255
+*SB -1,-1,-1
+*DC 0.05
+**
+*** No Clearance requested when VMC (Class E) **
+*AC E
+*SP 0,2,200,200,255
+*SB -1,-1,-1
+*DC 0.05
+**
+*** Comply with Restrictions (Restricted Areas)
+*AC R
+*SP 0,2,0,0,0
+*SB -1,-1,-1
+*DC 0.05
+**
+*** Danger Areas **
+*AC Q
+*SP 0,1,255,0,0
+*SB -1,-1,-1
+*DC 0.05
+**
+*** Permanent Avoidance (Prohibited or Restricted Areas) **
+*AC P
+*SP 0,1,255,0,0
+*SB 255,0,0
+*DC 0.05
+**
+*** Dispensatory Glider Activity **
+*AC W
+*SP 0,2,0,255,0
+*SB -1,-1,-1
+*DC 0.05
+**
+*** Natural Parcs and Reserves, Parachute Activity **
+*AC GP
+*SP 1,1,255,0,0
+*SB -1,-1,-1
+*DC 0.05
 *
 *
 *

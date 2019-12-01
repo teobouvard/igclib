@@ -24,4 +24,4 @@ For a quick guide on how to use this library, take a look at the [documentation]
 ## Requirements
 
 * Python 3.5 or higher
-* libcurl4-openssl-dev, zlib1g-dev
+* 

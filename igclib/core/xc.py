@@ -7,6 +7,7 @@ from igclib.geography.optimizer import maximize_distance
 from tqdm import tqdm
 from igclib.core.base import BaseObject
 from igclib.core.airspace import Airspace
+from tqdm import tqdm
 
 from geolib import distance
 
@@ -19,8 +20,9 @@ class XC(BaseObject):
     def __init__(self, tracks=None, airspace=None, progress='gui'):
         self.flight = Flight(tracks)
         #self.triangle_distance = maximize_distance(self.flight)
-        self.airspace = self.parse_airspace(airspace)
-        print(len(self.airspace))
+        airspace = self.parse_airspace(airspace)
+        self.intersections = self.validate(airspace)
+        print(len(self.intersections))
 
     def parse_airspace(self, airspace):
         if airspace is None:
@@ -37,3 +39,11 @@ class XC(BaseObject):
                     except KeyError:
                         logging.warning(f'line {reader.reader.lineno} of {os.path.basename(airspace)} - error in previous record')
         return zones
+
+    def validate(self, zones):
+        intersections = []
+        for zone in tqdm(zones):
+            for point in self.flight:
+                if point in zone:
+                    intersections.append(point)
+        return intersections

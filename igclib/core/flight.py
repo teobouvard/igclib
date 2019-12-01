@@ -55,8 +55,6 @@ class Flight():
             return self.points.get(key, None)
         elif type(key) == int:
             return self.to_list()[key]
-        elif type(key) == numpy.float64:
-            return self.to_list()[int(key * len(self))]
         else:
             raise ValueError(f'key must be of type int or time but is {type(key)}')
 

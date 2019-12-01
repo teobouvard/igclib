@@ -27,6 +27,7 @@ def parse_altitude(record):
         # TODO get ground level for this point
         #logging.warn('no ground altitude')
         altitude = int_from_string(record)
-        return feets_to_meters(altitude)
+        ground_altitude = 0
+        return ground_altitude + feets_to_meters(altitude)
     else:
         raise KeyError('Could not parse altitude')
