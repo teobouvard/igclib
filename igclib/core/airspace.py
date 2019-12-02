@@ -2,15 +2,15 @@ import logging
 
 from igclib.geography.converters import parse_altitude
 from igclib.geography.geo import Arc
-from shapely.geometry import Point, Polygon
+from shapely.geometry import Polygon
 
 
 class Airspace:
 
     def __init__(self, record):
         self.name = record.get('name')
-        self.floor = parse_altitude(record.get('floor'))
-        self.ceiling = parse_altitude(record.get('ceiling'))
+        self.floor, self.ground_floor = parse_altitude(record.get('floor'))
+        self.ceiling, self.ground_ceiling = parse_altitude(record.get('ceiling'))
         self.polygon, self.arcs = self.build_poly(record.get('elements'))
         self.airspace_class = record.get('class')
 
@@ -18,7 +18,13 @@ class Airspace:
         pass
 
     def __contains__(self, point):
-        if point.z > self.ceiling or point.z < self.floor:
+        if self.ground_floor and point.agl < self.floor:
+            return False
+        if self.ground_ceiling and point.agl > self.ceiling:
+            return False
+        if not self.ground_floor and point.z < self.floor:
+            return False
+        if not self.ground_ceiling and point.z > self.ceiling:
             return False
         if self.polygon and self.polygon.contains(point):
             return True
@@ -43,7 +49,7 @@ class Airspace:
         if not points:
             return None, arcs
         elif len(points) < 3:
-            logging.warn(f'{self.name} does not contain enough points to build a polygon')
+            logging.warning(f'{self.name} does not contain enough points to build a polygon')
             return None, arcs
         else:
             return Polygon(points), arcs

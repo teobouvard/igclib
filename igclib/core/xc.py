@@ -5,10 +5,8 @@ from aerofiles import openair
 from igclib.core import BaseObject
 from igclib.core.airspace import Airspace
 from igclib.core.flight import Flight
-from igclib.geography import distance
-from igclib.geography.optimizer import maximize_distance
+from shapely.geometry import Point
 from tqdm import tqdm
-from shapely.geometry import LineString, Point
 
 
 class XC(BaseObject):
@@ -21,6 +19,9 @@ class XC(BaseObject):
         if airspace is not None:
             airspace = self.parse_airspace(airspace)
             points = [Point(p.lat, p.lon, p.altitude) for p in self.flight]
+            for p in points:
+                # TODO elevation API call
+                p.agl = p.z
             self.intersections = self.validate(airspace, points)
             print(len(self.intersections))
 
@@ -45,5 +46,5 @@ class XC(BaseObject):
         for zone in tqdm(zones):
             for point in points:
                 if point in zone:
-                    intersections.append(point)
+                    intersections.append(point, zone)
         return intersections

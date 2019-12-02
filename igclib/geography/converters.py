@@ -1,5 +1,4 @@
 import string
-import logging
 import sys
 
 
@@ -17,21 +16,26 @@ def feets_to_meters(altitude):
 
 
 def parse_altitude(record):
+    """Returns the altitude of a record
+    
+    Args:
+        record (str): Openair altitude record
+    
+    Returns:
+        int, bool : The altitude and a boolean which indicates if relative to the ground
+    """
     if record == 'SFC' or record == 'GND':
-        return 0
+        return 0, False
     elif record == 'UNL':
-        return sys.maxsize
+        return sys.maxsize, False
     elif record.startswith('FL'):
         level = int_from_string(record)
-        return level_to_meters(level)
+        return level_to_meters(level), False
     elif record.endswith('AMSL'):
         altitude = int_from_string(record)
-        return feets_to_meters(altitude)
+        return feets_to_meters(altitude), False
     elif record.endswith('AGL') or record.endswith('ASFC'):
-        # TODO get ground level for this point
-        #logging.warn('no ground altitude')
         altitude = int_from_string(record)
-        ground_altitude = 0
-        return ground_altitude + feets_to_meters(altitude)
+        return altitude, True
     else:
         raise KeyError('Could not parse altitude')
