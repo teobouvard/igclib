@@ -48,3 +48,4 @@ def test_race(xctrack_race, b64_xctrack_race, race_from_replay):
     assert xctrack_race.ranking['0093']['distance'] == pytest.approx(task_length, abs=10)
     assert b64_xctrack_race.ranking['0093']['distance'] == pytest.approx(task_length, abs=10)
     assert race_from_replay.ranking['0093']['distance'] == pytest.approx(task_length, abs=10)
+    assert race_from_replay.ranking['0093']['time'] == time(2, 25, 6)

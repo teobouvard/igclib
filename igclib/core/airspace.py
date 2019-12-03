@@ -10,6 +10,7 @@ SOUTH = 180
 EAST = 90
 WEST = -90
 
+
 class Airspace:
 
     def __init__(self, record):
@@ -78,4 +79,3 @@ class Airspace:
             else:
                 bounds = min(south_points), min(west_points), max(north_points), max(east_points)
         return bounds
-

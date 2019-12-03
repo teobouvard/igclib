@@ -89,7 +89,7 @@ class Task(BaseObject):
                 optimizer_init_vector = opti._angles
 
             # race has started, check next turnpoint's closeness and validate it
-            elif not remaining_turnpoints:
+            elif remaining_turnpoints:
                 opti = optimize(point, remaining_turnpoints, prev_opti=optimizer_init_vector)
                 goal_distances[timestamp] = opti.distance
                 optimizer_init_vector = opti._angles

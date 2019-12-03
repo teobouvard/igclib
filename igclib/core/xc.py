@@ -55,10 +55,10 @@ class XC(BaseObject):
 
     def get_bounding_box(self):
         # TODO this but less stupid
-        min_x = min(self.points, key=lambda p:p.x).x
-        max_x = max(self.points, key=lambda p:p.x).x
-        min_y = min(self.points, key=lambda p:p.y).y
-        max_y = max(self.points, key=lambda p:p.y).y
+        min_x = min(self.points, key=lambda p: p.x).x
+        max_x = max(self.points, key=lambda p: p.x).x
+        min_y = min(self.points, key=lambda p: p.y).y
+        max_y = max(self.points, key=lambda p: p.y).y
         return min_x, min_y, max_x, max_y
 
     def validate(self, zones):

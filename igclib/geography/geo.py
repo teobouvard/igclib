@@ -66,6 +66,7 @@ class Arc:
         else:
             # why these two distances are not necessary equal is a mystery
             self.radius = max(distance(self, p1), distance(self, p2))
+            # FIXME maybe angles are ordered and should not be exchanged, check clockwise argument
             p1_heading = heading(self, p1)
             p2_heading = heading(self, p2)
             self.start_angle = min(p1_heading, p2_heading)

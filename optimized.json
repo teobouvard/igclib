@@ -1,0 +1,104 @@
+{
+    "takeoff": {
+        "lat": -26.82251,
+        "lon": -65.36901,
+        "altitude": 0,
+        "radius": 0,
+        "name": "D01",
+        "desc": "No description available",
+        "role": "TAKEOFF"
+    },
+    "sss": {
+        "lat": -27.57067,
+        "lon": -65.61717,
+        "altitude": 0,
+        "radius": 82000,
+        "name": "B24",
+        "desc": "No description available",
+        "role": "SSS"
+    },
+    "ess": {
+        "lat": -26.89684,
+        "lon": -65.32217,
+        "altitude": 0,
+        "radius": 2000,
+        "name": "G58",
+        "desc": "No description available",
+        "role": "ESS"
+    },
+    "date": "2019-11-10",
+    "open": "11:20:00",
+    "start": "12:20:00",
+    "stop": "17:00:00",
+    "turnpoints": [
+        {
+            "lat": -27.57067,
+            "lon": -65.61717,
+            "altitude": 0,
+            "radius": 82000,
+            "name": "B24",
+            "desc": "No description available",
+            "role": "SSS"
+        },
+        {
+            "lat": -27.57067,
+            "lon": -65.61717,
+            "altitude": 0,
+            "radius": 55000,
+            "name": "B24",
+            "desc": "No description available",
+            "role": "TURNPOINT"
+        },
+        {
+            "lat": -26.89684,
+            "lon": -65.32217,
+            "altitude": 0,
+            "radius": 2000,
+            "name": "G58",
+            "desc": "No description available",
+            "role": "ESS"
+        },
+        {
+            "lat": -26.89684,
+            "lon": -65.32217,
+            "altitude": 0,
+            "radius": 100,
+            "name": "G58",
+            "desc": "No description available",
+            "role": "TURNPOINT"
+        }
+    ],
+    "goal_style": "LINE",
+    "last_leg_heading": 21.439992254396667,
+    "opti": {
+        "distance": 57026.922364251615,
+        "legs": [
+            4485.967998254908,
+            27136.625718087325,
+            23319.159072030143,
+            2085.169575879232
+        ],
+        "points": [
+            {
+                "lat": -26.82251,
+                "lon": -65.36901
+            },
+            {
+                "lat": -26.862136215789462,
+                "lon": -65.3782657048483
+            },
+            {
+                "lat": -27.101668953326573,
+                "lon": -65.43522460474378
+            },
+            {
+                "lat": -26.9127892384597,
+                "lon": -65.33159707757599
+            },
+            {
+                "lat": -26.895940182885013,
+                "lon": -65.3222477245033
+            }
+        ]
+    }
+}
