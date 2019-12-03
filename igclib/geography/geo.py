@@ -1,10 +1,11 @@
 from igclib.constants import TOLERANCE
 from igclib.geography import distance, heading
+from shapely import geometry
 
 
-class Point:
+class GeoPoint:
     """
-    Point
+    GeoPoint
     """
 
     def __init__(self, lat=None, lon=None, altitude=None, record=None, status=None):
@@ -33,7 +34,7 @@ class Point:
             raise IndexError
 
 
-class Turnpoint(Point):
+class Turnpoint(GeoPoint):
     """
     Turnpoint
     """
@@ -70,7 +71,7 @@ class Arc:
             self.end_angle = max(p1_heading, p2_heading)
 
     def __contains__(self, point):
-        return (distance(*self, point.x, point.y) < self.radius) and (self.start_angle <= heading(*self, point.x, point.y) <= self.end_angle)
+        return (distance(self, point) < self.radius) and (self.start_angle <= heading(self, point) <= self.end_angle)
 
     def __getitem__(self, key):
         if key == 0:
@@ -90,3 +91,13 @@ class Opti:
         self.legs = legs
         self.points = points
         self._angles = angles
+
+
+class Point(geometry.Point):
+    def __getitem__(self, key):
+        if key == 0:
+            return self.x
+        elif key == 1:
+            return self.y
+        else:
+            raise IndexError

@@ -6,7 +6,7 @@ from functools import lru_cache
 from aerofiles import igc
 from igclib.constants import (IGC_HEADER, IGC_PILOT_NAME, IGC_RECORDS,
                               IGC_TIME, IGC_TZ_OFFSET)
-from igclib.geography.geo import Point
+from igclib.geography.geo import GeoPoint
 from igclib.time.timeop import add_offset
 
 
@@ -43,7 +43,7 @@ class Flight():
         for subrecord in records[IGC_RECORDS]:
             for point in subrecord:
                 adjusted_time = add_offset(point[IGC_TIME], hours=time_offset)
-                self.points[adjusted_time] = Point(record=point, status='flying')
+                self.points[adjusted_time] = GeoPoint(record=point, status='flying')
 
         first_timestamp = min(self.points)
         last_timestamp = max(self.points)

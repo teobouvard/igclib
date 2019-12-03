@@ -1,5 +1,5 @@
 """
-This module contains the base classes representing a Point, a Turnpoint and an Opti.
+This module contains the base classes representing a GeoPoint, a Turnpoint and an Opti.
 It also provides convenience wrappers around C extension function calls.
 These wrappers allow for more concise function calls to improve readability.
 

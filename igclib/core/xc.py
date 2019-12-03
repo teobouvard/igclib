@@ -8,7 +8,7 @@ from igclib.core import BaseObject
 from igclib.core.airspace import Airspace
 from igclib.core.flight import Flight
 from igclib.geography.elevation import elevation
-from shapely.geometry import Point
+from igclib.geography.geo import Point
 from tqdm import tqdm
 from collections import defaultdict
 
@@ -64,7 +64,7 @@ class XC(BaseObject):
         for zone in tqdm(zones, desc='checking airspace intersections'):
             for point in self.points:
                 if point in zone:
-                    violations[zone.name].append([point.x, point.y, point.z])
+                    violations[zone.name].append(point)
         return violations
 
     def check_intersections(self, zone):

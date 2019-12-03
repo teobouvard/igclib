@@ -5,7 +5,7 @@ class PilotFeatures():
     Attributes:
         pilot_id (str) : The pilot's ID
         timestamp (~datetime.time) : The timestamp associated with the features.
-        position (Point) : The current position of the pilot.
+        position (GeoPoint) : The current position of the pilot.
         group_relation (GroupRelation) : The current position of the pilot.
     """
 
