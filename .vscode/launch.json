@@ -51,7 +51,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/igclib/bin/igclib",
-            "args": ["xc", "--flight", "igclib/tests/test_data/tracks/xc_col_agnel.igc", "--airspace", "igclib/tests/test_data/airspace/LTA_only.txt", "--output", "saved_races/xc_flight.json"],
+            "args": ["xc", "--flight", "igclib/tests/test_data/tracks/xc_col_agnel.igc", "--airspace", "igclib/tests/test_data/airspace/france_airspace.txt", "--output", "saved_races/xc_flight.json"],
             "console": "integratedTerminal"
         },
         {
