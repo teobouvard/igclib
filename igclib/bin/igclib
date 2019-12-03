@@ -76,7 +76,7 @@ def argument_parser():
     parser_xc = commands.add_parser('xc', help='Create a XC scorer')
     parser_xc.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
     parser_xc.add_argument('--airspace', type=str, help='Airspace OpenAir file')
-    parser_xc.add_argument('--flights', type=str, help='IGC track')
+    parser_xc.add_argument('--flight', type=str, help='IGC track')
     parser_xc.add_argument('--output', type=str, required=True, nargs='+', help='Save the output [*.json, -]')
 
     args = parser.parse_args()
@@ -110,5 +110,5 @@ if __name__ == '__main__':
         race.save(output=args.output)
 
     elif args.command == 'xc':
-        xc = XC(tracks=args.flights, airspace=args.airspace, progress=args.progress)
-        #xc.save(output=args.output)
+        xc = XC(tracks=args.flight, airspace=args.airspace, progress=args.progress)
+        xc.save(output=args.output)

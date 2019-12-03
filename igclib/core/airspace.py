@@ -11,11 +11,8 @@ class Airspace:
         self.name = record.get('name')
         self.floor, self.ground_floor = parse_altitude(record.get('floor'))
         self.ceiling, self.ground_ceiling = parse_altitude(record.get('ceiling'))
-        self.polygon, self.arcs = self.build_poly(record.get('elements'))
+        self.polygon, self.arcs = self.build(record.get('elements'))
         self.airspace_class = record.get('class')
-
-    def get_bounding_box(self):
-        pass
 
     def __contains__(self, point):
         if self.ground_floor and point.agl < self.floor:
@@ -34,7 +31,7 @@ class Airspace:
                     return True
         return False
 
-    def build_poly(self, elements):
+    def build(self, elements):
         points = []
         arcs = []
         for e in elements:
@@ -45,11 +42,10 @@ class Airspace:
                 points.extend([e['start'], e['end']])
             elif e['type'] == 'circle':
                 arcs.append(Arc(*e['center'], radius=e['radius']))
-                
+
         if not points:
             return None, arcs
-        elif len(points) < 3:
+        if len(points) < 3:
             logging.warning(f'{self.name} does not contain enough points to build a polygon')
             return None, arcs
-        else:
-            return Polygon(points), arcs
+        return Polygon(points), arcs
