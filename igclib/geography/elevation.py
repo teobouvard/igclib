@@ -8,6 +8,7 @@ import requests
 API_KEY = os.environ.get('ELEVATION_API_KEY', '')
 ELEVATION_API = f'https://geolocalisation.ffvl.fr/elevation?key={API_KEY}'
 
+
 def elevation(points):
     data = [[p.lat, p.lon] for p in points]
     resp = requests.post(ELEVATION_API, data=json.dumps(data))

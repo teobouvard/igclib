@@ -54,21 +54,22 @@ class XC(BaseObject):
     #def validate(self, zones):
     #    violations = {}
     #    with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
-    #        for zone, inter in tqdm(p.imap_unordered(self.check_intersections, zones, chunksize=int(len(zones)/multiprocessing.cpu_count())), total=len(zones), desc='checking airspace intersections'):
+    #        for zone, inter in tqdm(p.map(self.check_intersections, zones), total=len(zones), desc='checking airspace intersections'):
     #            if inter:
     #                violations[zone.name] = inter
     #    return violations
 
-    def validate(self, zones):
-        violations = defaultdict(list)
-        for zone in tqdm(zones, desc='checking airspace intersections'):
-            for point in self.points:
-                if point in zone:
-                    violations[zone.name].append(point)
-        return violations
+    #def check_intersections(self, zone):
+    #    return zone, list(filter(zone.__contains__, self.points))
 
-    def check_intersections(self, zone):
-        return zone, [p.x for p in self.points if p in zone]
+
+    def validate(self, zones):
+        violations = {}
+        for zone in tqdm(zones, desc='checking airspace intersections'):
+            inter = list(filter(zone.__contains__, self.points))
+            if inter:
+                violations[zone.name] = inter
+        return violations
 
     def serialize(self):
         return {'violations': self.violations}

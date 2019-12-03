@@ -50,6 +50,7 @@ class Turnpoint(GeoPoint):
     def __contains__(self, point):
         return distance(self, point) < self.radius
 
+
 class Arc:
     """
     Arc
@@ -81,6 +82,7 @@ class Arc:
         else:
             raise IndexError
 
+
 class Opti:
     """
     Opti
@@ -94,6 +96,7 @@ class Opti:
 
 
 class Point(geometry.Point):
+
     def __getitem__(self, key):
         if key == 0:
             return self.x
@@ -103,9 +106,4 @@ class Point(geometry.Point):
             raise IndexError
 
     def serialize(self):
-        return {
-            'lat':self.x, 
-            'lon':self.y, 
-            'altitude':self.z, 
-            'agl':self.agl if hasattr(self, 'agl') else None
-            }
+        return {'lat': self.x, 'lon': self.y, 'altitude': self.z, 'agl': self.agl if hasattr(self, 'agl') else None}

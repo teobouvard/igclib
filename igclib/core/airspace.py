@@ -3,6 +3,7 @@ import logging
 from igclib.geography.converters import parse_altitude
 from igclib.geography.geo import Arc
 from shapely.geometry import Polygon
+from shapely.prepared import prep
 
 
 class Airspace:
