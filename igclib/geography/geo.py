@@ -101,3 +101,11 @@ class Point(geometry.Point):
             return self.y
         else:
             raise IndexError
+
+    def serialize(self):
+        return {
+            'lat':self.x, 
+            'lon':self.y, 
+            'altitude':self.z, 
+            'agl':self.agl if hasattr(self, 'agl') else None
+            }
