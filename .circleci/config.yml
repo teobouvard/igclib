@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Install requirements
-          command: apt-get install libspatialindex-dev
+          command: sudo apt-get install libspatialindex-dev
       - run:
           name: Update pip
           command: pip install --user --upgrade pip
