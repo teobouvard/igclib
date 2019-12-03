@@ -40,12 +40,24 @@ def b64_xctrack_race():
     return race
 
 
-def test_race(xctrack_race, b64_xctrack_race, race_from_replay):
+def test_race_length(xctrack_race, b64_xctrack_race, race_from_replay):
     task_length = len(xctrack_race.task)
     assert task_length == pytest.approx(94270, abs=10)
+
+
+def test_race_pilots(xctrack_race, b64_xctrack_race, race_from_replay):
     assert xctrack_race.n_pilots == b64_xctrack_race.n_pilots == race_from_replay.n_pilots
     assert set(xctrack_race.ranking.pilots_in_goal) == set(b64_xctrack_race.ranking.pilots_in_goal) == set(race_from_replay.ranking.pilots_in_goal) == set(['0046', '0093', '1611'])
+
+
+def test_race_ranking_distance(xctrack_race, b64_xctrack_race, race_from_replay):
+    task_length = len(xctrack_race.task)
     assert xctrack_race.ranking['0093']['distance'] == pytest.approx(task_length, abs=10)
     assert b64_xctrack_race.ranking['0093']['distance'] == pytest.approx(task_length, abs=10)
     assert race_from_replay.ranking['0093']['distance'] == pytest.approx(task_length, abs=10)
+
+
+def test_race_ranking_time(xctrack_race, b64_xctrack_race, race_from_replay):
     assert race_from_replay.ranking['0093']['time'] == time(2, 25, 6)
+    assert race_from_replay.ranking['0046']['time'] == time(2, 27, 47)
+    assert race_from_replay.ranking['1611']['time'] == time(2, 27, 32)

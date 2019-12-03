@@ -26,7 +26,7 @@ class BaseObject:
                 self.save(out)
         elif output.endswith('.pkl'):
             with open(output, 'wb') as f:
-                pickle.dump(self.to_dump(), f)
+                pickle.dump(self.dump(), f)
         elif output.endswith('.json'):
             with open(output, 'w', encoding='utf8') as f:
                 json.dump(self.serialize(), f, cls=ComplexEncoder, ensure_ascii=False)
@@ -54,7 +54,7 @@ class BaseObject:
         """
         return {x: y for x, y in self.__dict__.items() if not x.startswith('_')}
 
-    def to_dump(self):
+    def dump(self):
         """
         Implements a default dumping strategy. All attributes not starting with '_' are dumped.
         """
