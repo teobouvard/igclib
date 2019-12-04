@@ -20,7 +20,7 @@ class GroupRelation():
     """
     GroupRelation
 
-    Convention : If a GroupRelation feature is > 0, it means that the original pilot is 
+    Convention : If a GroupRelation feature is > 0, it means that the original pilot is
     in a better position than the other pilot in the group.
     This means that :
 

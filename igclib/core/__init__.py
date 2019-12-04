@@ -29,7 +29,7 @@ class BaseObject:
                 pickle.dump(self.dump(), f)
         elif output.endswith('.json'):
             with open(output, 'w', encoding='utf8') as f:
-                json.dump(self.serialize(), f, cls=ComplexEncoder, ensure_ascii=False)
+                json.dump(self.serialize(), f, cls=ComplexEncoder, ensure_ascii=False, indent=2)
         elif output == '-':
             print(json.dumps(self.serialize(), cls=ComplexEncoder, ensure_ascii=False))
         else:

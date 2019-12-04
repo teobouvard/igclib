@@ -3,11 +3,12 @@
 
 [![build status](https://img.shields.io/circleci/build/github/teobouvard/igclib/master?style=flat-square)](https://circleci.com/gh/teobouvard/igclib)
 
-``igclib`` is a Python module and a command line tool designed for the analysis of paragliding competitions. Its main purpose is to serve as backend to [Task Creator](https://github.com/julien66/meteor-task-creator).
+``igclib`` is a Python package and a command line tool designed for the analysis of paragliding flights and competitions. Its main purpose is to serve as backend to [Task Creator](https://github.com/julien66/meteor-task-creator).
 
 ## Get started
 
 ```shell
+sudo apt-get install libspatialindex-dev
 git clone https://github.com/teobouvard/igclib.git
 cd igclib
 make install

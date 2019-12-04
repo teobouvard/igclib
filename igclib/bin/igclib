@@ -70,7 +70,8 @@ def argument_parser():
     parser_watch = commands.add_parser('watch', help='Watch a pilot during the race')
     parser_watch.add_argument('--path', type=str, help='Previously saved race [*.pkl]', required=True)
     parser_watch.add_argument('--progress', choices=['gui', 'ratio', 'silent'], default='gui', help='Display progress bar, print progress ratio or run silently.')
-    parser_watch.add_argument('--pilot', type=str, help='ID of the pilot to watch', required=True)
+    parser_watch.add_argument('--pilot', type=str, nargs='+', help='ID of the pilot to watch', required=True)
+    parser_watch.add_argument('--sparse', type=int, default=1, help='Sparsity of features. Sparsity of N will return arrays of length(features)/N elements.')
     parser_watch.add_argument('--output', type=str, required=True, nargs='+', help='Save the output [*.json, -]')
 
     parser_xc = commands.add_parser('xc', help='Create a XC scorer')
@@ -79,8 +80,8 @@ def argument_parser():
     parser_xc.add_argument('--flight', type=str, help='IGC track')
     parser_xc.add_argument('--output', type=str, required=True, nargs='+', help='Save the output [*.json, -]')
 
-    args = parser.parse_args()
-    return check(args)
+    arguments = parser.parse_args()
+    return check(arguments)
 
 
 if __name__ == '__main__':
@@ -103,7 +104,7 @@ if __name__ == '__main__':
 
     elif args.command == 'watch':
         race = Race(path=args.path, progress=args.progress)
-        race.pilot_schema(args.pilot, output=args.output)
+        race.watch(args.pilot, output=args.output, sparse=args.sparse)
 
     elif args.command == 'replay':
         race = Race(path=args.path, tracks=args.flights, task=args.task, validate=False, progress=args.progress)

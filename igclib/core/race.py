@@ -1,12 +1,13 @@
 import json
 import logging
 import multiprocessing
-multiprocessing.set_start_method('spawn', True)  #-> DEBUG MULTIPROCESS
+#multiprocessing.set_start_method('spawn', True)  #-> DEBUG MULTIPROCESS
 import os
 import shutil
 import sys
 import zipfile
 from glob import glob
+from collections import defaultdict
 
 import numpy as np
 #import seaborn as sns
@@ -98,7 +99,7 @@ class Race(BaseObject):
 
     def __len__(self):
         """Returns the number of snapshots between the earliest and the latest point from all flights."""
-        return len([_ for _ in self._snapshots()])
+        return len([_ for _ in self.snapshots()])
 
     def parse_flights(self, tracks):
         """Populates flights attribute by parsing each igc file in tracks.
@@ -172,76 +173,62 @@ class Race(BaseObject):
     def __repr__(self):
         return str(self)
 
-    def get_pilot_features(self, pilot_id, start=None, stop=None):
-        """Extracts pilot features
-
-        Arguments:
-            pilot_id (str) : The pilot identifier used as key in self.flights
-        
-        Keyword Arguments:
-            start (~datetime.time, optional) : Lower bound of the retrieved features (default)
-            stop (~datetime.time, optional) : Upper bound of the retrieved features
-        
-        Raises:
-            KeyError: if pilot_id is not a key of self.flights dictionnary
-        
-        Returns:
-            PilotFeatures: The pilot features from start to stop 
+    def watch(self, pilot_id, output, sparse=1):
         """
-        if pilot_id not in self.flights:
-            raise KeyError('Pilot {} is not in the race'.format(pilot_id))
+        Convention : If a GroupRelation feature is > 0, it means that the original pilot is
+        in a better position than the other pilot in the group.
+        This means that :
 
-        features = {}
+        * delta_altitude > 0 : original pilot is higher 
+        * delta_distance > 0 : original pilot closer to goal 
+
+        Args:
+            pilot_id (list(str)): List of IDs of the pilots being watched, or ['all']
+        """
+        if len(pilot_id) == 1 and pilot_id[0] == 'all':
+            pilot_id = list(self.flights.keys())
+        else:
+            pilot_id = list(filter(lambda x: x in self.flights, pilot_id))
+
+        series = {p: {'altitude': [], 'distance': []} for p in pilot_id}
+        series['timestamps'] = []
+
         steps = 1
         total = len(self)
-        for timestamp, snapshot in tqdm(self._snapshots(start, stop), desc='extracting features', total=len(self), disable=self._progress != 'gui'):
-            if pilot_id not in snapshot:
-                logging.debug(f'Pilot {pilot_id} has no track at time {timestamp}')
-            else:
-                features[timestamp] = PilotFeatures(pilot_id, timestamp, snapshot)
+        for timestamp, snapshot in tqdm(self.snapshots(), total=len(self), disable=self._progress != 'gui'):
+
+            series['timestamps'].append(timestamp)
+            altitudes = np.array([p.altitude for p in snapshot.values()])
+            goal_distances = np.array([p.goal_distance for p in snapshot.values()])
+
+            for pilot in pilot_id:
+                # FIXME why do some pilots are in pilot_id but not in snapshot at this point ?
+                if pilot in snapshot:
+                    delta_altitude = snapshot[pilot].altitude - altitudes.mean()
+                    delta_distance = goal_distances.mean() - snapshot[pilot].goal_distance
+                    series[pilot]['altitude'].append(delta_altitude)
+                    series[pilot]['distance'].append(delta_distance)
 
             if self._progress == 'ratio':
                 print(f'{steps/total:.0%}', file=sys.stderr, flush=True)
                 steps += 1
 
-        return features
+        for key in series:
+            if key == 'timestamps':
+                series[key] = series[key][::sparse]
+            else:
+                for feature in series[key]:
+                    series[key][feature] = savgol_filter(series[key][feature], 121, 1)[::sparse]
 
-    def pilot_schema(self, pilot_id, output):
-        """In dev !
-        
-        Args:
-            pilot_id (str): ID of the pilot being watched
-        """
-        features = self.get_pilot_features(pilot_id)
-        mean_altitudes = []
-        mean_goal = []
-        timestamps = list(features.keys())
-
-        for feature in features.values():
-            altitudes = np.array(feature.group_relation.delta_altitude)
-            goal_distances = np.array(feature.group_relation.delta_distance)
-
-            mean_altitudes.append(altitudes.mean())
-            mean_goal.append(goal_distances.mean())
-
-        smoothed_altitudes = savgol_filter(mean_altitudes, 121, 1)
-        smoothed_distances = savgol_filter(mean_goal, 121, 1)
-
-        series = {
-            'timestamps': timestamps,
-            'delta_altitudes': smoothed_altitudes,
-            'delta_distances': smoothed_distances,
-        }
-
-        if type(output) == list:
+        if isinstance(output, list):
             for out in output:
                 if out == '-':
                     print(json.dumps(series, cls=ComplexEncoder))
                 elif out.endswith('.json'):
                     with open(out, 'w', encoding='utf8') as f:
-                        json.dump(series, f, cls=ComplexEncoder, ensure_ascii=False)
+                        json.dump(series, f, cls=ComplexEncoder, ensure_ascii=False, indent=4)
 
-    def _snapshots(self, start=None, stop=None):
+    def snapshots(self, start=None, stop=None):
         """
         Generates snapshots of the race at each second between start and stop
         """
@@ -251,6 +238,6 @@ class Race(BaseObject):
 
     def serialize(self):
         """Serializes the race object to be written to a JSON file"""
-        snaps = {str(_[0]): _[1] for _ in self._snapshots()}
+        snaps = {str(_[0]): _[1] for _ in self.snapshots()}
         props = {'n_snaps': len(snaps)}
         return dict(properties=props, task=self.task, ranking=self.ranking, race=snaps)
