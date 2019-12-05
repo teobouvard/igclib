@@ -191,7 +191,7 @@ class Race(BaseObject):
             pilot_id = list(filter(lambda x: x in self.flights, pilot_id))
 
         series = {p: {'altitude': [], 'distance': []} for p in pilot_id}
-        series['timestamps'] = []
+        series = {'timestamps' : [], 'pilots' : series}
 
         steps = 1
         total = len(self)
@@ -206,17 +206,16 @@ class Race(BaseObject):
                 if pilot in snapshot:
                     delta_altitude = snapshot[pilot].altitude - altitudes.mean()
                     delta_distance = goal_distances.mean() - snapshot[pilot].goal_distance
-                    series[pilot]['altitude'].append(delta_altitude)
-                    series[pilot]['distance'].append(delta_distance)
+                    series['pilots'][pilot]['altitude'].append(delta_altitude)
+                    series['pilots'][pilot]['distance'].append(delta_distance)
 
             if self._progress == 'ratio':
                 print(f'{steps/total:.0%}', file=sys.stderr, flush=True)
                 steps += 1
 
-        for key in series:
-            if key == 'timestamps':
-                series[key] = series[key][::sparse]
-            else:
+        if sparse > 1:
+            series['timestamps'] = series['timestamps'][::sparse]
+            for key in series['pilots']:
                 for feature in series[key]:
                     series[key][feature] = savgol_filter(series[key][feature], 121, 1)[::sparse]
 
