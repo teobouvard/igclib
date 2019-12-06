@@ -191,7 +191,7 @@ class Race(BaseObject):
             pilot_id = list(filter(lambda x: x in self.flights, pilot_id))
 
         series = {p: {'altitude': [], 'distance': []} for p in pilot_id}
-        series = {'timestamps' : [], 'pilots' : series}
+        series = {'timestamps': [], 'pilots': series}
 
         steps = 1
         total = len(self)

@@ -1,8 +1,12 @@
 # Ondrej Palkovsky - http://www.penguin.cz/~ondrap/algorithm.pdf
-from sortedcontainers import SortedList
 from itertools import combinations
 
+from igclib.geography import distance
+from sortedcontainers import SortedList
+
+
 class PointGroup:
+
     def __init__(self, points):
         self.points = points
         self.bounds = self.bounding_box()
@@ -19,7 +23,18 @@ class PointGroup:
     def __len__(self):
         return len(self.points)
 
+    def __lt__(self, other):
+        return distance(self.bounds) < distance(other.bounds)
+
+    def __gt__(self, other):
+        return distance(self.bounds) > distance(other.bounds)
+
+    def __eq__(self, other):
+        return distance(self.bounds) == distance(other.bounds)
+
+
 class Candidate:
+
     def __init__(self, groups):
         self.groups = groups
         self.to_split = None
@@ -44,8 +59,12 @@ class Candidate:
     def __gt__(self, other):
         return self.score > other.score
 
+    def __eq__(self, other):
+        return self.score == other.score
+
+
 def compute_score(points):
-    initial_guess = Candidate([PointGroup(points[i*len(points)//3:(i+1)*len(points)//3]) for i in range(3)])
+    initial_guess = Candidate([PointGroup(points[i * len(points) // 3:(i + 1) * len(points) // 3]) for i in range(3)])
     candidates = SortedList([initial_guess])
 
     while not candidates[0].is_solution():

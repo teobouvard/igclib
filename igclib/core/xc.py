@@ -12,6 +12,7 @@ from tqdm import tqdm
 from shapely.geometry import LineString
 from igclib.optimization.branchbound import compute_score
 
+
 class XC(BaseObject):
     """
     XC flight
