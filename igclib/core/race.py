@@ -216,8 +216,8 @@ class Race(BaseObject):
         if sparse > 1:
             series['timestamps'] = series['timestamps'][::sparse]
             for key in series['pilots']:
-                for feature in series[key]:
-                    series[key][feature] = savgol_filter(series[key][feature], 121, 1)[::sparse]
+                for feature in series['pilots'][key]:
+                    series['pilots'][key][feature] = savgol_filter(series['pilots'][key][feature], 121, 1)[::sparse]
 
         if isinstance(output, list):
             for out in output:
@@ -225,6 +225,7 @@ class Race(BaseObject):
                     print(json.dumps(series, cls=ComplexEncoder))
                 elif out.endswith('.json'):
                     with open(out, 'w', encoding='utf8') as f:
+                        # TODO remove indent when properly serialized
                         json.dump(series, f, cls=ComplexEncoder, ensure_ascii=False, indent=4)
 
     def snapshots(self, start=None, stop=None):

@@ -38,6 +38,12 @@ class Candidate:
                 return False
         return True
 
+    def __lt__(self, other):
+        return self.score < other.score
+
+    def __gt__(self, other):
+        return self.score > other.score
+
 def compute_score(points):
     initial_guess = Candidate([PointGroup(points[i*len(points)//3:(i+1)*len(points)//3]) for i in range(3)])
     candidates = SortedList([initial_guess])

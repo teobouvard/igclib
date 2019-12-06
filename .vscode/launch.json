@@ -43,7 +43,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/igclib/bin/igclib",
-            "args": ["watch", "--path", "saved_races/race.pkl", "--pilot", "all", "--output", "saved_races/xc_flight.json", "--progress", "ratio"],
+            "args": ["watch", "--path", "saved_races/race.pkl", "--pilot", "0349", "--output", "saved_races/xc_flight.json", "--progress", "ratio", "--sparse", "1000"],
             "console": "integratedTerminal"
         },
         {
