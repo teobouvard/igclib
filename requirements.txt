@@ -19,3 +19,6 @@ scipy
 # airspace intersection 
 shapely
 rtree
+
+# xc optimization
+sortedcontainers

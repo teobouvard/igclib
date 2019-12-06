@@ -10,7 +10,7 @@ from igclib.geography.geo import Point
 from rtree.index import Index
 from tqdm import tqdm
 from shapely.geometry import LineString
-
+from igclib.optimization.branchbound import compute_score
 
 class XC(BaseObject):
     """
@@ -21,6 +21,8 @@ class XC(BaseObject):
         self.flight = Flight(tracks)
         self.points = [Point(p.lat, p.lon, p.altitude) for p in self.flight.to_list()]
         self.bounds = self.get_bounding_box()
+        #self.score = compute_score(self.flight.to_list())
+
         ground_altitude = elevation(self.flight.to_list())
         if not ground_altitude:
             self.agl_validable = False
