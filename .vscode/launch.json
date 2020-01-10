@@ -63,6 +63,14 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "convert aixm openair",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/igclib/bin/igclib",
+            "args": ["convert", "--from_format", "aixm", "--to_format", "openair", "--input_file", "dev_files/airspace_aixm.xml", "--output_file", "dev_files/airspace_openair.txt"],
+            "console": "integratedTerminal"
+        },
+        {
             "type": "python",
             "request": "launch",
             "name": "current",

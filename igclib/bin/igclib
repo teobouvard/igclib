@@ -9,6 +9,7 @@ from igclib.core.race import Race
 from igclib.core.task import Task
 from igclib.core.xc import XC
 from igclib.crawlers.task_crawler import TaskCrawler
+from igclib.converters import Converter
 
 FORMAT = "%(levelname)s : %(message)s"
 logging.basicConfig(level=logging.INFO, format=FORMAT)
@@ -32,6 +33,13 @@ def check(args):
 
     elif args.command == 'xc':
         pass
+
+    elif args.command == 'convert':
+        if args.from_format == 'aixm':
+            if args.to_format not in ['openair']:
+                logging.error(f'{args.to_format} is an unknown output format')
+        else:
+            logging.error(f'{args.from_format} is an unknown input format')
 
     return args
 
@@ -80,6 +88,13 @@ def argument_parser():
     parser_xc.add_argument('--flight', type=str, help='IGC track')
     parser_xc.add_argument('--output', type=str, required=True, nargs='+', help='Save the output [*.json, -]')
 
+    parser_convert = commands.add_parser('convert', help='Convert between file formats')
+    parser_convert.add_argument('--input_file', '-i', type=str, required=True, help='File to convert')
+    parser_convert.add_argument('--output_file', '--output', '-o', type=str, required=True, help='Save the output [*, -]')
+    parser_convert.add_argument('--from_format', type=str, required=True, help='Input format [aixm]')
+    parser_convert.add_argument('--to_format', type=str, required=True, help='Output format [openair]')
+
+
     arguments = parser.parse_args()
     return check(arguments)
 
@@ -113,3 +128,7 @@ if __name__ == '__main__':
     elif args.command == 'xc':
         xc = XC(tracks=args.flight, airspace=args.airspace, progress=args.progress)
         xc.save(output=args.output)
+
+    elif args.command == 'convert':
+        c = Converter(from_format=args.from_format, input_file=args.input_file)
+        c.convert(to_format=args.to_format, output_file=args.output_file)

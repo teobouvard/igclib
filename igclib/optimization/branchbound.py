@@ -2,7 +2,7 @@
 from itertools import combinations
 
 from igclib.geography import distance
-from sortedcontainers import SortedList # maybe heapq is a better idea ?
+from sortedcontainers import SortedList  # maybe heapq is a better idea ?
 
 
 class PointGroup:
@@ -16,14 +16,9 @@ class PointGroup:
         lats = [_.lat for _ in self.points]
         lons = [_.lon for _ in self.points]
         return min(lats), min(lons), max(lats), max(lons)
-        
+
     def get_vertices(self):
-        return (
-            (self.bounds[0], self.bounds[1]), 
-            (self.bounds[0], self.bounds[3]),
-            (self.bounds[2], self.bounds[1]),
-            (self.bounds[2], self.bounds[3]))
-            
+        return ((self.bounds[0], self.bounds[1]), (self.bounds[0], self.bounds[3]), (self.bounds[2], self.bounds[1]), (self.bounds[2], self.bounds[3]))
 
     def split(self):
         middle = len(self) // 2
@@ -90,5 +85,5 @@ def compute_score(points):
         del candidates[-1]
         for c in new_candidates:
             candidates.add(c)
-            
+
     return candidates[-1]
