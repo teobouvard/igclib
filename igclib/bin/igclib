@@ -91,8 +91,8 @@ def argument_parser():
     parser_convert = commands.add_parser('convert', help='Convert between file formats')
     parser_convert.add_argument('--input_file', '-i', type=str, required=True, help='File to convert')
     parser_convert.add_argument('--output_file', '--output', '-o', type=str, required=True, help='Save the output [*, -]')
-    parser_convert.add_argument('--from_format', type=str, required=True, help='Input format [aixm]')
-    parser_convert.add_argument('--to_format', type=str, required=True, help='Output format [openair]')
+    parser_convert.add_argument('--from_format', '-f', type=str, required=True, help='Input format [aixm]')
+    parser_convert.add_argument('--to_format', '-t', type=str, required=True, help='Output format [openair]')
 
 
     arguments = parser.parse_args()
