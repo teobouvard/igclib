@@ -2,6 +2,8 @@ import logging
 
 from lxml import etree
 from tqdm import tqdm
+from igclib.geography.converters import geo2deg, km2nm
+from igclib.constants import FILE_HEADERS
 
 
 class AIXMFormat:
@@ -31,7 +33,7 @@ class AIXMFormat:
             elif low[0] == 'STD':
                 airspace['low'] = f'{low[1]}{low[2]}'
             else:
-                print(low[0])
+                logging.error(f'Altitude code unknown : {low[0]}')
 
             if high[0] == 'ALT':
                 airspace['high'] = f'{high[2]}{high[1]} AMSL'
@@ -40,7 +42,7 @@ class AIXMFormat:
             elif high[0] == 'STD':
                 airspace['high'] = f'{high[1]}{high[2]}'
             else:
-                print(high[0])
+                logging.error(f'Altitude code unknown : {high[0]}')
             
             # remarks
             if a.find('txtRmk') is not None:
@@ -50,25 +52,68 @@ class AIXMFormat:
             
             # geometry
             geometry = tree.xpath(f'Abd[AbdUid/AseUid[@mid="{airspace_id}"]]')
-            if len(geometry) != 1: 
+            if len(geometry) != 1:
+                # TODO investigate corner cases
                 continue
+            # parts are now stored as openair format
+            # this may need to change when converting to other formats
             airspace['parts'] = []
-            for part in geometry[0].iterfind('Avx'):
+            avx = geometry[0].findall('Avx')
+            for part in avx:
                 part_type = part.find('codeType').text
                 if part_type == 'GRC':
                     lat = part.find('geoLat').text
                     lon = part.find('geoLong').text
+                    lat, lon = geo2deg(lat, lon)
                     airspace['parts'].append(f'DP {lat} {lon}')
-            if airspace['parts']:
+                elif part_type == 'FNT':
+                    logging.warning('Country borders not yet supported.')
+                    continue
+                elif part_type == 'RHL':
+                    logging.warning('Rhumb lines not yet supported.')
+                    continue
+                elif part_type in ['CWA', 'CCA']:
+                    center_lat = part.find('geoLatArc').text
+                    center_lon = part.find('geoLongArc').text
+                    start_lat = part.find('geoLat').text
+                    start_lon = part.find('geoLong').text
+                    center_lat, center_lon = geo2deg(center_lat, center_lon)
+                    start_lat, start_lon = geo2deg(start_lat, start_lon)
+                    radius = part.find('valRadiusArc').text
+                    unit = part.find('uomRadiusArc').text
+                    if unit.upper() == 'NM':
+                        pass
+                    elif unit.upper() == 'KM':
+                        radius = km2nm(radius)
+                    elif unit.upper() == 'M':
+                        radius = km2nm(1000*radius)
+                    else:
+                        logging.error(f'Unknown radius unit : {unit}')
+                    if len(avx) == 1:
+                        # circle case
+                        airspace['parts'].append(f'V X={center_lat} {center_lon}\nDC {radius}')
+                    else:
+                        # arc case
+                        stop_point = avx[(avx.index(part)+1)%len(avx)]
+                        stop_lat = stop_point.find('geoLat').text
+                        stop_lon = stop_point.find('geoLong').text
+                        stop_lat, stop_lon = geo2deg(stop_lat, stop_lon)
+                        airspace['parts'].append(f'V X={center_lat} {center_lon}\nDB {start_lat} {start_lon}, {stop_lat} {stop_lon}')
+                else:
+                    logging.warning(f'Unknown geometry bound : {part_type}.')
+            if len(airspace['parts']) > 2 or (len(airspace['parts']) == 1 and ('DC' in airspace['parts'][0])):
                 self.airspaces.append(airspace)
+            else:
+                logging.warning(f'Airspace {airspace_id} will not be converted.')
 
     def write(self, to_format, output_file):
         with open(output_file, 'w') as f:
             if to_format == 'openair':
+                f.write(FILE_HEADERS['openair'])
                 for a in self.airspaces:
-                    f.write('*\n')
                     a['text'] = a['text'].replace('\n', '\n*')
-                    f.write(f'** {a["text"]} **\n')
+                    f.write('*****\n')
+                    f.write(f'*{a["text"]}\n')
                     f.write(f'AC {a["class"]}\n')
                     f.write(f'AN {a["class"]} {a["name"]}\n')
                     f.write(f'AL {a["low"]}\n')
