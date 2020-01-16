@@ -5,7 +5,7 @@ import logging
 
 def geo2deg(latitude, longitude):
     """
-    This method assume that latitude and longitude are in one of these format:
+    This method assume that latitude and longitude are in one of the following formats:
 
     *   <geoLat>453700N</geoLat>
         <geoLong>0064554E</geoLong>
@@ -25,7 +25,8 @@ def km2nm(distance):
     """
     Converts a distance from km to nautical miles
     """
-    return float(distance)/1.852
+    return float(distance) / 1.852
+
 
 def int_from_string(chars):
     return int(''.join(x for x in chars if x in string.digits))

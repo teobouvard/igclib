@@ -94,7 +94,6 @@ def argument_parser():
     parser_convert.add_argument('--from_format', '-f', type=str, required=True, help='Input format [aixm]')
     parser_convert.add_argument('--to_format', '-t', type=str, required=True, help='Output format [openair]')
 
-
     arguments = parser.parse_args()
     return check(arguments)
 

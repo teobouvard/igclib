@@ -7,6 +7,7 @@ from igclib.constants import FILE_HEADERS
 
 
 class AIXMFormat:
+
     def __init__(self):
         self.airspaces = []
 
@@ -43,13 +44,13 @@ class AIXMFormat:
                 airspace['high'] = f'{high[1]}{high[2]}'
             else:
                 logging.error(f'Altitude code unknown : {high[0]}')
-            
+
             # remarks
             if a.find('txtRmk') is not None:
                 airspace['text'] = a.find('txtRmk').text.replace('#', '\n')
             else:
                 airspace['text'] = 'No information'
-            
+
             # geometry
             geometry = tree.xpath(f'Abd[AbdUid/AseUid[@mid="{airspace_id}"]]')
             if len(geometry) != 1:
@@ -86,7 +87,7 @@ class AIXMFormat:
                     elif unit.upper() == 'KM':
                         radius = km2nm(radius)
                     elif unit.upper() == 'M':
-                        radius = km2nm(1000*radius)
+                        radius = km2nm(1000 * radius)
                     else:
                         logging.error(f'Unknown radius unit : {unit}')
                     if len(avx) == 1:
@@ -94,7 +95,7 @@ class AIXMFormat:
                         airspace['parts'].append(f'V X={center_lat} {center_lon}\nDC {radius}')
                     else:
                         # arc case
-                        stop_point = avx[(avx.index(part)+1)%len(avx)]
+                        stop_point = avx[(avx.index(part) + 1) % len(avx)]
                         stop_lat = stop_point.find('geoLat').text
                         stop_lon = stop_point.find('geoLong').text
                         stop_lat, stop_lon = geo2deg(stop_lat, stop_lon)
