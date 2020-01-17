@@ -41,10 +41,11 @@ class PointGroup:
 
 class Candidate:
 
-    def __init__(self, groups, before=None, after=None):
+    def __init__(self, groups, before=None, after=None, closed=False):
         self.groups = groups
         self.before = [self.groups[0].points[0]] if before is None else before
         self.after = [self.groups[-1].points[-1]] if after is None else after
+        self.closed = closed
         self.score, self.xc_type = self.max_score()
 
     def max_score(self):
@@ -67,11 +68,14 @@ class Candidate:
         return max_score, xc_type
 
     def is_closed(self, tol=2000):
-        min_distance = distance(self.before[0], self.after[-1])
+        if self.closed:
+            return True
         for p1 in self.before:
             for p2 in self.after:
-                min_distance = min(min_distance, distance(p1, p2))
-        return min_distance < tol
+                if distance(p1, p2) < tol:
+                    self.closed = True
+                    return True
+        return False
 
     def branch(self):
         index_biggest_group = self.groups.index(max(self.groups))
@@ -85,7 +89,7 @@ class Candidate:
         else:
             new_before = self.before
             new_after = self.after
-        candidates = Candidate([*self.groups, group1], after=new_after), Candidate([*self.groups, group2], before=new_before)
+        candidates = Candidate([*self.groups, group1], after=new_after, closed=self.closed), Candidate([*self.groups, group2], before=new_before, closed=self.closed)
         self.groups.append(biggest_group)
         return candidates
 
