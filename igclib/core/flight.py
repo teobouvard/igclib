@@ -35,7 +35,7 @@ class Flight():
             raise ValueError(f'{igc_file} is empty or could not be read')
 
     def _build(self, records):
-        self.pilot_name = str(records[IGC_HEADER][1][IGC_PILOT_NAME])
+        self.pilot_name = str(records[IGC_HEADER][1].get(IGC_PILOT_NAME, 'Unknown pilot'))
         self.points = {}
 
         time_offset = records[IGC_HEADER][1].get(IGC_TZ_OFFSET, 0)
