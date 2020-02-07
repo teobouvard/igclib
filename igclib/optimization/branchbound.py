@@ -1,11 +1,12 @@
 # Algorithm designed by Ondrej Palkovsky - http://www.penguin.cz/~ondrap/algorithm.pdf
 from itertools import combinations
 
+from igclib.core import BaseObject
 from igclib.geography import distance
 from sortedcontainers import SortedList  # maybe heapq is a better idea ?
 
 
-class PointGroup:
+class PointGroup(BaseObject):
 
     def __init__(self, points):
         self.points = list(points)
@@ -39,62 +40,74 @@ class PointGroup:
         return distance(*self.bounds) == distance(*other.bounds)
 
 
-class Candidate:
+class Candidate(BaseObject):
 
     def __init__(self, groups, before=None, after=None, closed=False):
-        self.groups = groups
-        self.before = [self.groups[0].points[0]] if before is None else before
-        self.after = [self.groups[-1].points[-1]] if after is None else after
-        self.closed = closed
-        self.score, self.xc_type = self.max_score()
+        self._groups = groups
+        self._before = [self._groups[0].points[0]] if before is None else before
+        self._after = [self._groups[-1].points[-1]] if after is None else after
+        self._closed = closed
+        self.points, self.distance, self.xc_type, self.score = self.max_score()
 
     def max_score(self):
-        max_score = 0
+        xc_score = 0
+        xc_distance = 0
         xc_type = None
-        for v1 in self.groups[0].vertices:
-            for v2 in self.groups[1].vertices:
-                for v3 in self.groups[2].vertices:
-                    dist = distance(v1, v2) + distance(v2, v3) + distance(v3, v1)
+        xc_points = []
+
+        for v1 in self._groups[0].vertices:
+            for v2 in self._groups[1].vertices:
+                for v3 in self._groups[2].vertices:
+                    legs = [distance(v1, v2), distance(v2, v3), distance(v3, v1)]
+                    dist = sum(legs)
                     if self.is_closed(tol=0.05 * dist):
-                        current_score = 0.0014 * dist
-                        current_type = 'FAI'
+                        if min(legs)/dist > 0.28:  # TODO check coefficient ?
+                            current_score = 0.0014 * dist
+                            current_type = 'FAI triangle'
+                        else:
+                            current_score = 0.0012 * dist
+                            current_type = 'flat triangle'
                     else:
                         current_score = 0.001*dist
-                        current_type = '3-points'
+                        current_type = '3 points'
 
-                    if current_score > max_score:
-                        max_score = current_score
+                    if current_score > xc_score:
+                        xc_score = current_score
                         xc_type = current_type
-        return max_score, xc_type
+                        xc_distance = dist
+                        xc_points = [v1, v2, v3]
+
+        return xc_points, xc_distance, xc_type, xc_score
 
     def is_closed(self, tol=2000):
-        if self.closed:
+        if self._closed:
             return True
-        for p1 in self.before:
-            for p2 in self.after:
+        for p1 in self._before:
+            for p2 in self._after:
                 if distance(p1, p2) < tol:
-                    self.closed = True
+                    self._closed = True
                     return True
         return False
 
     def branch(self):
-        index_biggest_group = self.groups.index(max(self.groups))
-        biggest_group = self.groups.pop(index_biggest_group)
+        index_biggest_group = self._groups.index(max(self._groups))
+        biggest_group = self._groups.pop(index_biggest_group)
         group1, group2 = biggest_group.split()
         if (index_biggest_group == 0) or (index_biggest_group == 2):
-            new_before = self.before.copy()
+            new_before = self._before.copy()
             new_before.extend(group1.points)
-            new_after = self.after.copy()
+            new_after = self._after.copy()
             new_after.extend(group2.points)
         else:
-            new_before = self.before
-            new_after = self.after
-        candidates = Candidate([*self.groups, group1], after=new_after, closed=self.closed), Candidate([*self.groups, group2], before=new_before, closed=self.closed)
-        self.groups.append(biggest_group)
+            new_before = self._before
+            new_after = self._after
+        candidates = Candidate([*self._groups, group1], after=new_after,
+                               closed=self._closed), Candidate([*self._groups, group2], before=new_before, closed=self._closed)
+        self._groups.append(biggest_group)
         return candidates
 
     def is_solution(self):
-        for g in self.groups:
+        for g in self._groups:
             if len(g) > 1:
                 return False
         return True
@@ -110,7 +123,8 @@ class Candidate:
 
 
 def compute_score(points):
-    initial_guess = Candidate([PointGroup(points[i * len(points) // 3:(i + 1) * len(points) // 3]) for i in range(3)], None)
+    initial_guess = Candidate([PointGroup(points[i * len(points) // 3:(i + 1) * len(points) // 3])
+                               for i in range(3)], None)
     candidates = SortedList([initial_guess])
 
     while not candidates[-1].is_solution():

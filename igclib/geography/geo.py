@@ -1,9 +1,10 @@
 from igclib.constants import TOLERANCE
 from igclib.geography import distance, heading
 from shapely import geometry
+from igclib.core import BaseObject
 
 
-class GeoPoint:
+class GeoPoint(BaseObject):
     """
     GeoPoint
     """

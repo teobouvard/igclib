@@ -7,10 +7,10 @@ from igclib.core.airspace import Airspace
 from igclib.core.flight import Flight
 from igclib.geography.elevation import elevation
 from igclib.geography.geo import Point
-from rtree.index import Index
-from tqdm import tqdm
-from shapely.geometry import LineString
 from igclib.optimization.branchbound import compute_score
+from rtree.index import Index
+from shapely.geometry import LineString
+from tqdm import tqdm
 
 
 class XC(BaseObject):
@@ -23,7 +23,6 @@ class XC(BaseObject):
         self.points = [Point(p.lat, p.lon, p.altitude) for p in self.flight.to_list()]
         self.bounds = self.get_bounding_box()
         self.score = compute_score(self.flight.to_list())
-        print(f'{self.score.xc_type}, {self.score.score:.2f}pts')
 
         ground_altitude = elevation(self.flight.to_list())
         if not ground_altitude:
@@ -37,6 +36,8 @@ class XC(BaseObject):
             airspace = self.read_airspace(airspace)
             possible_violations = [inter.object for inter in airspace.intersection(self.bounds, objects=True)]
             self.violations = self.validate(possible_violations)
+        else:
+            self.violations = {}
 
     def read_airspace(self, airspace):
         index = Index()
@@ -49,12 +50,14 @@ class XC(BaseObject):
                     try:
                         zone = Airspace(record)
                         if not self.agl_validable and (zone.ground_floor or zone.ground_ceiling):
-                            logging.warning(f'{zone.name} will not be checked because ground altitude of flight could not be retrieved.')
+                            logging.warning(
+                                f'{zone.name} will not be checked because ground altitude of flight could not be retrieved.')
                         else:
                             if zone.bounds:
                                 index.insert(id(zone), zone.bounds, obj=zone)
                     except KeyError:
-                        logging.warning(f'line {reader.reader.lineno} of {os.path.basename(airspace)} - error in previous record')
+                        logging.warning(
+                            f'line {reader.reader.lineno} of {os.path.basename(airspace)} - error in previous record')
         return index
 
     def get_bounding_box(self):
@@ -70,8 +73,8 @@ class XC(BaseObject):
         for zone in tqdm(zones, desc='checking airspace intersections'):
             inter = list(filter(zone.__contains__, self.points))
             if inter:
-                violations[zone.name] = inter
+                violations[zone.name] = [x.serialize() for x in inter]
         return violations
 
     def serialize(self):
-        return {'violations': self.violations}
+        return {'score': self.score.serialize(), 'violations': self.violations}

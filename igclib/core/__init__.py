@@ -46,13 +46,20 @@ class BaseObject:
             with open(input_file, 'rb') as f:
                 self.__dict__.update(pickle.load(f))
         else:
-            raise ValueError(f'Object should be loaded from a .pkl file but input file is {os.path.splitext(input_file)[-1]}')
+            raise ValueError(
+                f'Object should be loaded from a .pkl file but input file is {os.path.splitext(input_file)[-1]}')
 
     def serialize(self):
         """
-        Implements a default serialization on the object. All attributes not starting with '_' are dumped.
+        Implements a default recursive serialization on the object. All attributes not starting with '_' are dumped.
         """
-        return {x: y for x, y in self.__dict__.items() if not x.startswith('_')}
+        serialized = {}
+        for x, y in self.__dict__.items():
+            if not x.startswith('_'):
+                if isinstance(y, BaseObject):
+                    serialized[x] = y.serialize()
+                serialized[x] = y
+        return serialized
 
     def dump(self):
         """
