@@ -22,3 +22,5 @@ rtree
 
 # xc optimization
 sortedcontainers
+
+requests
