@@ -29,14 +29,16 @@ class Flight():
 
             except UnicodeDecodeError:
                 logging.debug(f'{igc_file} is not {encoding} encoded, trying something else')
-
-        # if file could not be decoded, it does not have a point attribute
-        if not hasattr(self, 'points') or not self.points:
-            raise ValueError(f'{igc_file} is empty or could not be read')
+            except ValueError:
+                raise ValueError(f'{igc_file} is empty or is invalid igc')
 
     def _build(self, records):
         self.pilot_name = str(records[IGC_HEADER][1].get(IGC_PILOT_NAME, 'Unknown pilot'))
         self.points = {}
+
+        # if file could not be decoded, it does not have a point attribute
+        if not records[IGC_RECORDS]:
+            raise ValueError(f'File is empty or is invalid igc')
 
         time_offset = records[IGC_HEADER][1].get(IGC_TZ_OFFSET, 0)
         for subrecord in records[IGC_RECORDS]:
