@@ -27,17 +27,17 @@ class XC(BaseObject):
         ground_altitude = elevation(self.flight.to_list())
         if not ground_altitude:
             self.agl_validable = False
+            print('NO AGL DATA')
         else:
             for p, altitude in zip(self.points, ground_altitude):
                 p.agl = p.z - altitude
             self.agl_validable = True
 
+        self.violations = {}
         if airspace is not None:
             airspace = self.read_airspace(airspace)
             possible_violations = [inter.object for inter in airspace.intersection(self.bounds, objects=True)]
-            self.violations = self.validate(possible_violations)
-        else:
-            self.violations = {}
+            self.validate(possible_violations)
 
     def read_airspace(self, airspace):
         index = Index()
@@ -68,13 +68,14 @@ class XC(BaseObject):
         max_y = max(self.points, key=lambda p: p.y).y
         return min_x, min_y, max_x, max_y
 
+    def serialize(self):
+        return {'score': self.score.serialize(), 'violations': self.violations}
+
     def validate(self, zones):
-        violations = {}
         for zone in tqdm(zones, desc='checking airspace intersections'):
             inter = list(filter(zone.__contains__, self.points))
             if inter:
-                violations[zone.name] = [x.serialize() for x in inter]
-        return violations
+                self.violations[zone.name] = [x.serialize() for x in inter]
 
-    def serialize(self):
-        return {'score': self.score.serialize(), 'violations': self.violations}
+    def validate_single(self, zone):
+        return zone, list(filter(zone.__contains__, self.points))
