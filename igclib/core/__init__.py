@@ -46,8 +46,7 @@ class BaseObject:
             with open(input_file, 'rb') as f:
                 self.__dict__.update(pickle.load(f))
         else:
-            raise ValueError(
-                f'Object should be loaded from a .pkl file but input file is {os.path.splitext(input_file)[-1]}')
+            raise ValueError(f'Object should be loaded from a .pkl file but input file is {os.path.splitext(input_file)[-1]}')
 
     def serialize(self):
         """

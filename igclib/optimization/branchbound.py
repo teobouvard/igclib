@@ -61,14 +61,14 @@ class Candidate(BaseObject):
                     legs = [distance(v1, v2), distance(v2, v3), distance(v3, v1)]
                     dist = sum(legs)
                     if self.is_closed(tol=0.05 * dist):
-                        if min(legs)/dist > 0.28:  # TODO check coefficient ?
+                        if min(legs) / dist > 0.28:  # TODO check coefficient ?
                             current_score = 0.0014 * dist
                             current_type = 'FAI triangle'
                         else:
                             current_score = 0.0012 * dist
                             current_type = 'flat triangle'
                     else:
-                        current_score = 0.001*dist
+                        current_score = 0.001 * dist
                         current_type = '3 points'
 
                     if current_score > xc_score:
@@ -101,8 +101,7 @@ class Candidate(BaseObject):
         else:
             new_before = self._before
             new_after = self._after
-        candidates = Candidate([*self._groups, group1], after=new_after,
-                               closed=self._closed), Candidate([*self._groups, group2], before=new_before, closed=self._closed)
+        candidates = Candidate([*self._groups, group1], after=new_after, closed=self._closed), Candidate([*self._groups, group2], before=new_before, closed=self._closed)
         self._groups.append(biggest_group)
         return candidates
 
@@ -123,8 +122,7 @@ class Candidate(BaseObject):
 
 
 def compute_score(points):
-    initial_guess = Candidate([PointGroup(points[i * len(points) // 3:(i + 1) * len(points) // 3])
-                               for i in range(3)], None)
+    initial_guess = Candidate([PointGroup(points[i * len(points) // 3:(i + 1) * len(points) // 3]) for i in range(3)], None)
     candidates = SortedList([initial_guess])
 
     while not candidates[-1].is_solution():
