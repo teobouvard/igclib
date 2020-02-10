@@ -18,6 +18,7 @@ class Airspace:
         self.airspace_class = record.get('class')
         self.floor, self.ground_floor = parse_altitude(record.get('floor'))
         self.ceiling, self.ground_ceiling = parse_altitude(record.get('ceiling'))
+        assert self.floor < self.ceiling
         self.polygon, self.arcs = self.build(record.get('elements'))
         self.bounds = self.compute_bounds()
 

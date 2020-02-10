@@ -36,8 +36,7 @@ class XC(BaseObject):
         self.violations = {}
         if airspace is not None:
             airspace = self.read_airspace(airspace)
-            possible_violations = [inter.object for inter in airspace.intersection(self._bounds, objects=True)]
-            self.validate(possible_violations)
+            self.validate(airspace)
 
     def read_airspace(self, airspace):
         index = Index()
@@ -70,6 +69,19 @@ class XC(BaseObject):
         return {'score': self.score.serialize(), 'violations': self.violations}
 
     def validate(self, zones):
+        # first pass on 2D bounding box
+        zones = [inter.object for inter in zones.intersection(self._bounds, objects=True)]
+        
+        # second pass on altitude bounding box
+        max_alt = max(self.points, key=lambda x: x.z).z
+        min_alt = min(self.points, key=lambda x: x.z).z
+        for i, z in enumerate(zones):
+            if (not z.ground_floor) and (z.floor > max_alt):
+                del zones[i]
+            if (not z.ground_ceiling) and (z.ceiling < min_alt):
+                del zones[i]
+
+        # final pass on individual point checking
         for zone in tqdm(zones, desc='checking airspace intersections', disable=self._progress != 'gui'):
             inter = list(filter(zone.__contains__, self.points))
             if inter:

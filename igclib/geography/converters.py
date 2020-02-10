@@ -54,16 +54,17 @@ def parse_altitude(record):
     """
     if record == 'SFC' or record == 'GND':
         return 0, False
-    elif record == 'UNL':
+    if record == 'UNL':
         return sys.maxsize, False
-    elif record.startswith('FL'):
+    if record.startswith('FL'):
         level = int_from_string(record)
         return level_to_meters(level), False
-    elif record.endswith('AMSL'):
-        altitude = int_from_string(record)
-        return feets_to_meters(altitude), False
-    elif record.endswith('AGL') or record.endswith('ASFC'):
-        altitude = int_from_string(record)
-        return altitude, True
     else:
+        altitude = int_from_string(record)
+        if 'FT' in record:
+            altitude = feets_to_meters(altitude)
+        if record.endswith('AMSL'):
+            return altitude, False
+        if record.endswith('AGL') or record.endswith('ASFC'):
+            return altitude, True
         raise KeyError('Could not parse altitude')
